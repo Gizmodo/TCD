@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">TCD</string>
+    <string name="login">Войти</string>
+    <string name="password">Пароль</string>
+    <string name="username">Имя пользователя</string>
+</resources>
