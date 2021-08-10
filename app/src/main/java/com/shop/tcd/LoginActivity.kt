@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.google.android.material.textfield.TextInputEditText
 
-const val EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE"
+const val EXTRA_MESSAGE = "com.shop.tcd.MESSAGE"
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
