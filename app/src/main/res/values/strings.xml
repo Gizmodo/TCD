@@ -13,4 +13,5 @@
     <string name="loadremainder">Загрузить товары по остаткам</string>
     <string name="loadgroups">Загрузить товары с отбором по группам</string>
     <string name="loadturnover">Загрузить товары по оборотам за период</string>
+    <string name="txtLoadSelectedGroups">Загрузить выбранные группы товаров</string>
 </resources>

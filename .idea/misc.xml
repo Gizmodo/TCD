@@ -5,9 +5,13 @@
       <map>
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/font/.xml" value="0.76875" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/font/roboto.xml" value="0.76875" />
+        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_groups_rvactivity.xml" value="0.28095238095238095" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_login.xml" value="0.4675925925925926" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_main.xml" value="0.8111380145278451" />
-        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_nomenklatura.xml" value="0.69625" />
+        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_nomenklatura.xml" value="1.0" />
+        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/goups_item.xml" value="1.0" />
+        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/recyclerview_item_row.xml" value="0.6801801801801802" />
+        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/xml/network_security_config.xml" value="0.40749414519906324" />
       </map>
     </option>
   </component>
