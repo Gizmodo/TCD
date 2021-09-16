@@ -9,7 +9,7 @@ import com.shop.tcd.databinding.RecyclerviewItemRowBinding
 import com.shop.tcd.model.Group
 
 
-class RecyclerAdapter(private val groups: ArrayList<Group>) :
+class RecyclerAdapter(private val groups: List<Group>) :
     RecyclerView.Adapter<RecyclerAdapter.GroupHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):
@@ -17,8 +17,8 @@ class RecyclerAdapter(private val groups: ArrayList<Group>) :
 //         val itemBinding = RecyclerviewItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 //         return PaymentHolder(itemBinding)
 
-        val layout = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recyclerview_item_row, parent, false)
+       /* val layout = LayoutInflater.from(parent.context)
+            .inflate(R.layout.recyclerview_item_row, parent, false)*/
         val inflatedView =
             RecyclerviewItemRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 

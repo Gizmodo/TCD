@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id "org.jetbrains.kotlin.kapt" version "1.5.30"
 }
 
 android {
@@ -17,7 +18,6 @@ android {
     }
     buildFeatures {
         // Enables Jetpack Compose for this module
-        compose true
         dataBinding true
         viewBinding = true
     }
@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.0'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.1'
     implementation "io.reactivex.rxjava3:rxandroid:3.0.0"
     implementation 'androidx.core:core-ktx:1.6.0'
     implementation 'androidx.appcompat:appcompat:1.3.1'
@@ -49,30 +49,9 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'androidx.compose.ui:ui:1.0.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    // Tooling support (Previews, etc.)
-    implementation 'androidx.compose.ui:ui-tooling:1.0.1'
-    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation 'androidx.compose.foundation:foundation:1.0.1'
-    // Material Design
-    implementation 'androidx.compose.material:material:1.0.1'
-    // Material design icons
-    implementation 'androidx.compose.material:material-icons-core:1.0.1'
-    implementation 'androidx.compose.material:material-icons-extended:1.0.1'
-    // Integration with activities
-    implementation 'androidx.activity:activity-compose:1.3.1'
-    // Integration with ViewModels
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
-    // Integration with observables
-    implementation 'androidx.compose.runtime:runtime-livedata:1.0.1'
-    implementation 'androidx.compose.runtime:runtime-rxjava2:1.0.1'
 
-    // UI Tests
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.1'
 
-    //ViewModel and livedata
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     // Networking
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
@@ -80,21 +59,17 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
 
     //Coroutine
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.1-native-mt'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.1-native-mt'
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'
+    implementation 'com.google.code.gson:gson:2.8.8'
 
     //viewModel
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
-    //Glide
-    implementation 'com.github.bumptech.glide:glide:4.12.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
-
     def room_version = "2.4.0-alpha04"
 
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     // optional - RxJava2 support for Room
     implementation "androidx.room:room-rxjava2:$room_version"
@@ -109,5 +84,95 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     // optional - Paging 3 Integration
-    implementation "androidx.room:room-paging:2.4.0-alpha04"
+    implementation "androidx.room:room-paging:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    def lifecycle_version = "2.4.0-alpha03"
+    def arch_version = "2.1.0"
+
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    // Lifecycles only (without ViewModel or LiveData)
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+
+    // Saved state module for ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+
+    // Annotation processor
+    // kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    // alternately - if using Java8, use the following instead of lifecycle-compiler
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
+    // optional - helpers for implementing LifecycleOwner in a Service
+    implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
+
+    // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
+    implementation "androidx.lifecycle:lifecycle-process:$lifecycle_version"
+
+    // optional - ReactiveStreams support for LiveData
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
+
+    // optional - Test helpers for LiveData
+    testImplementation "androidx.arch.core:core-testing:$arch_version"
+
+//Navigation
+    def nav_version = "2.3.5"
+
+    // Java language implementation
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+
+    // Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    // Feature module Support
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+    // Jetpack Compose Integration
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha08"
+//Paging
+    def paging_version = "3.1.0-alpha03"
+
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
+    // alternatively - without Android dependencies for tests
+    testImplementation "androidx.paging:paging-common:$paging_version"
+
+    // optional - RxJava2 support
+    implementation "androidx.paging:paging-rxjava2:$paging_version"
+
+    // optional - RxJava3 support
+    implementation "androidx.paging:paging-rxjava3:$paging_version"
+
+    // optional - Guava ListenableFuture support
+    implementation "androidx.paging:paging-guava:$paging_version"
+
+    // optional - Jetpack Compose integration
+    implementation "androidx.paging:paging-compose:1.0.0-alpha12"
+//WorkManager
+    def work_version = "2.6.0"
+
+    // (Java only)
+    implementation "androidx.work:work-runtime:$work_version"
+
+    // Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
+    // optional - RxJava2 support
+    implementation "androidx.work:work-rxjava2:$work_version"
+
+    // optional - GCMNetworkManager support
+    implementation "androidx.work:work-gcm:$work_version"
+
+    // optional - Test helpers
+    androidTestImplementation "androidx.work:work-testing:$work_version"
+
+    // optional - Multiprocess support
+    implementation "androidx.work:work-multiprocess:$work_version"
 }

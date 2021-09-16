@@ -1,34 +1,47 @@
 package com.shop.tcd
 
-import android.app.Application
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.MutableLiveData
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.shop.tcd.Common.Common
+import com.shop.tcd.databinding.ActivityMainBinding
+import com.shop.tcd.databinding.ActivityNomenklaturaBinding
+import com.shop.tcd.model.Group
 import com.shop.tcd.model.Groups
 import com.shop.tcd.model.Nomenclature
+import com.shop.tcd.model.NomenclatureItem
 import com.shop.tcd.repo.MainRepository
 import com.shop.tcd.retro.RetrofitService
-import com.shop.tcd.retro.RetrofitServices
+import com.shop.tcd.room.dao.GroupDao
+import com.shop.tcd.room.dao.NomenclatureDao
+import com.shop.tcd.room.database.TCDRoomDatabase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class NomenklaturaActivity : AppCompatActivity() {
-    var mService = Common.retrofitService
-    val movieList = MutableLiveData<Nomenclature>()
-    val errorMessage = MutableLiveData<String>()
     val TAG = this::class.simpleName
+    private lateinit var binding: ActivityNomenklaturaBinding
+    private lateinit var newRecyclerView: RecyclerView
+    private lateinit var heading: Array<String>
+
+    private lateinit var groupsList: ArrayList<Group>
+    private lateinit var nomenclatureList: ArrayList<NomenclatureItem>
     private val retrofitService = RetrofitService.getInstance()
+
+    private lateinit var databaseTCD: TCDRoomDatabase
+    private lateinit var daoGroup: GroupDao
+    private lateinit var nomDao: NomenclatureDao
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_nomenklatura)
+        binding = ActivityNomenklaturaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     fun workedRequestToGroups() {
@@ -55,7 +68,7 @@ class NomenklaturaActivity : AppCompatActivity() {
     }
 
     fun getAllGoods(view: View) {
-        val repository = MainRepository(retrofitService)
+       /* val repository = MainRepository(retrofitService)
         val response = repository.getAllGoods()
         response.enqueue(object : Callback<Nomenclature> {
             override fun onResponse(call: Call<Nomenclature>, response: Response<Nomenclature>) {
@@ -69,6 +82,6 @@ class NomenklaturaActivity : AppCompatActivity() {
                 Log.e(TAG, t.message.toString())
                 errorMessage.postValue(t.message)
             }
-        })
+        })*/
     }
 }

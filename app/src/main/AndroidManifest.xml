@@ -13,6 +13,14 @@
         android:theme="@style/Theme.TCD"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".CatalogueGroupActivity"
+            android:exported="true"
+            android:parentActivityName=".CatalogueActivity" />
+        <activity
+            android:name=".CatalogueActivity"
+            android:exported="true"
+            android:parentActivityName=".MainActivity" />
+        <activity
             android:name=".GroupsRVActivity"
             android:exported="true"
             android:parentActivityName=".NomenklaturaActivity" />

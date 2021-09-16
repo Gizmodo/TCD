@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="CustomButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
-        <item name="android:layout_margin">16dp</item>
+    <style name="Theme.TCD.CustomButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:layout_margin">8dp</item>
     </style>
 </resources>

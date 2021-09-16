@@ -21,13 +21,58 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /** Called when the user taps the Send button */
-    fun showLoadGoodsView(view: View) {
+    /**
+     * Открывает экран "Загрузить каталог товаров".
+     * Действие по кнопке на главном экране.
+     */
+    fun btnShowCatalogue(view: View) {
+        val intent = Intent(this, CatalogueActivity::class.java)
+            .apply {
+                putExtra(EXTRA_MESSAGE, "catalog")
+            }
+        startActivity(intent)
+    }
+
+
+    /**
+     * Открывает экран "Справочник Номенклатура".
+     * Действие по кнопке на главном экране.
+     */
+    fun btnShowNomenclature(view: View) {
 //        val editText = findViewById<TextInputEditText>(R.id.edLogin)
 //        val message = editText.text.toString()
-        val intent = Intent(this, NomenklaturaActivity::class.java).apply {
-            putExtra(EXTRA_MESSAGE, "test")
-        }
+        val intent = Intent(this, NomenklaturaActivity::class.java)
+            .apply {
+                putExtra(EXTRA_MESSAGE, "test")
+            }
         startActivity(intent)
+    }
+
+    /**
+     * Открывает экран "Пересчет товаров".
+     * Действие по кнопке на главном экране.
+     */
+    fun btnShowRecalc(view: View) {
+//        val editText = findViewById<TextInputEditText>(R.id.edLogin)
+//        val message = editText.text.toString()
+        val intent = Intent(this, NomenklaturaActivity::class.java)
+            .apply {
+                putExtra(EXTRA_MESSAGE, "test")
+            }
+//        startActivity(intent)
+    }
+
+    /**
+     * Открывает экран "Печать ценников".
+     * Действие по кнопке на главном экране.
+     */
+    fun btnShowPrintLabels(view: View) {
+//        val editText = findViewById<TextInputEditText>(R.id.edLogin)
+//        val message = editText.text.toString()
+        val intent = Intent(this, NomenklaturaActivity::class.java)
+            .apply {
+                putExtra(EXTRA_MESSAGE, "test")
+            }
+//        startActivity(intent)
     }
 }

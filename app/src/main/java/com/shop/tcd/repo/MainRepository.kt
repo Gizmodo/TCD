@@ -3,6 +3,17 @@ package com.shop.tcd.repo
 import com.shop.tcd.retro.RetrofitService
 
 class MainRepository constructor(private val retrofitService: RetrofitService) {
-    fun getAllGoods() = retrofitService.getAllGoods()
+    //Получить список групп товаров
     fun getAllGroups() = retrofitService.getAllGroups()
+
+    /**
+     * Загрузить весь список товаров
+     */
+    fun getAllItems() = retrofitService.getAllItems()
+
+    /**
+     * Загрузить товары по остаткам
+     */
+    fun getRemainders() = retrofitService.getRemainders()
+
 }

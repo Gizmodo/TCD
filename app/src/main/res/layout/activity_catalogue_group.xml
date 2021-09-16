@@ -4,28 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GroupsRVActivity">
+    tools:context=".CatalogueGroupActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvCatalogueGroup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@id/btnCatalogGroupLoadSelected"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:id="@+id/button9"
+        android:id="@+id/btnCatalogGroupLoadSelected"
+        style="@style/Theme.TCD.CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="loadSelectedGroups"
+        android:onClick="btnCatalogGroupLoadSelected"
         android:text="@string/txtLoadSelectedGroups"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="8dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/button9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="SpeakableTextPresentCheck"
-         />
 </androidx.constraintlayout.widget.ConstraintLayout>
