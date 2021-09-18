@@ -10,6 +10,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 interface RetrofitService {
@@ -37,11 +38,14 @@ interface RetrofitService {
 
     /**
      *Загрузить товары за период
-     *
+     *"01.09.2021 0:00:00,30.09.2021 23:59:59"
+     * 12.07.2021 23:59:58
+     * 11.07.2021 17:31:48
+     * 10.07.2021 23:59:58
+     * 01.10.2019 0:00:00
      **/
-    @GET("getturnoverfortheperiod")
-    fun getPeriod(): Call<Nomenclature>
-
+    @GET("getturnoverfortheperiod/")
+    fun getPeriod(@Query("filter") filter: String): Call<Nomenclature>
 
     companion object {
         var retrofitService: RetrofitService? = null

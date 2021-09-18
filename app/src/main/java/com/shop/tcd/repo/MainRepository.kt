@@ -16,4 +16,9 @@ class MainRepository constructor(private val retrofitService: RetrofitService) {
      */
     fun getRemainders() = retrofitService.getRemainders()
 
+    /**
+     * Загрузить товары за период
+     */
+    fun getPeriod(filterString: String) = retrofitService.getPeriod(filterString)
+
 }

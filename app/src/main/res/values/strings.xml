@@ -15,4 +15,8 @@
     <string name="loadturnover">Загрузить товары по оборотам за период</string>
     <string name="txtLoadSelectedGroups">Загрузить выбранные группы товаров</string>
     <string name="shop_select">Выбор магазина</string>
+    <string name="end">Окончание</string>
+    <string name="ok">OK</string>
+    <string name="begin">Начало</string>
+    <string name="cancel">Отмена</string>
 </resources>
