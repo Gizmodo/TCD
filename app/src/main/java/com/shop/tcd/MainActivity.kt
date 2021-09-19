@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import com.google.android.material.textfield.TextInputEditText
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +38,11 @@ class MainActivity : AppCompatActivity() {
      * Действие по кнопке на главном экране.
      */
     fun btnShowNomenclature(view: View) {
-
+        val intent = Intent(this, NomenclatureActivity::class.java)
+            .apply {
+                putExtra(EXTRA_MESSAGE, "nomenclature")
+            }
+        startActivity(intent)
     }
 
     /**

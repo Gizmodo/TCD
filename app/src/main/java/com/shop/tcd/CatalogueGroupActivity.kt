@@ -22,7 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CatalogueGroupActivity : AppCompatActivity() {
-    val TAG = this::class.simpleName
+    val tag = this::class.simpleName
 
     private lateinit var binding: ActivityCatalogueGroupBinding
     private lateinit var rv: RecyclerView
@@ -42,7 +42,7 @@ class CatalogueGroupActivity : AppCompatActivity() {
     fun btnCatalogGroupLoadSelected(view: View) {
         val filterString = groupsList
             .filter { it.checked }.joinToString { it.code }
-        Log.d(TAG, filterString)
+        Log.d(tag, filterString)
 
         val repository = MainRepository(retrofitService)
         val response = repository.getByGroup(filterString)
@@ -50,26 +50,23 @@ class CatalogueGroupActivity : AppCompatActivity() {
         response.enqueue(object : Callback<Nomenclature> {
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
-                Log.e(TAG, errorString)
+                Log.e(tag, errorString)
                 Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(
                 call: Call<Nomenclature>, response: Response<Nomenclature>,
             ) {
-                /////////////////////////////////////
-                Log.d(TAG, "Код ответа: ${response.code()}")
-                Log.d(TAG,
+                Log.d(tag, "Код ответа: ${response.code()}")
+                Log.d(tag,
                     "Время ответа: ${response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis} ms")
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {
-                        Log.d(TAG, "Данные получены")
+                        Log.d(tag, "Данные получены")
                         nomenclatureList =
                             response.body()?.nomenclature as java.util.ArrayList<NomenclatureItem>
-                        //   newRecyclerView.adapter = MyAdapterBinding(nomenclatureList)
-//                languageList = response.body()?.group as ArrayList<Group>
-                        Log.d(TAG, "onResponse nomenclatureList.size=${nomenclatureList.size}")
-                        Log.d(TAG, "onResponse: ${response.body()!!.nomenclature[2].name}")
+                        Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
+                        Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
                         Toast.makeText(applicationContext,
                             "onResponse nomenclatureList.size=${nomenclatureList.size}",
                             Toast.LENGTH_SHORT).show()
@@ -79,12 +76,11 @@ class CatalogueGroupActivity : AppCompatActivity() {
                             saveNomenclatureList(nomenclatureList, applicationContext)
                         }
                     } else {
-                        Log.d(TAG, "Данные не получены: ${response.body()?.message.toString()}")
+                        Log.d(tag, "Данные не получены: ${response.body()?.message.toString()}")
                     }
                 } else {
-                    Log.d(TAG, "Ошибка сервера")
+                    Log.d(tag, "Ошибка сервера")
                 }
-                //////////////////////
             }
         })
     }
@@ -100,13 +96,8 @@ class CatalogueGroupActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Groups>, response: Response<Groups>) {
                 groupsList = response.body()?.group as ArrayList<Group>
                 rv.adapter = GroupAdapter(groupsList)
-//                languageList = response.body()?.group as ArrayList<Group>
-                Log.d(TAG, "onResponse groupList.size=${groupsList.size}")
-                Log.d(TAG, "onResponse: ${response.body()!!.group[2].name}")
-//                adapter.notifyDataSetChanged()
-//                rvAdapter = RvAdapter(languageList)
-                // rvAdapter = RecyclerAdapter(groupsList)
-                //      rvAdapter.notifyDataSetChanged()
+                Log.d(tag, "onResponse groupList.size=${groupsList.size}")
+                Log.d(tag, "onResponse: ${response.body()!!.group[2].name}")
                 Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT).show()
             }
         })

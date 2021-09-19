@@ -1,5 +1,6 @@
 package com.shop.tcd.room.dao
 
+import androidx.lifecycle.LiveData
 import com.shop.tcd.model.NomenclatureItem
 import kotlinx.coroutines.flow.Flow
 import androidx.room.Dao
@@ -9,8 +10,11 @@ import androidx.room.Query
 
 @Dao
 interface NomenclatureDao {
-    @Query("select * from nomenclature")
+    @Query("select * from nomenclature limit 5000")
     suspend fun getAll(): List<NomenclatureItem>
+
+    @Query("select * from nomenclature")
+    fun getAllLiveData(): LiveData<List<NomenclatureItem>>
 
     @Query("select * from nomenclature ORDER BY uid ASC")
     fun getAllFlow(): Flow<List<NomenclatureItem>>
@@ -25,7 +29,7 @@ interface NomenclatureDao {
 
     //Поиск товара по штрихкоду
     @Query("select * from nomenclature where barcode = :barcode")
-    suspend fun getByBarcode(barcode: String):List<NomenclatureItem>
+    suspend fun getByBarcode(barcode: String): List<NomenclatureItem>
 
     //Количество записей
     @Query("SELECT COUNT(*) FROM nomenclature")
