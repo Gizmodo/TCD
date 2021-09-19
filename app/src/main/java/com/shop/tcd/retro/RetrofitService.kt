@@ -47,6 +47,13 @@ interface RetrofitService {
     @GET("getturnoverfortheperiod/")
     fun getPeriod(@Query("filter") filter: String): Call<Nomenclature>
 
+    /**
+     * Загрузить товары по выбранным группам
+     * filter=10000, 20000, ....
+     **/
+    @GET("getgrouplist/")
+    fun getByGroup(@Query("filter") filter: String): Call<Nomenclature>
+
     companion object {
         var retrofitService: RetrofitService? = null
 

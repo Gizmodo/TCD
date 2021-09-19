@@ -39,13 +39,7 @@ class MainActivity : AppCompatActivity() {
      * Действие по кнопке на главном экране.
      */
     fun btnShowNomenclature(view: View) {
-//        val editText = findViewById<TextInputEditText>(R.id.edLogin)
-//        val message = editText.text.toString()
-        val intent = Intent(this, NomenklaturaActivity::class.java)
-            .apply {
-                putExtra(EXTRA_MESSAGE, "test")
-            }
-        startActivity(intent)
+
     }
 
     /**
@@ -53,13 +47,7 @@ class MainActivity : AppCompatActivity() {
      * Действие по кнопке на главном экране.
      */
     fun btnShowRecalc(view: View) {
-//        val editText = findViewById<TextInputEditText>(R.id.edLogin)
-//        val message = editText.text.toString()
-        val intent = Intent(this, NomenklaturaActivity::class.java)
-            .apply {
-                putExtra(EXTRA_MESSAGE, "test")
-            }
-//        startActivity(intent)
+
     }
 
     /**
@@ -67,12 +55,6 @@ class MainActivity : AppCompatActivity() {
      * Действие по кнопке на главном экране.
      */
     fun btnShowPrintLabels(view: View) {
-//        val editText = findViewById<TextInputEditText>(R.id.edLogin)
-//        val message = editText.text.toString()
-        val intent = Intent(this, NomenklaturaActivity::class.java)
-            .apply {
-                putExtra(EXTRA_MESSAGE, "test")
-            }
-//        startActivity(intent)
+
     }
 }

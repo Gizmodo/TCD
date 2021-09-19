@@ -20,6 +20,7 @@ import androidx.core.util.component1
 import androidx.core.util.component2
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialDatePicker.INPUT_MODE_CALENDAR
+import com.shop.tcd.Common.Common
 import com.shop.tcd.databinding.ActivityCatalogueBinding
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.NomenclatureItem
@@ -84,8 +85,9 @@ class CatalogueActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT).show()
                         Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT)
                             .show()
-                        //TODO: Сделать
-                        //  saveNomenclature(nomenclatureList)
+                        GlobalScope.launch {
+                            Common.saveNomenclatureList(nomenclatureList,applicationContext)
+                        }
                     } else {
                         Log.d(TAG, "Данные не получены: ${response.body()?.message.toString()}")
                     }
@@ -129,8 +131,10 @@ class CatalogueActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT).show()
                         Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT)
                             .show()
-                        //TODO: Сделать
-                        //  saveNomenclature(nomenclatureList)
+                        GlobalScope.launch {
+                            Common.saveNomenclatureList(nomenclatureList,applicationContext)
+                        }
+
                     } else {
                         Log.d(TAG, "Данные не получены: ${response.body()?.message.toString()}")
                     }
@@ -189,8 +193,6 @@ class CatalogueActivity : AppCompatActivity() {
 
         btnOk.setOnClickListener {
             if (dateBegin.isNotEmpty() && dateEnd.isNotEmpty()) {
-                //TODO Make backend request
-
                 Toast.makeText(this@CatalogueActivity, "$dateBegin и $dateEnd", Toast.LENGTH_SHORT)
                     .show()
                 getByPeriod()
@@ -245,23 +247,7 @@ class CatalogueActivity : AppCompatActivity() {
             }
             datePicker.show(supportFragmentManager, datePicker.toString())
         }
-        dateDialog.setOnCancelListener {
-            //TODO: send http request
-        }
         dateDialog.show()
-    }
-
-    /**
-     * Сохранение полученного ответа по номенклатуре в БД.
-     */
-    fun saveNomenclature(list: List<NomenclatureItem>) {
-        databaseTCD = TCDRoomDatabase.getDatabase(application)
-        nomDao = databaseTCD.nomDao()
-        GlobalScope.launch {
-            nomDao.insertNomenclature(list)
-            Log.d(TAG, "Coroutine inside")
-        }
-        Log.d(TAG, "Coroutine outside")
     }
 
     private fun getByPeriod() {
@@ -289,8 +275,10 @@ class CatalogueActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT).show()
                         Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT)
                             .show()
-                        //TODO: Сделать
-                        //  saveNomenclature(nomenclatureList)
+                        GlobalScope.launch {
+                            Common.saveNomenclatureList(nomenclatureList,applicationContext)
+                        }
+
                     } else {
                         Log.d(TAG, "Данные не получены: ${response.body()?.message.toString()}")
                     }
@@ -305,5 +293,18 @@ class CatalogueActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    /**
+     * Сохранение полученного ответа по номенклатуре в БД.
+     */
+    fun saveNomenclature(list: List<NomenclatureItem>) {
+        databaseTCD = TCDRoomDatabase.getDatabase(application)
+        nomDao = databaseTCD.nomDao()
+        GlobalScope.launch {
+            nomDao.insertNomenclature(list)
+            Log.d(TAG, "Coroutine inside")
+        }
+        Log.d(TAG, "Coroutine outside")
     }
 }

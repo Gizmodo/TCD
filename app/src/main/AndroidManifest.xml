@@ -21,14 +21,6 @@
             android:exported="true"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".GroupsRVActivity"
-            android:exported="true"
-            android:parentActivityName=".NomenklaturaActivity" />
-        <activity
-            android:name=".NomenklaturaActivity"
-            android:exported="true"
-            android:parentActivityName=".MainActivity" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:parentActivityName=".LoginActivity" />
