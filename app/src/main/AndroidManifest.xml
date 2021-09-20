@@ -13,6 +13,9 @@
         android:theme="@style/Theme.TCD"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".RecalcActivity"
+            android:exported="true" />
+        <activity
             android:name=".NomenclatureActivity"
             android:exported="true"
             android:parentActivityName=".MainActivity" />

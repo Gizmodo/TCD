@@ -28,8 +28,16 @@ interface NomenclatureDao {
     suspend fun deleteAll()
 
     //Поиск товара по штрихкоду
-    @Query("select * from nomenclature where barcode = :barcode")
-    suspend fun getByBarcode(barcode: String): List<NomenclatureItem>
+    @Query("select * from nomenclature where barcode = :barcode limit 1")
+    fun getByBarcode(barcode: String): LiveData<NomenclatureItem>
+
+    //Поиск товара по коду
+    @Query("select * from nomenclature where code = :code limit 1")
+    fun getByCode(code: String): LiveData<NomenclatureItem>
+
+    //Поиск товара по PLU
+    @Query("select * from nomenclature where plu = :plu limit 1")
+    fun getByPLU(plu: String): LiveData<NomenclatureItem>
 
     //Количество записей
     @Query("SELECT COUNT(*) FROM nomenclature")

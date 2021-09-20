@@ -50,7 +50,11 @@ class MainActivity : AppCompatActivity() {
      * Действие по кнопке на главном экране.
      */
     fun btnShowRecalc(view: View) {
-
+        val intent = Intent(this, RecalcActivity::class.java)
+            .apply {
+                putExtra(EXTRA_MESSAGE, "recalc")
+            }
+        startActivity(intent)
     }
 
     /**

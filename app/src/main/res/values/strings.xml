@@ -19,4 +19,11 @@
     <string name="ok">OK</string>
     <string name="begin">Начало</string>
     <string name="cancel">Отмена</string>
+    <string name="code">Код</string>
+    <string name="plu">PLU</string>
+    <string name="barcode">Штрихкод</string>
+    <string name="good">Товар</string>
+    <string name="price">Цена</string>
+    <string name="entercode">Введите код:</string>
+    <string name="upload">Выгрузить документ</string>
 </resources>

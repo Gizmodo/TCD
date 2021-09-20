@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecalcActivity">
+
+    <EditText
+        android:id="@+id/edtRecalcCode"
+        style="@style/Noneditable"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/code"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtRecalcPLU"
+        style="@style/Noneditable"
+        android:hint="@string/plu"
+        app:layout_constraintBottom_toBottomOf="@id/edtRecalcCode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edtRecalcCode"
+        app:layout_constraintTop_toTopOf="@id/edtRecalcCode" />
+
+    <EditText
+        android:id="@+id/edtRecalcBarcode"
+        style="@style/Noneditable"
+        android:hint="@string/barcode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtRecalcPLU" />
+
+    <EditText
+        android:id="@+id/edtRecalcGood"
+        style="@style/Noneditable"
+        android:hint="@string/good"
+        android:inputType="textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtRecalcBarcode" />
+
+    <EditText
+        android:id="@+id/edtRecalcPrice"
+        style="@style/Noneditable"
+        android:hint="@string/price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtRecalcGood" />
+
+    <EditText
+        android:id="@+id/edtRecalcEnter"
+        style="@style/Noneditable"
+        android:hint="@string/entercode"
+        android:focusable="true"
+        android:clickable="true"
+        android:cursorVisible="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rgRecalc" />
+
+    <RadioGroup
+        android:id="@+id/rgRecalc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtRecalcPrice">
+
+        <RadioButton
+            android:id="@+id/rbtRecalcCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/code" />
+
+        <RadioButton
+            android:id="@+id/rbtRecalcBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/barcode" />
+
+        <RadioButton
+            android:id="@+id/rbtRecalcPLU"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/plu" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnRecalcUpload"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/upload"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtRecalcEnter" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRecalc"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnRecalcUpload"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
