@@ -71,9 +71,9 @@ interface RetrofitService {
                     .build()
 
                 var retrofit = Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2/TSD/hs/TSD/")
+//                    .baseUrl("http://10.0.2.2/TSD/hs/TSD/")
                     .client(okhttpclient)
-//                    .baseUrl("http://192.168.88.58/TSD/hs/TSD/")
+                    .baseUrl("http://192.168.88.58/TSD/hs/TSD/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                 retrofitService = retrofit.create(RetrofitService::class.java)
