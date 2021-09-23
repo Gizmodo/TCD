@@ -26,4 +26,5 @@
     <string name="price">Цена</string>
     <string name="entercode">Введите код:</string>
     <string name="upload">Выгрузить документ</string>
+    <string name="count">Кол-во</string>
 </resources>
