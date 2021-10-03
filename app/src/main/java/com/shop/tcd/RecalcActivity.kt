@@ -72,13 +72,14 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
     }
     val swipeToDeleteCallback = object : SwipeToDeleteCallback() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            val pos = viewHolder.bindingAdapterPosition
+            val pos = viewHolder.adapterPosition
+            Log.d(tag, pos.toString())
             val invDao: InvDao = db!!.invDao()
             CoroutineScope(Dispatchers.IO).launch {
                 invDao.deleteInv(lst[pos].uid!!)
+                lst.removeAt(pos)
+                adapter!!.notifyItemRemoved(pos)
             }
-            lst.removeAt(pos)
-            adapter!!.notifyItemRemoved(pos)
         }
     }
     private val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
