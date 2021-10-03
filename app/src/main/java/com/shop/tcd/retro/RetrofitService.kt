@@ -2,6 +2,7 @@ package com.shop.tcd.retro
 
 import com.shop.tcd.model.Groups
 import com.shop.tcd.model.Nomenclature
+import com.shop.tcd.model.Response1C
 import okhttp3.OkHttp
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -9,8 +10,7 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
-import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 interface RetrofitService {
@@ -54,6 +54,10 @@ interface RetrofitService {
     @GET("getgrouplist/")
     fun getByGroup(@Query("filter") filter: String): Call<Nomenclature>
 
+    @POST("ReceivedDocument")
+    @Headers("Content-Type:application/json")
+    fun createJson(@Body json: String): Call<Response1C>
+
     companion object {
         var retrofitService: RetrofitService? = null
 
@@ -71,9 +75,9 @@ interface RetrofitService {
                     .build()
 
                 var retrofit = Retrofit.Builder()
-//                    .baseUrl("http://10.0.2.2/TSD/hs/TSD/")
+                    .baseUrl("http://10.0.2.2/TSD/hs/TSD/")
                     .client(okhttpclient)
-                    .baseUrl("http://192.168.88.58/TSD/hs/TSD/")
+//                    .baseUrl("http://192.168.88.58/TSD/hs/TSD/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                 retrofitService = retrofit.create(RetrofitService::class.java)

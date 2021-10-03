@@ -5,17 +5,21 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.shop.tcd.model.Group
+import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
 import com.shop.tcd.room.dao.GroupDao
+import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
 
 @Database(entities = [
     Group::class,
-    NomenclatureItem::class
-], version = 1, exportSchema = false)
+    NomenclatureItem::class,
+    InvItem::class
+], version = 2, exportSchema = false)
 abstract class TCDRoomDatabase : RoomDatabase() {
     abstract fun wordDao(): GroupDao
     abstract fun nomDao(): NomenclatureDao
+    abstract fun invDao(): InvDao
 
     companion object {
         @Volatile

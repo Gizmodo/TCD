@@ -1,7 +1,9 @@
 package com.shop.tcd.Common
 
 import android.content.Context
+import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
+import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
 import kotlinx.coroutines.GlobalScope
@@ -17,6 +19,15 @@ object Common {
         GlobalScope.launch {
             nomenclatureDao.deleteAll()
             nomenclatureDao.insertNomenclature(list)
+        }
+    }
+
+    suspend fun insertInv(item: InvItem, context: Context) {
+        val invDao: InvDao
+        val databaseTCD: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)
+        invDao = databaseTCD.invDao()
+        GlobalScope.launch {
+            invDao.insert(item)
         }
     }
 }

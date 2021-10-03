@@ -20,10 +20,11 @@
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_main.xml" value="0.6684210526315789" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_nomenclature.xml" value="0.57625" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_nomenklatura.xml" value="0.35802469135802467" />
-        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc.xml" value="0.9" />
-        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc_material.xml" value="1.002677376171352" />
+        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc.xml" value="0.1" />
+        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc_material.xml" value="0.635" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/custom_dialog.xml" value="1.0" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/goups_item.xml" value="1.0" />
+        <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/inv_item.xml" value="1.0" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/list_item.xml" value="0.88" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/recyclerview_item_row.xml" value="0.6801801801801802" />
         <entry key="..\:/Users/1/AndroidStudioProjects/TCD/app/src/main/res/layout/rv_nomenclature_item.xml" value="0.75" />

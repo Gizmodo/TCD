@@ -12,15 +12,17 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:hint="@string/code"
+        android:importantForAutofill="no"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/edtRecalcPLU"
         style="@style/Noneditable"
+        android:layout_width="70dp"
         android:hint="@string/plu"
+        android:importantForAutofill="no"
         app:layout_constraintBottom_toBottomOf="@id/edtRecalcCode"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/edtRecalcCode"
         app:layout_constraintTop_toTopOf="@id/edtRecalcCode" />
 
@@ -28,26 +30,31 @@
         android:id="@+id/edtRecalcBarcode"
         style="@style/Noneditable"
         android:hint="@string/barcode"
+        android:importantForAutofill="no"
+        app:layout_constraintBottom_toBottomOf="@id/edtRecalcPLU"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtRecalcPLU" />
+        app:layout_constraintStart_toEndOf="@id/edtRecalcPLU"
+        app:layout_constraintTop_toTopOf="@id/edtRecalcPLU" />
 
     <EditText
         android:id="@+id/edtRecalcGood"
         style="@style/Noneditable"
         android:hint="@string/good"
+        android:importantForAutofill="no"
         android:inputType="textMultiLine"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/edtRecalcPrice"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtRecalcBarcode" />
+        app:layout_constraintTop_toBottomOf="@id/edtRecalcCode" />
 
     <EditText
         android:id="@+id/edtRecalcPrice"
         style="@style/Noneditable"
+        android:layout_width="70dp"
         android:hint="@string/price"
+        android:importantForAutofill="no"
+        app:layout_constraintBottom_toBottomOf="@id/edtRecalcGood"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtRecalcGood" />
+        app:layout_constraintTop_toTopOf="@id/edtRecalcGood" />
 
     <EditText
         android:id="@+id/edtRecalcEnter"
@@ -57,10 +64,13 @@
         android:cursorVisible="true"
         android:focusable="true"
         android:hint="@string/entercode"
-        app:layout_constraintBottom_toBottomOf="@+id/edtCount"
-        app:layout_constraintEnd_toStartOf="@+id/edtCount"
+        android:importantForAutofill="no"
+        android:inputType="numberSigned"
+        android:maxLength="13"
+        app:layout_constraintBottom_toBottomOf="@id/edtCount"
+        app:layout_constraintEnd_toStartOf="@id/edtCount"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/edtCount" />
+        app:layout_constraintTop_toTopOf="@id/edtCount" />
 
     <EditText
         android:id="@+id/edtCount"
@@ -71,8 +81,11 @@
         android:cursorVisible="true"
         android:focusable="true"
         android:hint="@string/count"
+        android:importantForAutofill="no"
+        android:inputType="numberSigned"
+        android:textColorHint="#00838F"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rgRecalc" />
+        app:layout_constraintTop_toBottomOf="@id/rgRecalc" />
 
     <RadioGroup
         android:id="@+id/rgRecalc"
@@ -84,7 +97,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtRecalcPrice">
+        app:layout_constraintTop_toBottomOf="@id/edtRecalcGood">
 
         <RadioButton
             android:id="@+id/rbtRecalcCode"
@@ -104,7 +117,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/plu" />
-
     </RadioGroup>
 
     <Button
@@ -115,9 +127,21 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/upload"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:onClick="sendTo1C"
+        app:layout_constraintEnd_toStartOf="@id/btnRecalcAdd"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edtRecalcEnter" />
+
+    <Button
+        android:id="@+id/btnRecalcAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:onClick="btnAddInv"
+        android:text="@string/add"
+        app:layout_constraintBottom_toBottomOf="@id/btnRecalcUpload"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnRecalcUpload" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvRecalc"

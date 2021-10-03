@@ -25,4 +25,9 @@ class MainRepository constructor(private val retrofitService: RetrofitService) {
      * Загрузить товары по выбранным группам
      */
     fun getByGroup(filterString: String) = retrofitService.getByGroup(filterString)
+
+    /**
+     * Отправить ответ по инвентаризации
+     */
+    fun post(payloadJSON: String) = retrofitService.createJson(payloadJSON)
 }

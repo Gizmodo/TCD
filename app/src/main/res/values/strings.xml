@@ -25,6 +25,7 @@
     <string name="good">Товар</string>
     <string name="price">Цена</string>
     <string name="entercode">Введите код:</string>
-    <string name="upload">Выгрузить документ</string>
+    <string name="upload">Отправить в 1С</string>
     <string name="count">Кол-во</string>
+    <string name="add">Добавить</string>
 </resources>

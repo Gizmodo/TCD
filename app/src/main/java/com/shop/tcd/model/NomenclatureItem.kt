@@ -4,14 +4,16 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "nomenclature")
 data class NomenclatureItem(
-    @ColumnInfo(name = "barcode", index = true) var barcode: String, // 4601248016370
-    @ColumnInfo(name = "code") var code: String, // 56014
-    @ColumnInfo(name = "name") var name: String, // Нектар Angry Birds 0,2л Смесь ягод и фруктов /24
-    @ColumnInfo(name = "plu") var plu: String, // 0
-    @ColumnInfo(name = "price") var price: String, // 27.5
+    @SerializedName("barcode") @ColumnInfo(name = "barcode",
+        index = true) var barcode: String,
+    @SerializedName("code") @ColumnInfo(name = "code") var code: String,
+    @SerializedName("name") @ColumnInfo(name = "name") var name: String,
+    @SerializedName("plu") @ColumnInfo(name = "plu") var plu: String,
+    @ColumnInfo(name = "price") var price: String,
 ) {
     @PrimaryKey(autoGenerate = true)
     var uid: Int? = null
