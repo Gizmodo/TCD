@@ -15,7 +15,7 @@ import com.shop.tcd.room.dao.NomenclatureDao
     Group::class,
     NomenclatureItem::class,
     InvItem::class
-], version = 2, exportSchema = false)
+], version = 3, exportSchema = false)
 abstract class TCDRoomDatabase : RoomDatabase() {
     abstract fun wordDao(): GroupDao
     abstract fun nomDao(): NomenclatureDao

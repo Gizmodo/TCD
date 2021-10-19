@@ -1,6 +1,7 @@
 package com.shop.tcd
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -12,7 +13,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.annotation.CheckResult
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asFlow
@@ -112,7 +115,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         rv!!.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
         rv!!.adapter = adapter
         itemTouchHelper.attachToRecyclerView(rv)
-        getInvItems();
+        getInvItems()
 
         binding.rgRecalc.setOnCheckedChangeListener(object : RadioGroup.OnCheckedChangeListener {
             override fun onCheckedChanged(p0: RadioGroup?, p1: Int) {
@@ -125,25 +128,186 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         attachBarCodeFlowListener()
     }
 
-    fun btnAddInv(view: View) {
+    fun btnAddInvOld(view: View) {
         val count = binding.edtCount.text.trim()
         if (TextUtils.isEmpty(count)) {
             binding.edtCount.error = "Пусто!"
             return
         } else {
             with(binding) {
-                val inv = InvItem("", "", "", "", 0)
+                val inv = InvItem("", "", "", "", "")
                 with(inv) {
                     barcode = edtRecalcBarcode.text.toString()
                     code = edtRecalcCode.text.toString()
                     name = edtRecalcGood.text.toString()
                     plu = edtRecalcPLU.text.toString()
-                    quantity = count.toString().toInt()
+                    quantity = count.toString()
                 }
                 CoroutineScope(Dispatchers.IO).launch {
                     Common.insertInv(inv, applicationContext)
                     adapter?.notifyDataSetChanged()
                 }
+            }
+        }
+
+    }
+
+    private fun isEAN13(barcode: String): Boolean {
+        var ch = 0
+        var nch = 0
+        val barcode12 = barcode.take(12)
+
+        barcode12.forEachIndexed { index, c ->
+            when {
+                index % 2 == 0 -> ch += Character.digit(c, 10)
+                else -> nch += Character.digit(c, 10)
+            }
+        }
+        val checkSumDigit = ((10 - (ch + 3 * nch) % 10) % 10)
+
+        return (((barcode.length == 13) && (checkSumDigit.toString() == barcode.last().toString())))
+    }
+
+    fun btnAddInv(view: View) {
+        when (binding.rgRecalc.checkedRadioButtonId) {
+            binding.rbtRecalcCode.id -> checkCode()
+            binding.rbtRecalcBarcode.id -> checkBarcode(binding.edtRecalcEnter.text.toString())
+            binding.rbtRecalcPLU.id -> checkPLU()
+        }
+    }
+
+    private fun checkBarcode(str: String) {
+        val prefixWeight = "22"
+        val prefixWeightPLU = "23"
+        val prefixSingle = "24"
+        var СтруктураРеквизитовНоменклатуры = ""
+        var currentProduct = ""
+        var currentCode = ""
+        var currentPLU = ""
+        var currentBarcode = ""
+        var currentPrice = ""
+
+
+        var barcode = str.padStart(13, '0').takeLast(13)
+        println(barcode)
+        println("------------------------")
+        if (barcode.first().toString() == "2") { //Весовой товар с кодом
+            var weight = ""
+            val prefix = barcode.take(2)
+
+            when (prefix) {
+                prefixWeight -> {
+                    if (isEAN13(barcode)) {
+                        val productCode = barcode.takeLast(11).take(5)
+                        val productWeight = barcode.takeLast(6).take(5)
+                        println("Код товара: $productCode Вес товара: $productWeight")
+                        //TODO 	СтруктураРеквизитовНоменклатуры = НайтиНоменклатуруПоКоду(КодТовара);
+                        val found = true
+                        if (found && productWeight.isNotEmpty()) {
+
+                            val kg = productWeight.take(2).toInt()
+                            val gr = productWeight.takeLast(3).toInt()
+                            val weight = "$kg,$gr"
+                            println("Вес $weight")
+// 01,408 -> 1,408
+                        } else if (productWeight.isNotEmpty()) {
+
+                        }
+                    }
+                }
+                prefixWeightPLU -> {
+                    if (isEAN13(barcode)) {
+                        val productPLU = barcode.takeLast(11).take(5)
+                        val productWeight = barcode.takeLast(6).take(5)
+                        if (productPLU.toIntOrNull() == null) {
+                            Toast
+                                .makeText(applicationContext,
+                                    "Некорректный PLU! $productPLU",
+                                    Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            val kg = productWeight.take(2).toInt()
+                            val gr = productWeight.takeLast(3).toInt()
+                            val weight = "$kg,$gr"
+                            println("Вес $weight")
+                            binding.edtCount.setText(weight)
+                        }
+                    }
+                }
+                prefixSingle -> {
+                    if (isEAN13(barcode)) {
+                        val productCode = barcode.substring(2, 9)
+                        if (productCode.toIntOrNull() == null) {
+                            Toast
+                                .makeText(applicationContext,
+                                    "Некорректный код! $productCode",
+                                    Toast.LENGTH_SHORT)
+                                .show()
+                        } else {
+                            binding.edtCount.setText(productCode)
+                        }
+                    }
+                }
+
+            }
+        } else {
+            //Весовой товар с ПЛУ
+            println("Весовой товар с ПЛУ")
+        }
+    }
+
+    private fun checkPLU() {
+        val countString = binding.edtCount.text.trim()
+        if (TextUtils.isEmpty(countString)) {
+            Toast
+                .makeText(applicationContext, "Пустое количество", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+        val countInt = countString.toString().toIntOrNull()
+        if (countInt == null) {
+            Toast
+                .makeText(applicationContext, "Количество не являеся числом", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+        val plu = countString.toString()
+        with(binding) {
+            if (edtRecalcBarcode.text.isEmpty() &&
+                edtRecalcCode.text.isEmpty() &&
+                edtRecalcPLU.text.isEmpty()
+            ) {
+                alert("Указанный PLU-код не найден, продолжить ввод?", plu)
+            } else {
+                insert(plu)
+            }
+        }
+    }
+
+    private fun checkCode() {
+        val countString = binding.edtCount.text.trim()
+        if (TextUtils.isEmpty(countString)) {
+            Toast
+                .makeText(applicationContext, "Пустое количество", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+        val countInt = countString.toString().toIntOrNull()
+        if (countInt == null) {
+            Toast
+                .makeText(applicationContext, "Количество не являеся числом", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
+        val code = countString.toString()
+        with(binding) {
+            if (edtRecalcBarcode.text.isEmpty() &&
+                edtRecalcCode.text.isEmpty() &&
+                edtRecalcPLU.text.isEmpty()
+            ) {
+                alert("Указанный код не найден, продолжить ввод?", code)
+            } else {
+                insert(code)
             }
         }
 
@@ -164,7 +328,12 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                     hideKeyboard()
                 }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                override fun onTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    before: Int,
+                    count: Int,
+                ) {
                     trySend(s)
                 }
             }
@@ -183,7 +352,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 
-    fun post(list: ArrayList<InvItem>) {
+    private fun post(list: ArrayList<InvItem>) {
         Log.d(tag, list.toString())
 
     }
@@ -191,11 +360,11 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
     fun sendTo1C(view: View) {
         list = arrayListOf()
         val invDao: InvDao = db!!.invDao()
-        invDao.selectAll().observe(this, Observer { items ->
+        invDao.selectAll().observe(this) { items ->
             list = items as ArrayList<InvItem>
 //            Log.d(tag, list.toString())
             post(list)
-        })
+        }
 /*
         val payload = Gson().toJson("{}")
         val repository = MainRepository(retrofitService)
@@ -239,6 +408,30 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             .launchIn(lifecycleScope)
     }
 
+    private fun insert(count: String) {
+        val inv = InvItem("", "", "", "", "")
+        with(binding) {
+            with(inv) {
+                barcode = edtRecalcBarcode.text.toString()
+                code = edtRecalcCode.text.toString()
+                name = edtRecalcGood.text.toString()
+                plu = edtRecalcPLU.text.toString()
+                quantity = count
+            }
+            CoroutineScope(Dispatchers.IO).launch {
+                Common.insertInv(inv, applicationContext)
+                adapter?.notifyDataSetChanged()
+                withContext(Dispatchers.Main){
+                    Toast
+                        .makeText(applicationContext, "Товар добавлен", Toast.LENGTH_SHORT)
+                        .show()
+                    clearFields()
+                }
+
+            }
+        }
+    }
+
     private fun searchProductFlow(search: String): Flow<NomenclatureItem?> {
         val nomenclatureDao: NomenclatureDao
         val databaseTCD: TCDRoomDatabase = TCDRoomDatabase.getDatabase(applicationContext)
@@ -250,6 +443,34 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             binding.rbtRecalcPLU.id -> res = nomenclatureDao.getByPLU(search).asFlow()
         }
         return res
+    }
+
+    private fun alert(message: String, count: String) {
+        val builder = AlertDialog.Builder(this)
+        with(builder) {
+            setTitle("Внимание")
+            setMessage(message)
+            setPositiveButton("Да") { dialog: DialogInterface, which: Int ->
+
+                Toast.makeText(applicationContext,
+                    "positiveButtonClick", Toast.LENGTH_SHORT).show()
+                when (binding.rgRecalc.checkedRadioButtonId) {
+                    binding.rbtRecalcCode.id -> insert(count)
+
+                    binding.rbtRecalcBarcode.id -> {
+
+                    }
+                    binding.rbtRecalcPLU.id -> insert(count)
+                }
+            }
+            setNegativeButton("Нет"
+            ) { dialog: DialogInterface, which: Int ->
+                Toast.makeText(applicationContext,
+                    "negativeButtonClick", Toast.LENGTH_SHORT).show()
+                clearFields()
+            }
+            show()
+        }
     }
 
     fun searchProduct(search: String) {
@@ -289,6 +510,66 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             edtRecalcBarcode.setText(item.barcode)
             edtRecalcGood.setText(item.name)
             edtRecalcPrice.setText(item.price)
+            if (rgRecalc.checkedRadioButtonId == rbtRecalcBarcode.id) {
+                var barcode = edtRecalcBarcode.text.toString().padStart(13, '0').takeLast(13)
+                if (barcode.first().toString() == "2") {
+                    val prefixWeight = "22"
+                    val prefixWeightPLU = "23"
+                    val prefixSingle = "24"
+                    var weight = ""
+
+                    val prefix = barcode.take(2)
+                    when (prefix) {
+                        prefixSingle -> {
+                            if (isEAN13(barcode)) {
+                                val productCode = barcode.substring(2, 9)
+                                if (productCode.toIntOrNull() == null) {
+                                    Toast
+                                        .makeText(applicationContext,
+                                            "Некорректный код! $productCode",
+                                            Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    edtCount.setText(productCode)
+                                }
+                            }
+                        }
+                        prefixWeight -> {
+                            if (isEAN13(barcode)) {
+                                val productCode = barcode.takeLast(11).take(5)
+                                val productWeight = barcode.takeLast(6).take(5)
+                                println("Код товара: $productCode Вес товара: $productWeight")
+                                val kg = productWeight.take(2).toInt()
+                                val gr = productWeight.takeLast(3).toInt()
+                                val weight = "$kg,$gr"
+                                println("Вес $weight")
+                                edtCount.setText(weight)
+                            } else {
+                                edtCount.setText("")
+                            }
+                        }
+                        prefixWeightPLU -> {
+                            if (isEAN13(barcode)) {
+                                val productPLU = barcode.takeLast(11).take(5)
+                                val productWeight = barcode.takeLast(6).take(5)
+                                if (productPLU.toIntOrNull() == null) {
+                                    Toast
+                                        .makeText(applicationContext,
+                                            "Некорректный PLU! $productPLU",
+                                            Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    val kg = productWeight.take(2).toInt()
+                                    val gr = productWeight.takeLast(3).toInt()
+                                    val weight = "$kg,$gr"
+                                    println("Вес $weight")
+                                    edtCount.setText(weight)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     } else {
         clearFields()
@@ -301,6 +582,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             edtRecalcBarcode.setText("")
             edtRecalcGood.setText("")
             edtRecalcPrice.setText("")
+            edtCount.setText("")
         }
     }
 }

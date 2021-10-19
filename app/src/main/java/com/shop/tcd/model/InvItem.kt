@@ -10,9 +10,9 @@ data class InvItem(
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "plu") var plu: String,
     @ColumnInfo(name = "barcode") var barcode: String,
-    @ColumnInfo(name = "quantity") var quantity: Int
+    @ColumnInfo(name = "quantity") var quantity: String
 ){
     @PrimaryKey(autoGenerate = true)
     var uid:Int? = null
-    constructor(): this("","","","",0)
+    constructor(): this("","","","","")
 }
