@@ -119,23 +119,37 @@
             android:text="@string/plu" />
     </RadioGroup>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnRecalcDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:onClick="btnDelete"
+        android:src="@drawable/ic_delete_black_24dp"
+        app:backgroundTint="@android:color/holo_red_dark"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtRecalcEnter"
+        app:tint="@android:color/white" />
+
     <Button
         android:id="@+id/btnRecalcUpload"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/upload"
         android:onClick="sendTo1C"
-        app:layout_constraintEnd_toStartOf="@id/btnRecalcAdd"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edtRecalcEnter" />
+        android:text="@string/upload"
+        app:layout_constraintBottom_toBottomOf="@id/btnRecalcDelete"
+        app:layout_constraintEnd_toStartOf="@+id/btnRecalcAdd"
+        app:layout_constraintStart_toEndOf="@id/btnRecalcDelete"
+        app:layout_constraintTop_toTopOf="@id/btnRecalcDelete" />
 
     <Button
         android:id="@+id/btnRecalcAdd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:onClick="btnAddInv"
         android:text="@string/add"
@@ -154,7 +168,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnRecalcUpload"
+        app:layout_constraintTop_toBottomOf="@id/btnRecalcDelete"
         tools:ignore="SpeakableTextPresentCheck" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

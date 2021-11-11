@@ -96,7 +96,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
 
         binding = ActivityRecalcBinding.inflate(layoutInflater)
-        bindingMaterial = ActivityRecalcMaterialBinding.inflate(layoutInflater)
+      //  bindingMaterial = ActivityRecalcMaterialBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         db = TCDRoomDatabase.getDatabase(this)
@@ -166,6 +166,10 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         val checkSumDigit = ((10 - (ch + 3 * nch) % 10) % 10)
 
         return (((barcode.length == 13) && (checkSumDigit.toString() == barcode.last().toString())))
+    }
+
+    fun btnDelete(view: View) {
+        Common.deleteAllInv(applicationContext)
     }
 
     fun btnAddInv(view: View) {
@@ -421,7 +425,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             CoroutineScope(Dispatchers.IO).launch {
                 Common.insertInv(inv, applicationContext)
                 adapter?.notifyDataSetChanged()
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     Toast
                         .makeText(applicationContext, "Товар добавлен", Toast.LENGTH_SHORT)
                         .show()
@@ -503,6 +507,31 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    private fun isBarcodeSelected(): Boolean {
+        with(binding) {
+            return rgRecalc.checkedRadioButtonId == rbtRecalcBarcode.id
+        }
+    }
+
+    private fun isCodeSelected(): Boolean {
+        with(binding) {
+            return rgRecalc.checkedRadioButtonId == rbtRecalcCode.id
+        }
+    }
+
+    private fun isPLUSelected(): Boolean {
+        with(binding) {
+            return rgRecalc.checkedRadioButtonId == rbtRecalcPLU.id
+        }
+    }
+
+    private fun getWeight(barcode: String): String {
+        val productWeight = barcode.takeLast(6).take(5)
+        val kg = productWeight.take(2).toInt()
+        val gr = productWeight.takeLast(3).toInt()
+        return "$kg.$gr".toFloat().toString().replace('.', ',')
+    }
+
     private fun populate(item: NomenclatureItem?) = if (item != null) {
         with(binding) {
             edtRecalcCode.setText(item.code)
@@ -510,14 +539,12 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             edtRecalcBarcode.setText(item.barcode)
             edtRecalcGood.setText(item.name)
             edtRecalcPrice.setText(item.price)
-            if (rgRecalc.checkedRadioButtonId == rbtRecalcBarcode.id) {
+            if (isBarcodeSelected()) {
                 var barcode = edtRecalcBarcode.text.toString().padStart(13, '0').takeLast(13)
                 if (barcode.first().toString() == "2") {
                     val prefixWeight = "22"
                     val prefixWeightPLU = "23"
                     val prefixSingle = "24"
-                    var weight = ""
-
                     val prefix = barcode.take(2)
                     when (prefix) {
                         prefixSingle -> {
@@ -537,21 +564,16 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                         prefixWeight -> {
                             if (isEAN13(barcode)) {
                                 val productCode = barcode.takeLast(11).take(5)
-                                val productWeight = barcode.takeLast(6).take(5)
-                                println("Код товара: $productCode Вес товара: $productWeight")
-                                val kg = productWeight.take(2).toInt()
-                                val gr = productWeight.takeLast(3).toInt()
-                                val weight = "$kg,$gr"
-                                println("Вес $weight")
+                                val weight = getWeight(barcode)
+                                println("Код товара: $productCode Вес товара: $weight")
                                 edtCount.setText(weight)
                             } else {
-                                edtCount.setText("")
+                                edtCount.setText("0")
                             }
                         }
                         prefixWeightPLU -> {
                             if (isEAN13(barcode)) {
                                 val productPLU = barcode.takeLast(11).take(5)
-                                val productWeight = barcode.takeLast(6).take(5)
                                 if (productPLU.toIntOrNull() == null) {
                                     Toast
                                         .makeText(applicationContext,
@@ -559,10 +581,8 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                                             Toast.LENGTH_SHORT)
                                         .show()
                                 } else {
-                                    val kg = productWeight.take(2).toInt()
-                                    val gr = productWeight.takeLast(3).toInt()
-                                    val weight = "$kg,$gr"
-                                    println("Вес $weight")
+                                    val weight = getWeight(barcode)
+                                    println("PLU товара: $productPLU Вес товара: $weight")
                                     edtCount.setText(weight)
                                 }
                             }

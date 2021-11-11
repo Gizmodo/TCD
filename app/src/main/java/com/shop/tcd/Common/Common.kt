@@ -30,4 +30,13 @@ object Common {
             invDao.insert(item)
         }
     }
+
+    fun deleteAllInv(context: Context) {
+        val invDao: InvDao
+        val database: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)
+        invDao = database.invDao()
+        GlobalScope.launch {
+            invDao.deleteAll()
+        }
+    }
 }
