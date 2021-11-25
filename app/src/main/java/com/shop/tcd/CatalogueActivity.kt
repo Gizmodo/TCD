@@ -11,15 +11,15 @@ import android.view.View.OnFocusChangeListener
 import android.view.Window
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.shop.tcd.Common.Common
+import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.ActivityCatalogueBinding
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.NomenclatureItem
-import com.shop.tcd.repo.MainRepository
-import com.shop.tcd.retro.RetrofitService
+import com.shop.tcd.repository.Repository
+import com.shop.tcd.repository.RetrofitService
+import com.shop.tcd.utils.Common
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -49,7 +49,7 @@ class CatalogueActivity : AppCompatActivity() {
      */
     fun btnLoadFull(view: View) {
         Log.d(tag, "Загрузка остатков")
-        val repository = MainRepository(retrofitService)
+        val repository = Repository(retrofitService)
         val response = repository.getAllItems()
 
         response.enqueue(object : Callback<Nomenclature> {
@@ -64,11 +64,11 @@ class CatalogueActivity : AppCompatActivity() {
                             response.body()?.nomenclature as ArrayList<NomenclatureItem>
                         Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
                         Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
-                        Toast.makeText(applicationContext,
-                            "onResponse nomenclatureList.size=${nomenclatureList.size}",
-                            Toast.LENGTH_SHORT).show()
-                        Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT)
-                            .show()
+                        FancyToast.makeText(applicationContext,
+                            "Загружено объектов ${nomenclatureList.size}",
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.SUCCESS,
+                            false).show()
                         GlobalScope.launch {
                             Common.saveNomenclatureList(nomenclatureList, applicationContext)
                         }
@@ -83,7 +83,11 @@ class CatalogueActivity : AppCompatActivity() {
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
                 Log.e(tag, errorString)
-                Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+                FancyToast.makeText(applicationContext,
+                    errorString,
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.ERROR,
+                    false).show()
             }
         })
     }
@@ -93,7 +97,7 @@ class CatalogueActivity : AppCompatActivity() {
      */
     fun btnLoadRemainders(view: View) {
         Log.d(tag, "Загрузка остатков")
-        val repository = MainRepository(retrofitService)
+        val repository = Repository(retrofitService)
         val response = repository.getRemainders()
 
         response.enqueue(object : Callback<Nomenclature> {
@@ -108,11 +112,11 @@ class CatalogueActivity : AppCompatActivity() {
                             response.body()?.nomenclature as ArrayList<NomenclatureItem>
                         Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
                         Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
-                        Toast.makeText(applicationContext,
-                            "onResponse nomenclatureList.size=${nomenclatureList.size}",
-                            Toast.LENGTH_SHORT).show()
-                        Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT)
-                            .show()
+                        FancyToast.makeText(applicationContext,
+                            "Загружено объектов ${nomenclatureList.size}",
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.SUCCESS,
+                            false).show()
                         GlobalScope.launch {
                             Common.saveNomenclatureList(nomenclatureList, applicationContext)
                         }
@@ -128,7 +132,11 @@ class CatalogueActivity : AppCompatActivity() {
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
                 Log.e(tag, errorString)
-                Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+                FancyToast.makeText(applicationContext,
+                    errorString,
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.ERROR,
+                    false).show()
             }
         })
     }
@@ -175,15 +183,19 @@ class CatalogueActivity : AppCompatActivity() {
 
         btnOk.setOnClickListener {
             if (dateBegin.isNotEmpty() && dateEnd.isNotEmpty()) {
-                Toast.makeText(this@CatalogueActivity, "$dateBegin и $dateEnd", Toast.LENGTH_SHORT)
-                    .show()
+                FancyToast.makeText(this@CatalogueActivity,
+                    "$dateBegin и $dateEnd",
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.INFO,
+                    false).show()
                 getByPeriod()
             } else {
                 clearText()
-                Toast.makeText(this@CatalogueActivity,
+                FancyToast.makeText(this@CatalogueActivity,
                     "Диапазон указан не полностью",
-                    Toast.LENGTH_LONG)
-                    .show()
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.WARNING,
+                    false).show()
             }
             dateDialog.dismiss()
         }
@@ -232,7 +244,7 @@ class CatalogueActivity : AppCompatActivity() {
 
     private fun getByPeriod() {
         Log.d(tag, "Загрузка за период")
-        val repository = MainRepository(retrofitService)
+        val repository = Repository(retrofitService)
         val filterString = "$dateBegin 0:00:00,$dateEnd 23:59:59"
         val response = repository.getPeriod(filterString)
 
@@ -248,11 +260,11 @@ class CatalogueActivity : AppCompatActivity() {
                             response.body()?.nomenclature as ArrayList<NomenclatureItem>
                         Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
                         Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
-                        Toast.makeText(applicationContext,
-                            "onResponse nomenclatureList.size=${nomenclatureList.size}",
-                            Toast.LENGTH_SHORT).show()
-                        Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT)
-                            .show()
+                        FancyToast.makeText(applicationContext,
+                            "Загружено объектов ${nomenclatureList.size}",
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.SUCCESS,
+                            false).show()
                         GlobalScope.launch {
                             Common.saveNomenclatureList(nomenclatureList, applicationContext)
                         }
@@ -267,7 +279,11 @@ class CatalogueActivity : AppCompatActivity() {
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
                 Log.e(tag, errorString)
-                Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+                FancyToast.makeText(applicationContext,
+                    errorString,
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.ERROR,
+                    false).show()
             }
         })
     }

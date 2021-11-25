@@ -1,9 +1,11 @@
-package com.shop.tcd.repo
+package com.shop.tcd.repository
 
-import com.shop.tcd.retro.RetrofitService
+import com.shop.tcd.model.post.Payload
 
-class MainRepository constructor(private val retrofitService: RetrofitService) {
-    //Получить список групп товаров
+class Repository constructor(private val retrofitService: RetrofitService) {
+    /**
+     * Загрузить список групп товаров
+     */
     fun getAllGroups() = retrofitService.getAllGroups()
 
     /**
@@ -29,5 +31,11 @@ class MainRepository constructor(private val retrofitService: RetrofitService) {
     /**
      * Отправить ответ по инвентаризации
      */
-    fun post(payloadJSON: String) = retrofitService.createJson(payloadJSON)
+    fun postInventory(payload: Payload) = retrofitService.postInventory("", payload)
+
+    /**
+     * Загрузить настройки
+     */
+    fun getSettings() = retrofitService.getSettings()
+
 }

@@ -7,12 +7,13 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "inventory")
 data class InvItem(
     @ColumnInfo(name = "code") var code: String,
-    @ColumnInfo(name = "name") var name: String,
+    @ColumnInfo(name = "name") @Transient var name: String,
     @ColumnInfo(name = "plu") var plu: String,
     @ColumnInfo(name = "barcode") var barcode: String,
-    @ColumnInfo(name = "quantity") var quantity: String
-){
+    @ColumnInfo(name = "quantity") var quantity: String,
+) {
     @PrimaryKey(autoGenerate = true)
-    var uid:Int? = null
-    constructor(): this("","","","","")
+    var uid: Int? = null
+
+    constructor() : this("", "", "", "", "")
 }

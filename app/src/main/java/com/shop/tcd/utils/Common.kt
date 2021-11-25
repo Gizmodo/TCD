@@ -1,8 +1,10 @@
-package com.shop.tcd.Common
+package com.shop.tcd.utils
 
 import android.content.Context
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
+import com.shop.tcd.model.settings.GroupUser
+import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
@@ -11,6 +13,18 @@ import kotlinx.coroutines.launch
 
 object Common {
     private val BASE_URL = "http://192.168.88.58/TSD/hs/TSD/"
+    var shopsList: List<Shop>? = null
+
+    //Хранение выбранного магазина
+    lateinit var selectedShop: Shop
+
+    //Хранение выбранного пользователя
+    lateinit var selectedUser: GroupUser
+    var selectedUserPosition: Int = -1
+
+    fun isInit(): Boolean {
+        return this::selectedShop.isInitialized
+    }
 
     suspend fun saveNomenclatureList(list: List<NomenclatureItem>, context: Context) {
         val nomenclatureDao: NomenclatureDao

@@ -1,20 +1,21 @@
 package com.shop.tcd
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.shop.tcd.Common.Common.saveNomenclatureList
+import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.ActivityCatalogueGroupBinding
 import com.shop.tcd.model.Group
 import com.shop.tcd.model.Groups
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.NomenclatureItem
-import com.shop.tcd.repo.MainRepository
-import com.shop.tcd.retro.RetrofitService
+import com.shop.tcd.repository.Repository
+import com.shop.tcd.repository.RetrofitService
+import com.shop.tcd.utils.Common.saveNomenclatureList
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -44,7 +45,7 @@ class CatalogueGroupActivity : AppCompatActivity() {
             .filter { it.checked }.joinToString { it.code }
         Log.d(tag, filterString)
 
-        val repository = MainRepository(retrofitService)
+        val repository = Repository(retrofitService)
         val response = repository.getByGroup(filterString)
 
         response.enqueue(object : Callback<Nomenclature> {
@@ -67,11 +68,11 @@ class CatalogueGroupActivity : AppCompatActivity() {
                             response.body()?.nomenclature as java.util.ArrayList<NomenclatureItem>
                         Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
                         Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
-                        Toast.makeText(applicationContext,
-                            "onResponse nomenclatureList.size=${nomenclatureList.size}",
-                            Toast.LENGTH_SHORT).show()
-                        Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT)
-                            .show()
+                        FancyToast.makeText(applicationContext,
+                            "Загружено объектов ${nomenclatureList.size}",
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.SUCCESS,
+                            false).show()
                         GlobalScope.launch {
                             saveNomenclatureList(nomenclatureList, applicationContext)
                         }
@@ -86,11 +87,15 @@ class CatalogueGroupActivity : AppCompatActivity() {
     }
 
     private fun getGroups() {
-        val repository = MainRepository(retrofitService)
+        val repository = Repository(retrofitService)
         val response = repository.getAllGroups()
         response.enqueue(object : Callback<Groups> {
             override fun onFailure(call: Call<Groups>, t: Throwable) {
-                Toast.makeText(applicationContext, "Запрос не выполнен", Toast.LENGTH_SHORT).show()
+                FancyToast.makeText(applicationContext,
+                    "Запрос не выполнен",
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.ERROR,
+                    false).show()
             }
 
             override fun onResponse(call: Call<Groups>, response: Response<Groups>) {
@@ -98,7 +103,11 @@ class CatalogueGroupActivity : AppCompatActivity() {
                 rv.adapter = GroupAdapter(groupsList)
                 Log.d(tag, "onResponse groupList.size=${groupsList.size}")
                 Log.d(tag, "onResponse: ${response.body()!!.group[2].name}")
-                Toast.makeText(applicationContext, "Запрос выполнен", Toast.LENGTH_SHORT).show()
+                FancyToast.makeText(applicationContext,
+                    "Запрос выполнен",
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.INFO,
+                    false).show()
             }
         })
     }

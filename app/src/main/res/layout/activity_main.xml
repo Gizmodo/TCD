@@ -9,16 +9,15 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/menu"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:hint="@string/shop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <AutoCompleteTextView
+            android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/shop_select"
@@ -86,6 +85,7 @@
         style="@style/Theme.TCD.CustomButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:onClick="btnShowPrintLabels"
         android:text="@string/printlabels"
         app:icon="@drawable/ic_printer"
@@ -93,20 +93,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4"
         tools:ignore="UsingOnClickInXml" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text=""
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
