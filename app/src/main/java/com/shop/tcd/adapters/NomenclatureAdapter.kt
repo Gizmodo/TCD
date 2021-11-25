@@ -8,7 +8,6 @@ import com.shop.tcd.model.NomenclatureItem
 
 class NomenclatureAdapter(private val nomenclatureList: List<NomenclatureItem>) :
     RecyclerView.Adapter<NomenclatureAdapter.NomenclatureViewHolder>() {
-//    val TAG = this::class.simpleName
 
     inner class NomenclatureViewHolder(val binding: RvNomenclatureItemBinding) :
         RecyclerView.ViewHolder(binding.root)
