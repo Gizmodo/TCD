@@ -35,8 +35,9 @@ class InvAdapter(
                   binding.txtInvBarcode.text = barcode
                   binding.txtInvCode.text = code
                   binding.txtInvPlu.text = plu*/
+                binding.txtInvCode.text = code.trim()
                 binding.txtInvName.text = name.trim()
-                binding.txtInvQuantity.text = quantity
+                binding.txtInvQuantity.text = quantity.trim()
             }
 
         }
