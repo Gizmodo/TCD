@@ -2,6 +2,7 @@ package com.shop.tcd
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -34,6 +35,7 @@ import com.shop.tcd.repository.RetrofitService
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
+import com.shop.tcd.test.bundle
 import com.shop.tcd.utils.Common
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
@@ -107,6 +109,12 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
     private val onItemClick = object : InvAdapter.OnItemClickListener {
         override fun onClick(invItem: InvItem) {
             Log.d(tag, "Item clicked with ${invItem.name}")
+            val bundle: Bundle = invItem.bundle(InvItem.serializer())
+            val intent = Intent(this@RecalcActivity, DetailActivity::class.java)
+                .apply {
+                    putExtra("item", bundle)
+                }
+            startActivity(intent, bundle)
         }
     }
 
@@ -493,7 +501,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                 withContext(Dispatchers.Main) {
                     FancyToast.makeText(applicationContext,
                         "Товар добавлен",
-                        FancyToast.LENGTH_LONG,
+                        FancyToast.LENGTH_SHORT,
                         FancyToast.SUCCESS,
                         false).show()
                     clearFields()
@@ -521,7 +529,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         with(builder) {
             setTitle("Внимание")
             setMessage(message)
-            setPositiveButton("Да") { dialog: DialogInterface, which: Int ->
+            setPositiveButton("Да") { _: DialogInterface, _: Int ->
 
                 FancyToast.makeText(applicationContext,
                     "positiveButtonClick",
@@ -535,7 +543,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                 }
             }
             setNegativeButton("Нет"
-            ) { dialog: DialogInterface, which: Int ->
+            ) { _: DialogInterface, _: Int ->
                 FancyToast.makeText(applicationContext,
                     "negativeButtonClick",
                     FancyToast.LENGTH_LONG,

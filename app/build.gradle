@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt' version '1.6.0'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.0'
 }
 
 android {
@@ -47,7 +48,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.5.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'io.github.shashank02051997:FancyToast:2.0.1'
-//    testImplementation 'junit:junit:4.13.2'
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:1.0-M1-1.4.0-rc"
 
     // Networking
     implementation "com.squareup.retrofit2:retrofit:2.9.0"

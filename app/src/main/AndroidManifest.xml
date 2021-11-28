@@ -13,6 +13,10 @@
         android:theme="@style/Theme.TCD"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".DetailActivity"
+            android:exported="false"
+            android:parentActivityName=".RecalcActivity" />
+        <activity
             android:name=".RecalcActivity"
             android:exported="true"
             android:parentActivityName=".MainActivity" />
