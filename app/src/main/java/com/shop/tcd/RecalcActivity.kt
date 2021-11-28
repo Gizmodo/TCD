@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.adapters.InvAdapter
 import com.shop.tcd.databinding.ActivityRecalcBinding
-import com.shop.tcd.databinding.ActivityRecalcMaterialBinding
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
 import com.shop.tcd.model.post.Payload
@@ -49,14 +48,15 @@ import kotlin.coroutines.CoroutineContext
 class RecalcActivity : AppCompatActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext = Dispatchers.Main
 
-    val db1 by lazy { TCDRoomDatabase.getDatabase(this) }
+//    val db1 by lazy { TCDRoomDatabase.getDatabase(this) }
 
     private var adapter: InvAdapter? = null
     private var rv: RecyclerView? = null
     private var db: TCDRoomDatabase? = null
     private lateinit var list: ArrayList<InvItem>
     private lateinit var binding: ActivityRecalcBinding
-    private lateinit var bindingMaterial: ActivityRecalcMaterialBinding
+
+    //    private lateinit var bindingMaterial: ActivityRecalcMaterialBinding
     private var lst = mutableListOf<InvItem>()
     private val retrofitService = RetrofitService.getInstance()
 
@@ -195,7 +195,19 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
 
     @Suppress("UNUSED_PARAMETER")
     fun btnDelete(view: View) {
-        Common.deleteAllInv(applicationContext)
+        val builderAlert = AlertDialog.Builder(this)
+        with(builderAlert) {
+            setTitle("Внимание")
+            setMessage("Очистить все записи документов?")
+            setPositiveButton("Да") { _: DialogInterface, _: Int ->
+                Common.deleteAllInv(applicationContext)
+            }
+            setNegativeButton("Нет"
+            ) { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            show()
+        }
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -440,7 +452,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         with(builderAlert) {
             setTitle("Внимание")
             setMessage("Выгрузить документ в программу?")
-            setPositiveButton("Да") { dialog: DialogInterface, which: Int ->
+            setPositiveButton("Да") { _: DialogInterface, _: Int ->
                 list = arrayListOf()
                 val invDao: InvDao = db!!.invDao()
                 invDao.selectAll().observe(this@RecalcActivity) { items ->
@@ -449,7 +461,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                 }
             }
             setNegativeButton("Нет"
-            ) { dialog: DialogInterface, which: Int ->
+            ) { _: DialogInterface, _: Int ->
                 FancyToast.makeText(applicationContext,
                     "Выгрузка отменена",
                     FancyToast.LENGTH_SHORT,
@@ -473,7 +485,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun attachBarCodeFlowListener() {
-        binding.edtRecalcEnter.setOnFocusChangeListener { t, te -> hideKeyboard() }
+        binding.edtRecalcEnter.setOnFocusChangeListener { _, _ -> hideKeyboard() }
         binding.edtRecalcEnter.setOnClickListener { hideKeyboard() }
         binding.edtRecalcEnter
             .textChanges()
