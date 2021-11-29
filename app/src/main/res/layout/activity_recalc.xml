@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".RecalcActivity">
 
+
     <EditText
         android:id="@+id/edtRecalcCode"
         style="@style/Noneditable"
@@ -130,7 +131,8 @@
         app:fabSize="mini"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edtRecalcEnter"
-        app:tint="@android:color/white" />
+        app:tint="@android:color/white"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
         android:id="@+id/btnRecalcUpload"
@@ -162,14 +164,51 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnRecalcDelete"
+        app:layout_constraintTop_toBottomOf="@id/txtInvHeaderName"
         tools:ignore="SpeakableTextPresentCheck" />
 
 
+    <TextView
+        android:id="@+id/txtInvHeaderCode"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="center|right"
+        android:text="@string/code"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnRecalcDelete"
+        tools:ignore="RtlHardcoded" />
+
+    <TextView
+        android:id="@+id/txtInvHeaderName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/name"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/txtInvHeaderCode"
+        app:layout_constraintEnd_toStartOf="@id/txtInvHeaderQuantity"
+        app:layout_constraintStart_toEndOf="@id/txtInvHeaderCode"
+        app:layout_constraintTop_toTopOf="@id/txtInvHeaderCode" />
+
+    <TextView
+        android:id="@+id/txtInvHeaderQuantity"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:gravity="center|left"
+        android:text="@string/count"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/txtInvHeaderName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txtInvHeaderName"
+        tools:ignore="RtlHardcoded" />
 </androidx.constraintlayout.widget.ConstraintLayout>

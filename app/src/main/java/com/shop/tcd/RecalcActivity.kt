@@ -291,16 +291,11 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             println("Весовой товар с ПЛУ")
         }
         val countString = binding.edtCount.text.trim()
-        val plu = countString.toString()
-        with(binding) {
-            if (edtRecalcBarcode.text.isEmpty() &&
-                edtRecalcCode.text.isEmpty() &&
-                edtRecalcPLU.text.isEmpty()
-            ) {
-                alert("Указанный штрих-код не найден, продолжить ввод?", plu)
-            } else {
-                insert(plu)
-            }
+        val code = countString.toString()
+        if (binding.edtRecalcBarcode.text.isEmpty()) {
+            alert("Указанный штрих-код не найден, продолжить ввод?", code)
+        } else {
+            insert(code)
         }
     }
 
@@ -347,17 +342,11 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             return
         }
         val code = countString.toString()
-        with(binding) {
-            if (edtRecalcBarcode.text.isEmpty() &&
-                edtRecalcCode.text.isEmpty() &&
-                edtRecalcPLU.text.isEmpty()
-            ) {
-                alert("Указанный код не найден, продолжить ввод?", code)
-            } else {
-                insert(code)
-            }
+        if (binding.edtRecalcCode.text.isEmpty()) {
+            alert("Указанный код не найден, продолжить ввод?", code)
+        } else {
+            insert(code)
         }
-
     }
 
     @ExperimentalCoroutinesApi
@@ -507,6 +496,13 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                 plu = edtRecalcPLU.text.toString()
                 quantity = count
             }
+
+            when (binding.rgRecalc.checkedRadioButtonId) {
+                binding.rbtRecalcCode.id -> inv.code = edtRecalcEnter.text.toString()
+                binding.rbtRecalcBarcode.id -> inv.barcode = edtRecalcEnter.text.toString()
+                binding.rbtRecalcPLU.id -> inv.plu = edtRecalcEnter.text.toString()
+            }
+
             CoroutineScope(Dispatchers.IO).launch {
                 Common.insertInv(inv, applicationContext)
                 adapter?.notifyDataSetChanged()
@@ -516,7 +512,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                         FancyToast.LENGTH_SHORT,
                         FancyToast.SUCCESS,
                         false).show()
-                    clearFields()
+                    clearFields(true)
                 }
 
             }
@@ -542,26 +538,12 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             setTitle("Внимание")
             setMessage(message)
             setPositiveButton("Да") { _: DialogInterface, _: Int ->
-
-                FancyToast.makeText(applicationContext,
-                    "positiveButtonClick",
-                    FancyToast.LENGTH_LONG,
-                    FancyToast.INFO,
-                    false).show()
-                when (binding.rgRecalc.checkedRadioButtonId) {
-                    binding.rbtRecalcCode.id -> insert(count)
-                    binding.rbtRecalcBarcode.id -> insert(count)
-                    binding.rbtRecalcPLU.id -> insert(count)
-                }
+                insert(count)
             }
             setNegativeButton("Нет"
             ) { _: DialogInterface, _: Int ->
-                FancyToast.makeText(applicationContext,
-                    "negativeButtonClick",
-                    FancyToast.LENGTH_LONG,
-                    FancyToast.INFO,
-                    false).show()
-                clearFields()
+                clearFields(true)
+
             }
             show()
         }
@@ -685,7 +667,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         clearFields()
     }
 
-    private fun clearFields() {
+    private fun clearFields(doClearCodeField: Boolean = false) {
         with(binding) {
             edtRecalcCode.setText("")
             edtRecalcPLU.setText("")
@@ -693,6 +675,9 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             edtRecalcGood.setText("")
             edtRecalcPrice.setText("")
             edtCount.setText("")
+            if (doClearCodeField) {
+                edtRecalcEnter.setText("")
+            }
         }
     }
 }

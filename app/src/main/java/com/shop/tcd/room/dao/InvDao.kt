@@ -12,7 +12,7 @@ interface InvDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(invItem: InvItem)
 
-    @Query("select * from inventory order by uid")
+    @Query("select * from inventory order by uid desc")
     fun selectAll(): LiveData<List<InvItem>>
 
     @Query("delete from inventory where uid= :uid")
@@ -20,4 +20,7 @@ interface InvDao {
 
     @Query("DELETE FROM inventory")
     suspend fun deleteAll()
+
+    @Query("SELECT code,name,plu,barcode,count(barcode) as cnt, sum(quantity) as quantity FROM inventory group by barcode")
+    fun selectSumGroupByBarcode():LiveData<List<InvItem>>
 }

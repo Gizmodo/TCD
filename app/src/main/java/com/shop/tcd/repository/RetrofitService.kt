@@ -5,6 +5,7 @@ import com.shop.tcd.model.Groups
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.post.Payload
 import com.shop.tcd.model.settings.Settings
+import com.shop.tcd.utils.Common
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -87,7 +88,8 @@ interface RetrofitService {
                     .create()
 
                 val retrofit = Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2/") // тестовый для XML локальный
+//                    .baseUrl("http://10.0.2.2/") // тестовый для XML локальный
+                    .baseUrl(Common.BASE_URL)
 //                  .baseUrl("http://10.10.10.220/") // тестовый для XML локальный
 //                  .baseUrl("http://10.0.2.2/TSD/hs/TSD/") // боевой локальный для JSON
                     .client(client)

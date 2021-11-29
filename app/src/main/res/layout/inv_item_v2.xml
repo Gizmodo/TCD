@@ -10,7 +10,7 @@
         android:id="@+id/txtInvCode"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:gravity="center|right"
+        android:gravity="center|left"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlHardcoded"
@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/txtInvQuantity"
-        android:layout_width="40dp"
+        android:layout_width="50dp"
         android:layout_height="0dp"
         android:gravity="center|right"
         app:layout_constraintBottom_toBottomOf="@id/txtInvName"

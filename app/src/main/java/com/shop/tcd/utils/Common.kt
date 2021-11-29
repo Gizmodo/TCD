@@ -12,7 +12,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 object Common {
-    private val BASE_URL = "http://192.168.88.58/TSD/hs/TSD/"
+    val BASE_URL_ = "http://192.168.88.58/TSD/hs/TSD/"
+    val BASE_URL = "http://10.0.2.2/"
     var shopsList: List<Shop>? = null
 
     //Хранение выбранного магазина
