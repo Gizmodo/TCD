@@ -14,27 +14,27 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
-interface RetrofitService {
+interface RetrofitServiceProd {
 
     /**
      *Загрузить весь список товаров
      *
      **/
-    @GET("TSD/hs/TSD/getitemlist")
+    @GET("/getitemlist")
     fun getAllItems(): Call<Nomenclature>
 
     /**
      *Загрузить группы товаров
      *
      **/
-    @GET("TSD/hs/TSD/getgrouplist")
+    @GET("/getgrouplist")
     fun getAllGroups(): Call<Groups>
 
     /**
      *Загрузить товары по остаткам
      *
      **/
-    @GET("TSD/hs/TSD/getiteminstock")
+    @GET("/getiteminstock")
     fun getRemainders(): Call<Nomenclature>
 
     /**
@@ -45,20 +45,20 @@ interface RetrofitService {
      * 10.07.2021 23:59:58
      * 01.10.2019 0:00:00
      **/
-    @GET("TSD/hs/TSD/getturnoverfortheperiod/")
+    @GET("/getturnoverfortheperiod/")
     fun getPeriod(@Query("filter") filter: String): Call<Nomenclature>
 
     /**
      * Загрузить товары по выбранным группам
      * filter=10000, 20000, ....
      **/
-    @GET("TSD/hs/TSD/getgrouplist/")
+    @GET("/getgrouplist/")
     fun getByGroup(@Query("filter") filter: String): Call<Nomenclature>
 
     /**
      * Отправить ответ по инвентаризации
      **/
-    @POST("TSD/hs/TSD/receiveddocument")
+    @POST("/receiveddocument")
     @Headers("Content-Type:application/json")
     fun postInventory(
         @Query("filter") filter: String = "",
@@ -70,9 +70,6 @@ interface RetrofitService {
      **/
     @GET("SettingsForTSD.json")
     fun getSettings(): Call<Settings>
-
-    @GET("SettingsForTSD.xml")
-    fun getxml(): Call<String>
 
     companion object {
         private var retrofitService: RetrofitService? = null

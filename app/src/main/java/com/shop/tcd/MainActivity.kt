@@ -43,6 +43,15 @@ class MainActivity : AppCompatActivity() {
 //            val address = objects[position].shopURL
             Common.selectedShop = objects[position]
             Common.selectedUserPosition = position
+
+            fun getIP(raw: String): String? {
+                val matchResult: MatchResult? =
+                    Regex("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b").find(raw)
+                return matchResult?.groupValues?.first()
+            }
+
+
+            Common.BASE_URL = objects[position].shopURL
         }
         if (Common.selectedUserPosition != -1) {
             view.setText(adapter.getItem(Common.selectedUserPosition), false)
