@@ -2,6 +2,7 @@ package com.shop.tcd
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -13,27 +14,29 @@ import com.shop.tcd.utils.Common
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
+    private val TAG = "MainActivity"
     private fun isShopSelected(): Boolean {
         return Common.isInit()
     }
 
     private fun showError() {
-        FancyToast.makeText(applicationContext,
+        FancyToast.makeText(
+            applicationContext,
             "Не выбран магазин",
             FancyToast.LENGTH_SHORT,
             FancyToast.ERROR,
-            false).show()
+            false
+        ).show()
     }
 
-    private fun setupAutoComplete(view: AutoCompleteTextView, objects: List<Shop>) {
+    private fun setupAutoComplete(view: AutoCompleteTextView, items: List<Shop>) {
         val names: AbstractList<String?> = object : AbstractList<String?>() {
             override fun get(index: Int): String {
-                return objects[index].shopName
+                return items[index].shopName
             }
 
             override val size: Int
-                get() = objects.size
+                get() = items.size
         }
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, names)
         view.setAdapter(adapter)
@@ -41,17 +44,19 @@ class MainActivity : AppCompatActivity() {
         view.setOnItemClickListener { _, _, position, _ ->
 //            val selected = parent?.adapter?.getItem(position) as String
 //            val address = objects[position].shopURL
-            Common.selectedShop = objects[position]
+            Common.selectedShop = items[position]
             Common.selectedUserPosition = position
-
+            val address = items[position].shopURL
+            val parsedBaseShopURL = "http:" + address.replace("\\", "/") + "/hs/TSD/"
+            Common.BASE_SHOP_URL = parsedBaseShopURL
+            Log.d(TAG, parsedBaseShopURL)
             fun getIP(raw: String): String? {
                 val matchResult: MatchResult? =
                     Regex("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b").find(raw)
                 return matchResult?.groupValues?.first()
             }
 
-
-            Common.BASE_URL = objects[position].shopURL
+//            Common.BASE_URL = items[position].shopURL
         }
         if (Common.selectedUserPosition != -1) {
             view.setText(adapter.getItem(Common.selectedUserPosition), false)
