@@ -7,7 +7,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.ActivityLoginBinding
-import com.shop.tcd.model.settings.Group
 import com.shop.tcd.model.settings.GroupUser
 import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.repository.Repository
@@ -27,7 +26,7 @@ const val EXTRA_MESSAGE = "com.shop.tcd.MESSAGE"
 class LoginActivity : AppCompatActivity() {
     private val retrofitService = RetrofitService.getInstance()
     private lateinit var binding: ActivityLoginBinding
-    private var groups: List<Group>? = null
+//    private var groups: List<Group>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
         val tg = "parse"
         // creating a user list string hash map arraylist
         val localShopList = ArrayList<HashMap<String, String?>>()
-        val localuserList = ArrayList<HashMap<String, String?>>()
+        val localUserList = ArrayList<HashMap<String, String?>>()
         try {
             // creating a user string hashmap
             var localUser = HashMap<String, String?>()
@@ -136,8 +135,12 @@ class LoginActivity : AppCompatActivity() {
                         Log.d(tg, text)
                     }
                     XmlPullParser.END_TAG -> when (tag) {
-                        "Магазин" -> localShopList.add(localShop)
-                        "Пользователь" -> localuserList.add(localUser)
+                        "Магазин" ->{
+                            if(localShop["Адрес"]?.contains("TSD") == true){
+                                localShopList.add(localShop)
+                            }
+                        }
+                        "Пользователь" -> localUserList.add(localUser)
                         /* "name" -> user["name"] = text
                          "designation" -> user["designation"] = text
                          "user" -> userList.add(user)*/
@@ -145,7 +148,6 @@ class LoginActivity : AppCompatActivity() {
                 }
                 event = parser.next()
             }
-
 
         } catch (e: IOException) {
             e.printStackTrace()
@@ -166,7 +168,7 @@ class LoginActivity : AppCompatActivity() {
             Common.shopsArray.add(newShop)
         }
         Common.usersArray.clear()
-        localuserList.forEach {
+        localUserList.forEach {
             val newUser = GroupUser(
                 it["Логин"].toString(),
                 it["Пароль"].toString()
