@@ -8,20 +8,35 @@ import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 object Common {
-    val BASE_URL_ = "http://192.168.88.58/TSD/hs/TSD/"
+    /*val BASE_URL_ = "http://192.168.88.58/TSD/hs/TSD/"
     var BASE_URL_HOME = "http://10.0.2.2/"
+*/
+    /**
+     * Постоянный адрес с расположением файла настроек
+     */
     var BASE_URL = "http://192.168.0.154/"
-    var shopsList: List<Shop>? = null
+
+    /**
+     * Изменяемый адрес, который указывает на выбранный магазин (сервер 1С)
+     */
+    var BASE_SHOP_URL = ""
+
     var shopsArray: ArrayList<Shop> = arrayListOf()
     var usersArray: ArrayList<GroupUser> = arrayListOf()
-    //Хранение выбранного магазина
+
+    /**
+     * Хранение выбранного магазина
+     */
     lateinit var selectedShop: Shop
 
-    //Хранение выбранного пользователя
+    /**
+     * Хранение выбранного пользователя и его позиции
+     */
     lateinit var selectedUser: GroupUser
     var selectedUserPosition: Int = -1
 
@@ -29,6 +44,7 @@ object Common {
         return this::selectedShop.isInitialized
     }
 
+    @DelicateCoroutinesApi
     suspend fun saveNomenclatureList(list: List<NomenclatureItem>, context: Context) {
         val nomenclatureDao: NomenclatureDao
         val databaseTCD: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)
@@ -39,6 +55,7 @@ object Common {
         }
     }
 
+    @DelicateCoroutinesApi
     suspend fun insertInv(item: InvItem, context: Context) {
         val invDao: InvDao
         val databaseTCD: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)
@@ -48,6 +65,7 @@ object Common {
         }
     }
 
+    @DelicateCoroutinesApi
     fun deleteAllInv(context: Context) {
         val invDao: InvDao
         val database: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)

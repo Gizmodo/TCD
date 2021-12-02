@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Common.shopsList?.let { setupAutoComplete(binding.list, it) }
+        Common.shopsArray?.let { setupAutoComplete(binding.list, it) }
 
         /*  // Get the Intent that started this activity and extract the string
           val message = intent.getStringExtra(EXTRA_MESSAGE)

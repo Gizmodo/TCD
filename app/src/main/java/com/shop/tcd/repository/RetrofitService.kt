@@ -4,7 +4,6 @@ import com.google.gson.GsonBuilder
 import com.shop.tcd.model.Groups
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.post.Payload
-import com.shop.tcd.model.settings.Settings
 import com.shop.tcd.utils.Common
 import okhttp3.OkHttpClient
 import retrofit2.Call
@@ -65,9 +64,6 @@ interface RetrofitService {
         @Body document: Payload,
     ): Call<String>
 
-    /*
-    @GET("SettingsForTSD.json")
-    fun getSettings(): Call<Settings>*/
     /**
      * Загрузить файл с настройками магазинов и пользователей
      **/
