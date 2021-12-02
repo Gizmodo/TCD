@@ -9,7 +9,7 @@ import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.ActivityLoginBinding
 import com.shop.tcd.model.settings.Group
 import com.shop.tcd.model.settings.GroupUser
-import com.shop.tcd.model.settings.Settings
+import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.repository.Repository
 import com.shop.tcd.repository.RetrofitService
 import com.shop.tcd.utils.Common
@@ -20,6 +20,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.io.StringReader
 
 const val EXTRA_MESSAGE = "com.shop.tcd.MESSAGE"
 
@@ -33,7 +34,6 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadSettings()
-        loadXml()
     }
 
     /** Кнопка Войти */
@@ -44,23 +44,30 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra(EXTRA_MESSAGE, "empty")
         }
-        groups?.forEach { grp ->
+        /*groups?.forEach { grp ->
             grp.groupUsers.forEach(fun(it: GroupUser) {
                 val isFound = check(it, userName, userPassword)
                 isSuccess = isSuccess || isFound
             })
-        }
+        }*/
+
+        Common.usersArray.forEach(fun(it: GroupUser) {
+            val isFound = check(it, userName, userPassword)
+            isSuccess = isSuccess || isFound
+        })
 
         when {
             isSuccess -> {
                 startActivity(intent)
             }
             else -> {
-                FancyToast.makeText(applicationContext,
+                FancyToast.makeText(
+                    applicationContext,
                     "Неверно указаны данные для входа",
                     FancyToast.LENGTH_SHORT,
                     FancyToast.ERROR,
-                    false).show()
+                    false
+                ).show()
             }
         }
     }
@@ -73,23 +80,17 @@ class LoginActivity : AppCompatActivity() {
         return result
     }
 
-    private fun parse1C() {
+    private fun parse1C(xmlResponseString: String) {
         val tg = "parse"
-
         // creating a user list string hash map arraylist
-        val shopList = ArrayList<HashMap<String, String?>>()
-        val userList = ArrayList<HashMap<String, String?>>()
-        val groupList = ArrayList<HashMap<String, ArrayList<HashMap<String, String?>>>>()
+        val localShopList = ArrayList<HashMap<String, String?>>()
+        val localuserList = ArrayList<HashMap<String, String?>>()
         try {
-
-
             // creating a user string hashmap
-            var user = HashMap<String, String?>()
-            var shop = HashMap<String, String?>()
-            var group = HashMap<String, ArrayList<HashMap<String, String?>>>()
-            // input stream the userdetails.xml file
-            val istream = assets.open("1c.xml")
-
+            var localUser = HashMap<String, String?>()
+            var localShop = HashMap<String, String?>()
+            // load xml from local file
+            val istreamStringWOEncoding = StringReader(xmlResponseString)
             //creating a XmlPull parse Factory instance
             val parserFactory = XmlPullParserFactory.newInstance()
             val parser = parserFactory.newPullParser()
@@ -98,49 +99,45 @@ class LoginActivity : AppCompatActivity() {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
 
             // setting the input to the parser
-            parser.setInput(istream, null)
-
+            parser.setInput(istreamStringWOEncoding)
             // working with the input stream
-            var tag: String? = ""
-            var text: String? = ""
+            var tag: String?
+            var text: String?
             var event = parser.eventType
             while (event != XmlPullParser.END_DOCUMENT) {
                 tag = parser.name
                 when (event) {
                     XmlPullParser.START_TAG -> {
                         if (tag == "Магазин") {
-                            shop = HashMap()
-                            var tmp = ""
+                            //DONE
+                            localShop = HashMap()
+                            //  var tmp = ""
                             for (i in 0 until parser.attributeCount) {
-                                tmp = (tmp + parser.getAttributeName(i).toString() + " = "
-                                        + parser.getAttributeValue(i).toString() + ", ")
-                                Log.d(tg, tmp)
-                                shop[parser.getAttributeName(i)] = parser.getAttributeValue(i)
-                            }
-                        }
-                        if (tag == "Группа") {
-                            group = HashMap()
-                            for (i in 0 until parser.attributeCount) {
-                                group[parser.getAttributeName(i)] = parser.getAttributeValue(i)
+                                /*       tmp = (tmp + parser.getAttributeName(i).toString() + " = "
+                                               + parser.getAttributeValue(i).toString() + ", ")
+                                       Log.d(tg, tmp)*/
+                                localShop[parser.getAttributeName(i)] = parser.getAttributeValue(i)
                             }
                         }
                         if (tag == "Пользователь") {
-                            user = HashMap()
+                            localUser = HashMap()
                             for (i in 0 until parser.attributeCount) {
-                                user[parser.getAttributeName(i)] = parser.getAttributeValue(i)
+                                localUser[parser.getAttributeName(i)] = parser.getAttributeValue(i)
                             }
                         }
-                        Log.d(tg, "START_TAG: name = " + parser.name
-                                + ", depth = " + parser.depth + ", attrCount = "
-                                + parser.attributeCount);
+                        /* Log.d(
+                             tg, "START_TAG: name = " + parser.name
+                                     + ", depth = " + parser.depth + ", attrCount = "
+                                     + parser.attributeCount
+                         );*/
                     }
                     XmlPullParser.TEXT -> {
                         text = parser.text
                         Log.d(tg, text)
                     }
                     XmlPullParser.END_TAG -> when (tag) {
-                        "Магазин" -> shopList.add(shop)
-                        "Пользователь" -> userList.add(user)
+                        "Магазин" -> localShopList.add(localShop)
+                        "Пользователь" -> localuserList.add(localUser)
                         /* "name" -> user["name"] = text
                          "designation" -> user["designation"] = text
                          "user" -> userList.add(user)*/
@@ -155,79 +152,27 @@ class LoginActivity : AppCompatActivity() {
         } catch (e: XmlPullParserException) {
             e.printStackTrace()
         }
-        Log.d(tg, "finish parsing xml")
-    }
 
-    private fun test() {
-        try {
-
-            // creating a user list string hash map arraylist
-            val userList = ArrayList<HashMap<String, String?>>()
-
-            // creating a user string hashmap
-            var user = HashMap<String, String?>()
-
-            // input stream the userdetails.xml file
-            val istream = assets.open("userdetails.xml")
-
-            //creating a XmlPull parse Factory instance
-            val parserFactory = XmlPullParserFactory.newInstance()
-            val parser = parserFactory.newPullParser()
-
-            // setting the namespaces feature to false
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-
-            // setting the input to the parser
-            parser.setInput(istream, null)
-
-            // working with the input stream
-            var tag: String? = ""
-            var text: String? = ""
-            var event = parser.eventType
-            while (event != XmlPullParser.END_DOCUMENT) {
-                tag = parser.name
-                when (event) {
-                    XmlPullParser.START_TAG -> if (tag == "user") user = HashMap()
-                    XmlPullParser.TEXT -> text = parser.text
-                    XmlPullParser.END_TAG -> when (tag) {
-                        "name" -> user["name"] = text
-                        "designation" -> user["designation"] = text
-                        "user" -> userList.add(user)
-                    }
-                }
-                event = parser.next()
-            }
-
-            // List Adapter to broadcast the information to the list_rows.xml file
-            /*  val adapter: ListAdapter = SimpleAdapter(this, userList, R.layout.list_row,
-                  arrayOf("name", "designation"), intArrayOf(R.id.name, R.id.designation)
-              )
-              lv.adapter = adapter*/
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: XmlPullParserException) {
-            e.printStackTrace()
+        Common.shopsArray.clear()
+        localShopList.forEach {
+            val newShop = Shop(
+                it["Наименование"].toString(),
+                it["ПрефиксМагазина"].toString(),
+                it["ПрефиксШтучногоТовара"].toString(),
+                it["ПрефиксВесовогоТовара"].toString(),
+                it["ПрефиксВесовогоТовараПЛУ"].toString(),
+                it["Адрес"].toString()
+            )
+            Common.shopsArray.add(newShop)
         }
-    }
-
-    private fun loadXml() {
-        Log.e("TAG", "loadXml")
-        val repository = Repository(retrofitService)
-        val response = repository.getxml()
-
-        response.enqueue(object : Callback<String> {
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                response.body()?.let {
-                    Log.d("TAG", it)
-//                    test()
-                    parse1C()
-                }
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e("TAG", t.message.toString())
-            }
-        })
+        Common.usersArray.clear()
+        localuserList.forEach {
+            val newUser = GroupUser(
+                it["Логин"].toString(),
+                it["Пароль"].toString()
+            )
+            Common.usersArray.add(newUser)
+        }
     }
 
     /**
@@ -237,31 +182,36 @@ class LoginActivity : AppCompatActivity() {
         val repository = Repository(retrofitService)
         val response = repository.getSettings()
 
-        response.enqueue(object : Callback<Settings> {
-            override fun onResponse(call: Call<Settings>, response: Response<Settings>) {
+        response.enqueue(object : Callback<String> {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
-                    FancyToast.makeText(applicationContext,
-                        "Успешный ответ",
-                        FancyToast.LENGTH_LONG,
-                        FancyToast.SUCCESS,
-                        false).show()
-                    groups = response.body()?.settings?.groups
-                    Common.shopsList = response.body()?.settings?.shops
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Файл XML получен",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.SUCCESS, false
+                    ).show()
+                    response.body()?.let {
+                        parse1C(it)
+                    }
                 } else {
-                    FancyToast.makeText(applicationContext,
-                        "Ответ не успешный",
-                        FancyToast.LENGTH_LONG,
-                        FancyToast.WARNING,
-                        false).show()
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Файл XML не получен",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.WARNING, false
+                    ).show()
                 }
             }
 
-            override fun onFailure(call: Call<Settings>, t: Throwable) {
-                FancyToast.makeText(applicationContext,
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                FancyToast.makeText(
+                    applicationContext,
                     "Ошибка получения настроек ${t.message.toString()}",
                     FancyToast.LENGTH_LONG,
                     FancyToast.ERROR,
-                    false).show()
+                    false
+                ).show()
             }
         })
     }

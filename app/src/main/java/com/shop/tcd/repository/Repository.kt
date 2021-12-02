@@ -37,6 +37,4 @@ class Repository constructor(private val retrofitService: RetrofitService) {
      * Загрузить настройки
      */
     fun getSettings() = retrofitService.getSettings()
-
-    fun getxml() =retrofitService.getxml()
 }

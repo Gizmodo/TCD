@@ -13,10 +13,11 @@ import kotlinx.coroutines.launch
 
 object Common {
     val BASE_URL_ = "http://192.168.88.58/TSD/hs/TSD/"
-    var BASE_URL = "http://10.0.2.2/"
-    var BASE_URL_WORK = "http://192.168.0.154/"
+    var BASE_URL_HOME = "http://10.0.2.2/"
+    var BASE_URL = "http://192.168.0.154/"
     var shopsList: List<Shop>? = null
-
+    var shopsArray: ArrayList<Shop> = arrayListOf()
+    var usersArray: ArrayList<GroupUser> = arrayListOf()
     //Хранение выбранного магазина
     lateinit var selectedShop: Shop
 

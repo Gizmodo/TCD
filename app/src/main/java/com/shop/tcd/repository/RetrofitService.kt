@@ -65,14 +65,14 @@ interface RetrofitService {
         @Body document: Payload,
     ): Call<String>
 
+    /*
+    @GET("SettingsForTSD.json")
+    fun getSettings(): Call<Settings>*/
     /**
      * Загрузить файл с настройками магазинов и пользователей
      **/
-    @GET("SettingsForTSD.json")
-    fun getSettings(): Call<Settings>
-
     @GET("SettingsForTSD.xml")
-    fun getxml(): Call<String>
+    fun getSettings(): Call<String>
 
     companion object {
         private var retrofitService: RetrofitService? = null
