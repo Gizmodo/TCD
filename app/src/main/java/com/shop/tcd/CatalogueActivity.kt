@@ -3,6 +3,7 @@
 package com.shop.tcd
 
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -39,10 +40,17 @@ class CatalogueActivity : AppCompatActivity() {
     private val retrofit = RetrofitServiceMain.getInstance()
     private val repository = RepositoryMain(retrofit)
 
+    private lateinit var progressDialog: ProgressDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCatalogueBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        progressDialog = ProgressDialog(this).apply {
+            setTitle("Загрузка...")
+            setMessage("Пожалуйста, ожидайте")
+        }
     }
 
     /**
@@ -51,9 +59,11 @@ class CatalogueActivity : AppCompatActivity() {
     fun btnLoadFull(view: View) {
         Timber.d("Загрузка остатков")
         val response = repository.getAllItems()
+        progressDialog.show()
 
         response.enqueue(object : Callback<Nomenclature> {
             override fun onResponse(call: Call<Nomenclature>, response: Response<Nomenclature>) {
+                progressDialog.dismiss()
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {
                         nomenclatureList =
@@ -90,6 +100,7 @@ class CatalogueActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
+                progressDialog.dismiss()
                 Timber.e(errorString)
                 FancyToast.makeText(
                     applicationContext,
@@ -108,9 +119,10 @@ class CatalogueActivity : AppCompatActivity() {
     fun btnLoadRemainders(view: View) {
         Timber.d("Загрузка остатков")
         val response = repository.getRemainders()
-
+        progressDialog.show()
         response.enqueue(object : Callback<Nomenclature> {
             override fun onResponse(call: Call<Nomenclature>, response: Response<Nomenclature>) {
+                progressDialog.dismiss()
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {
                         nomenclatureList =
@@ -148,6 +160,7 @@ class CatalogueActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
+                progressDialog.dismiss()
                 Timber.e(errorString)
                 FancyToast.makeText(
                     applicationContext,
@@ -269,9 +282,10 @@ class CatalogueActivity : AppCompatActivity() {
         Timber.d("Загрузка за период")
         val filterString = "$dateBegin 0:00:00,$dateEnd 23:59:59"
         val response = repository.getPeriod(filterString)
-
+        progressDialog.show()
         response.enqueue(object : Callback<Nomenclature> {
             override fun onResponse(call: Call<Nomenclature>, response: Response<Nomenclature>) {
+                progressDialog.dismiss()
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {
                         nomenclatureList =
@@ -308,6 +322,7 @@ class CatalogueActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
+                progressDialog.dismiss()
                 Timber.e(errorString)
                 FancyToast.makeText(
                     applicationContext,

@@ -1,5 +1,6 @@
 package com.shop.tcd
 
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.adapters.InvAdapter
+import com.shop.tcd.bundlizer.bundle
 import com.shop.tcd.databinding.ActivityRecalcBinding
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
@@ -33,7 +35,6 @@ import com.shop.tcd.repository.main.RetrofitServiceMain
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
-import com.shop.tcd.bundlizer.bundle
 import com.shop.tcd.utils.Common
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
@@ -63,6 +64,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
     private val retrofit = RetrofitServiceMain.getInstance()
     private val repository = RepositoryMain(retrofit)
 
+    private lateinit var progressDialog: ProgressDialog
     val watcher = object : TextWatcher {
         private var searchFor = ""
 
@@ -152,6 +154,11 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
 
         // attachBarCodeListener()
         attachBarCodeFlowListener()
+
+        progressDialog = ProgressDialog(this).apply {
+            setTitle("Загрузка...")
+            setMessage("Пожалуйста, ожидайте")
+        }
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -405,7 +412,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         if (list.count() == 0) {
             return
         }
-
+        progressDialog.show()
         val payload = Payload(
             result = "success",
             message = "",
@@ -420,6 +427,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
 
         response.enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>, t: Throwable) {
+                progressDialog.dismiss()
                 FancyToast.makeText(
                     applicationContext,
                     "Ошибка отправки запроса: ${t.message.toString()}",
@@ -431,6 +439,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
 
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 Timber.i("Response " + response.body())
+                progressDialog.dismiss()
                 if (response.isSuccessful) {
                     Common.deleteAllInv(applicationContext)
                     FancyToast.makeText(
