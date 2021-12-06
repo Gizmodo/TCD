@@ -81,9 +81,9 @@ interface RetrofitServiceMain {
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(logging)
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .readTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
+                .connectTimeout(5, TimeUnit.MINUTES)
+                .readTimeout(5, TimeUnit.MINUTES)
+                .writeTimeout(5, TimeUnit.MINUTES)
                 .build()
 
             val retro = Retrofit.Builder()
