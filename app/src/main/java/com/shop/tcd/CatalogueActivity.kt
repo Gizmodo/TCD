@@ -5,7 +5,6 @@ package com.shop.tcd
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.Window
@@ -17,26 +16,28 @@ import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.ActivityCatalogueBinding
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.NomenclatureItem
-import com.shop.tcd.repository.Repository
-import com.shop.tcd.repository.RetrofitService
+import com.shop.tcd.repository.main.RepositoryMain
+import com.shop.tcd.repository.main.RetrofitServiceMain
 import com.shop.tcd.utils.Common
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class CatalogueActivity : AppCompatActivity() {
-    val tag = this::class.simpleName
-
     private lateinit var binding: ActivityCatalogueBinding
-    private val retrofitService = RetrofitService.getInstance()
     private lateinit var nomenclatureList: ArrayList<NomenclatureItem>
     private lateinit var dateBegin: String
     private lateinit var dateEnd: String
+
+    /** Network **/
+    private val retrofit = RetrofitServiceMain.getInstance()
+    private val repository = RepositoryMain(retrofit)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,46 +49,55 @@ class CatalogueActivity : AppCompatActivity() {
      * Загружает всю номенклатуру. Сразу выполняем запрос к backend.
      */
     fun btnLoadFull(view: View) {
-        Log.d(tag, "Загрузка остатков")
-        val repository = Repository(retrofitService)
+        Timber.d("Загрузка остатков")
         val response = repository.getAllItems()
 
         response.enqueue(object : Callback<Nomenclature> {
             override fun onResponse(call: Call<Nomenclature>, response: Response<Nomenclature>) {
-                Log.d(tag, "Код ответа: ${response.code()}")
-                Log.d(tag,
-                    "Время ответа: ${response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis} ms")
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {
-                        Log.d(tag, "Данные получены")
                         nomenclatureList =
                             response.body()?.nomenclature as ArrayList<NomenclatureItem>
-                        Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
-                        Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
-                        FancyToast.makeText(applicationContext,
+                        FancyToast.makeText(
+                            applicationContext,
                             "Загружено объектов ${nomenclatureList.size}",
                             FancyToast.LENGTH_LONG,
                             FancyToast.SUCCESS,
-                            false).show()
+                            false
+                        ).show()
                         GlobalScope.launch {
                             Common.saveNomenclatureList(nomenclatureList, applicationContext)
                         }
                     } else {
-                        Log.d(tag, "Данные не получены: ${response.body()?.message.toString()}")
+                        FancyToast.makeText(
+                            applicationContext,
+                            "Данные не получены: ${response.body()?.message.toString()}",
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.WARNING,
+                            false
+                        ).show()
                     }
                 } else {
-                    Log.d(tag, "Ошибка сервера")
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Код ответа ${response.code()}",
+                        FancyToast.LENGTH_LONG,
+                        FancyToast.WARNING,
+                        false
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
-                Log.e(tag, errorString)
-                FancyToast.makeText(applicationContext,
+                Timber.e(errorString)
+                FancyToast.makeText(
+                    applicationContext,
                     errorString,
                     FancyToast.LENGTH_LONG,
                     FancyToast.ERROR,
-                    false).show()
+                    false
+                ).show()
             }
         })
     }
@@ -96,47 +106,56 @@ class CatalogueActivity : AppCompatActivity() {
      * Загружает товары по остаткам. Сразу выполняем запрос к backend.
      */
     fun btnLoadRemainders(view: View) {
-        Log.d(tag, "Загрузка остатков")
-        val repository = Repository(retrofitService)
+        Timber.d("Загрузка остатков")
         val response = repository.getRemainders()
 
         response.enqueue(object : Callback<Nomenclature> {
             override fun onResponse(call: Call<Nomenclature>, response: Response<Nomenclature>) {
-                Log.d(tag, "Код ответа: ${response.code()}")
-                Log.d(tag,
-                    "Время ответа: ${response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis} ms")
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {
-                        Log.d(tag, "Данные получены")
                         nomenclatureList =
                             response.body()?.nomenclature as ArrayList<NomenclatureItem>
-                        Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
-                        Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
-                        FancyToast.makeText(applicationContext,
+                        FancyToast.makeText(
+                            applicationContext,
                             "Загружено объектов ${nomenclatureList.size}",
                             FancyToast.LENGTH_LONG,
                             FancyToast.SUCCESS,
-                            false).show()
+                            false
+                        ).show()
                         GlobalScope.launch {
                             Common.saveNomenclatureList(nomenclatureList, applicationContext)
                         }
 
                     } else {
-                        Log.d(tag, "Данные не получены: ${response.body()?.message.toString()}")
+                        FancyToast.makeText(
+                            applicationContext,
+                            "Данные не получены: ${response.body()?.message.toString()}",
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.WARNING,
+                            false
+                        ).show()
                     }
                 } else {
-                    Log.d(tag, "Ошибка сервера")
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Код ответа ${response.code()}",
+                        FancyToast.LENGTH_LONG,
+                        FancyToast.WARNING,
+                        false
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
-                Log.e(tag, errorString)
-                FancyToast.makeText(applicationContext,
+                Timber.e(errorString)
+                FancyToast.makeText(
+                    applicationContext,
                     errorString,
                     FancyToast.LENGTH_LONG,
                     FancyToast.ERROR,
-                    false).show()
+                    false
+                ).show()
             }
         })
     }
@@ -155,10 +174,10 @@ class CatalogueActivity : AppCompatActivity() {
      * Загрузка за период. Запрос на диапазон дат и кнопка Загрузить.
      */
     fun btnLoadByPeriod(view: View) {
-        showCustomDialog()
+        showPeriodDialog()
     }
 
-    private fun showCustomDialog() {
+    private fun showPeriodDialog() {
         val dateDialog = Dialog(this)
         dateDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE)
         dateDialog.setCancelable(true)
@@ -183,24 +202,28 @@ class CatalogueActivity : AppCompatActivity() {
 
         btnOk.setOnClickListener {
             if (dateBegin.isNotEmpty() && dateEnd.isNotEmpty()) {
-                FancyToast.makeText(this@CatalogueActivity,
+                FancyToast.makeText(
+                    this@CatalogueActivity,
                     "$dateBegin и $dateEnd",
                     FancyToast.LENGTH_LONG,
                     FancyToast.INFO,
-                    false).show()
+                    false
+                ).show()
                 getByPeriod()
             } else {
                 clearText()
-                FancyToast.makeText(this@CatalogueActivity,
+                FancyToast.makeText(
+                    this@CatalogueActivity,
                     "Диапазон указан не полностью",
                     FancyToast.LENGTH_LONG,
                     FancyToast.WARNING,
-                    false).show()
+                    false
+                ).show()
             }
             dateDialog.dismiss()
         }
 
-        edtEnd.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
+        edtEnd.onFocusChangeListener = OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 edtEnd.callOnClick()
             }
@@ -243,47 +266,56 @@ class CatalogueActivity : AppCompatActivity() {
     }
 
     private fun getByPeriod() {
-        Log.d(tag, "Загрузка за период")
-        val repository = Repository(retrofitService)
+        Timber.d("Загрузка за период")
         val filterString = "$dateBegin 0:00:00,$dateEnd 23:59:59"
         val response = repository.getPeriod(filterString)
 
         response.enqueue(object : Callback<Nomenclature> {
             override fun onResponse(call: Call<Nomenclature>, response: Response<Nomenclature>) {
-                Log.d(tag, "Код ответа: ${response.code()}")
-                Log.d(tag,
-                    "Время ответа: ${response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis} ms")
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {
-                        Log.d(tag, "Данные получены")
                         nomenclatureList =
                             response.body()?.nomenclature as ArrayList<NomenclatureItem>
-                        Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
-                        Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
-                        FancyToast.makeText(applicationContext,
+                        FancyToast.makeText(
+                            applicationContext,
                             "Загружено объектов ${nomenclatureList.size}",
                             FancyToast.LENGTH_LONG,
                             FancyToast.SUCCESS,
-                            false).show()
+                            false
+                        ).show()
                         GlobalScope.launch {
                             Common.saveNomenclatureList(nomenclatureList, applicationContext)
                         }
                     } else {
-                        Log.d(tag, "Данные не получены: ${response.body()?.message.toString()}")
+                        FancyToast.makeText(
+                            applicationContext,
+                            "Данные не получены: ${response.body()?.message.toString()}",
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.WARNING,
+                            false
+                        ).show()
                     }
                 } else {
-                    Log.d(tag, "Ошибка сервера")
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Код ответа ${response.code()}",
+                        FancyToast.LENGTH_LONG,
+                        FancyToast.WARNING,
+                        false
+                    ).show()
                 }
             }
 
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
                 val errorString = "Запрос не исполнен: ${t.message.toString()}"
-                Log.e(tag, errorString)
-                FancyToast.makeText(applicationContext,
+                Timber.e(errorString)
+                FancyToast.makeText(
+                    applicationContext,
                     errorString,
                     FancyToast.LENGTH_LONG,
                     FancyToast.ERROR,
-                    false).show()
+                    false
+                ).show()
             }
         })
     }

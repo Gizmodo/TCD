@@ -1,9 +1,7 @@
 package com.shop.tcd
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,23 +11,26 @@ import com.shop.tcd.model.Group
 import com.shop.tcd.model.Groups
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.NomenclatureItem
-import com.shop.tcd.repository.Repository
-import com.shop.tcd.repository.RetrofitService
+import com.shop.tcd.repository.main.RepositoryMain
+import com.shop.tcd.repository.main.RetrofitServiceMain
 import com.shop.tcd.utils.Common.saveNomenclatureList
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import timber.log.Timber
 
 class CatalogueGroupActivity : AppCompatActivity() {
-    val tag = this::class.simpleName
-
     private lateinit var binding: ActivityCatalogueGroupBinding
-    private lateinit var rv: RecyclerView
-    private val retrofitService = RetrofitService.getInstance()
+    private lateinit var recyclerView: RecyclerView
+
     private lateinit var groupsList: ArrayList<Group>
     private lateinit var nomenclatureList: ArrayList<NomenclatureItem>
+
+    /** Network **/
+    private val retrofit = RetrofitServiceMain.getInstance()
+    private val repository = RepositoryMain(retrofit)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,78 +44,106 @@ class CatalogueGroupActivity : AppCompatActivity() {
     fun btnCatalogGroupLoadSelected(view: View) {
         val filterString = groupsList
             .filter { it.checked }.joinToString { it.code }
-        Log.d(tag, filterString)
+        Timber.d(filterString)
 
-        val repository = Repository(retrofitService)
         val response = repository.getByGroup(filterString)
 
         response.enqueue(object : Callback<Nomenclature> {
             override fun onFailure(call: Call<Nomenclature>, t: Throwable) {
-                val errorString = "Запрос не исполнен: ${t.message.toString()}"
-                Log.e(tag, errorString)
-                Toast.makeText(applicationContext, errorString, Toast.LENGTH_SHORT).show()
+                val message = "Запрос не исполнен: ${t.message.toString()}"
+                Timber.e(message)
+                FancyToast.makeText(
+                    applicationContext,
+                    message,
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.ERROR,
+                    false
+                ).show()
             }
 
             override fun onResponse(
                 call: Call<Nomenclature>, response: Response<Nomenclature>,
             ) {
-                Log.d(tag, "Код ответа: ${response.code()}")
-                Log.d(tag,
-                    "Время ответа: ${response.raw().receivedResponseAtMillis - response.raw().sentRequestAtMillis} ms")
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {
-                        Log.d(tag, "Данные получены")
                         nomenclatureList =
                             response.body()?.nomenclature as java.util.ArrayList<NomenclatureItem>
-                        Log.d(tag, "onResponse nomenclatureList.size=${nomenclatureList.size}")
-                        Log.d(tag, "onResponse: ${response.body()!!.nomenclature[2].name}")
-                        FancyToast.makeText(applicationContext,
+                        FancyToast.makeText(
+                            applicationContext,
                             "Загружено объектов ${nomenclatureList.size}",
                             FancyToast.LENGTH_LONG,
                             FancyToast.SUCCESS,
-                            false).show()
+                            false
+                        ).show()
                         GlobalScope.launch {
                             saveNomenclatureList(nomenclatureList, applicationContext)
                         }
                     } else {
-                        Log.d(tag, "Данные не получены: ${response.body()?.message.toString()}")
+                        val message = "Данные не получены: " + response.body()?.message.toString()
+                        FancyToast.makeText(
+                            applicationContext,
+                            message,
+                            FancyToast.LENGTH_LONG,
+                            FancyToast.WARNING,
+                            false
+                        ).show()
+                        Timber.d(message)
                     }
                 } else {
-                    Log.d(tag, "Ошибка сервера")
+                    val message = "Код ответа ${response.code()}"
+                    FancyToast.makeText(
+                        applicationContext,
+                        message,
+                        FancyToast.LENGTH_LONG,
+                        FancyToast.WARNING,
+                        false
+                    ).show()
+                    Timber.d(message)
                 }
             }
         })
     }
 
     private fun getGroups() {
-        val repository = Repository(retrofitService)
         val response = repository.getAllGroups()
         response.enqueue(object : Callback<Groups> {
-            override fun onFailure(call: Call<Groups>, t: Throwable) {
-                FancyToast.makeText(applicationContext,
-                    "Запрос не выполнен",
-                    FancyToast.LENGTH_LONG,
-                    FancyToast.ERROR,
-                    false).show()
+            override fun onResponse(call: Call<Groups>, response: Response<Groups>) {
+                if (response.isSuccessful) {
+                    groupsList = response.body()?.group as ArrayList<Group>
+                    recyclerView.adapter = GroupAdapter(groupsList)
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Запрос выполнен",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.INFO,
+                        false
+                    ).show()
+                } else {
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Код ответа ${response.code()}",
+                        FancyToast.LENGTH_LONG,
+                        FancyToast.WARNING,
+                        false
+                    ).show()
+                }
             }
 
-            override fun onResponse(call: Call<Groups>, response: Response<Groups>) {
-                groupsList = response.body()?.group as ArrayList<Group>
-                rv.adapter = GroupAdapter(groupsList)
-                Log.d(tag, "onResponse groupList.size=${groupsList.size}")
-                Log.d(tag, "onResponse: ${response.body()!!.group[2].name}")
-                FancyToast.makeText(applicationContext,
-                    "Запрос выполнен",
+            override fun onFailure(call: Call<Groups>, t: Throwable) {
+                FancyToast.makeText(
+                    applicationContext,
+                    "Сервер не отвечает!",
                     FancyToast.LENGTH_LONG,
-                    FancyToast.INFO,
-                    false).show()
+                    FancyToast.ERROR,
+                    false
+                ).show()
             }
         })
     }
 
     private fun initRecyclerView() {
-        rv = binding.rvCatalogueGroup
-        rv.layoutManager = LinearLayoutManager(this)
-        rv.setHasFixedSize(true)
+        recyclerView = binding.rvCatalogueGroup
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.setHasFixedSize(true)
     }
 }

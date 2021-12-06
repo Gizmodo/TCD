@@ -1,16 +1,15 @@
 package com.shop.tcd
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.shop.tcd.databinding.RecyclerviewItemRowBinding
 import com.shop.tcd.model.Group
+import timber.log.Timber
 
 class GroupAdapter(private val groupsList: ArrayList<Group>) :
     RecyclerView.Adapter<GroupAdapter.GroupsViewHolder>() {
-    val TAG = this::class.simpleName
     inner class GroupsViewHolder(val binding: RecyclerviewItemRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -31,11 +30,13 @@ class GroupAdapter(private val groupsList: ArrayList<Group>) :
                     val element = groupsList[position]
                     element.checked = binding.itemCheckBox.isChecked
                     groupsList[position] = element
-                    Log.d(TAG, groupsList[position].toString())
+                    Timber.d(groupsList[position].toString())
                 }
                 holder.itemView.setOnClickListener {
-                    Toast.makeText(holder.itemView.context,
-                        code, Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        holder.itemView.context,
+                        code, Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }

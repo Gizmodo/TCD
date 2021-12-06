@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -29,12 +28,12 @@ import com.shop.tcd.databinding.ActivityRecalcBinding
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
 import com.shop.tcd.model.post.Payload
-import com.shop.tcd.repository.Repository
-import com.shop.tcd.repository.RetrofitService
+import com.shop.tcd.repository.main.RepositoryMain
+import com.shop.tcd.repository.main.RetrofitServiceMain
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
-import com.shop.tcd.test.bundle
+import com.shop.tcd.bundlizer.bundle
 import com.shop.tcd.utils.Common
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.awaitClose
@@ -42,6 +41,7 @@ import kotlinx.coroutines.flow.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -58,9 +58,11 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
 
     //    private lateinit var bindingMaterial: ActivityRecalcMaterialBinding
     private var lst = mutableListOf<InvItem>()
-    private val retrofitService = RetrofitService.getInstance()
 
-    private val tag = this::class.simpleName
+    /** Network **/
+    private val retrofit = RetrofitServiceMain.getInstance()
+    private val repository = RepositoryMain(retrofit)
+
     val watcher = object : TextWatcher {
         private var searchFor = ""
 
@@ -108,7 +110,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
    */
     private val onItemClick = object : InvAdapter.OnItemClickListener {
         override fun onClick(invItem: InvItem) {
-            Log.d(tag, "Item clicked with ${invItem.name}")
+            Timber.d("Item clicked with " + invItem.name)
             val bundle: Bundle = invItem.bundle(InvItem.serializer())
             val intent = Intent(this@RecalcActivity, DetailActivity::class.java)
                 .apply {
@@ -202,7 +204,8 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             setPositiveButton("Да") { _: DialogInterface, _: Int ->
                 Common.deleteAllInv(applicationContext)
             }
-            setNegativeButton("Нет"
+            setNegativeButton(
+                "Нет"
             ) { dialog: DialogInterface, _: Int ->
                 dialog.dismiss()
             }
@@ -256,11 +259,13 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                         val productPLU = barcode.takeLast(11).take(5)
                         val productWeight = barcode.takeLast(6).take(5)
                         if (productPLU.toIntOrNull() == null) {
-                            FancyToast.makeText(applicationContext,
+                            FancyToast.makeText(
+                                applicationContext,
                                 "Некорректный PLU! $productPLU",
                                 FancyToast.LENGTH_LONG,
                                 FancyToast.WARNING,
-                                false).show()
+                                false
+                            ).show()
                         } else {
                             val kg = productWeight.take(2).toInt()
                             val gr = productWeight.takeLast(3).toInt()
@@ -274,11 +279,13 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                     if (isEAN13(barcode)) {
                         val productCode = barcode.substring(2, 9)
                         if (productCode.toIntOrNull() == null) {
-                            FancyToast.makeText(applicationContext,
+                            FancyToast.makeText(
+                                applicationContext,
                                 "Некорректный код! $productCode",
                                 FancyToast.LENGTH_LONG,
                                 FancyToast.WARNING,
-                                false).show()
+                                false
+                            ).show()
                         } else {
                             binding.edtCount.setText(productCode)
                         }
@@ -302,11 +309,13 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
     private fun checkPLU() {
         val countString = binding.edtCount.text.trim()
         if (TextUtils.isEmpty(countString)) {
-            FancyToast.makeText(applicationContext,
+            FancyToast.makeText(
+                applicationContext,
                 "Пустое количество",
                 FancyToast.LENGTH_LONG,
                 FancyToast.WARNING,
-                false).show()
+                false
+            ).show()
             return
         }
         val plu = countString.toString()
@@ -325,20 +334,24 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
     private fun checkCode() {
         val countString = binding.edtCount.text.trim()
         if (TextUtils.isEmpty(countString)) {
-            FancyToast.makeText(applicationContext,
+            FancyToast.makeText(
+                applicationContext,
                 "Пустое количество",
                 FancyToast.LENGTH_LONG,
                 FancyToast.WARNING,
-                false).show()
+                false
+            ).show()
             return
         }
         val countInt = countString.toString().toIntOrNull()
         if (countInt == null) {
-            FancyToast.makeText(applicationContext,
+            FancyToast.makeText(
+                applicationContext,
                 "Количество не являеся числом",
                 FancyToast.LENGTH_LONG,
                 FancyToast.WARNING,
-                false).show()
+                false
+            ).show()
             return
         }
         val code = countString.toString()
@@ -393,7 +406,6 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             return
         }
 
-        val repository = Repository(retrofitService)
         val payload = Payload(
             result = "success",
             message = "",
@@ -408,28 +420,34 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
 
         response.enqueue(object : Callback<String> {
             override fun onFailure(call: Call<String>, t: Throwable) {
-                FancyToast.makeText(applicationContext,
+                FancyToast.makeText(
+                    applicationContext,
                     "Ошибка отправки запроса: ${t.message.toString()}",
                     FancyToast.LENGTH_LONG,
                     FancyToast.ERROR,
-                    false).show()
+                    false
+                ).show()
             }
 
             override fun onResponse(call: Call<String>, response: Response<String>) {
-                Log.i(tag, "Response ${response.body()}")
+                Timber.i("Response " + response.body())
                 if (response.isSuccessful) {
                     Common.deleteAllInv(applicationContext)
-                    FancyToast.makeText(applicationContext,
+                    FancyToast.makeText(
+                        applicationContext,
                         "Успешная загрузка документа",
                         FancyToast.LENGTH_LONG,
                         FancyToast.SUCCESS,
-                        false).show()
+                        false
+                    ).show()
                 } else {
-                    FancyToast.makeText(applicationContext,
+                    FancyToast.makeText(
+                        applicationContext,
                         "Код: ${response.code()}. Ошибка ${response.message()}",
                         FancyToast.LENGTH_LONG,
                         FancyToast.WARNING,
-                        false).show()
+                        false
+                    ).show()
                 }
             }
         })
@@ -449,13 +467,16 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                     sendInventory(list)
                 }
             }
-            setNegativeButton("Нет"
+            setNegativeButton(
+                "Нет"
             ) { _: DialogInterface, _: Int ->
-                FancyToast.makeText(applicationContext,
+                FancyToast.makeText(
+                    applicationContext,
                     "Выгрузка отменена",
                     FancyToast.LENGTH_SHORT,
                     FancyToast.INFO,
-                    false).show()
+                    false
+                ).show()
             }
             show()
         }
@@ -507,11 +528,13 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                 Common.insertInv(inv, applicationContext)
                 adapter?.notifyDataSetChanged()
                 withContext(Dispatchers.Main) {
-                    FancyToast.makeText(applicationContext,
+                    FancyToast.makeText(
+                        applicationContext,
                         "Товар добавлен",
                         FancyToast.LENGTH_SHORT,
                         FancyToast.SUCCESS,
-                        false).show()
+                        false
+                    ).show()
                     clearFields(true)
                 }
 
@@ -540,7 +563,8 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             setPositiveButton("Да") { _: DialogInterface, _: Int ->
                 insert(count)
             }
-            setNegativeButton("Нет"
+            setNegativeButton(
+                "Нет"
             ) { _: DialogInterface, _: Int ->
                 clearFields(true)
 
@@ -623,11 +647,13 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                             if (isEAN13(barcode)) {
                                 val productCode = barcode.substring(2, 9)
                                 if (productCode.toIntOrNull() == null) {
-                                    FancyToast.makeText(applicationContext,
+                                    FancyToast.makeText(
+                                        applicationContext,
                                         "Некорректный код! $productCode",
                                         FancyToast.LENGTH_LONG,
                                         FancyToast.WARNING,
-                                        false).show()
+                                        false
+                                    ).show()
                                 } else {
                                     edtCount.setText(productCode)
                                 }
@@ -647,11 +673,13 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                             if (isEAN13(barcode)) {
                                 val productPLU = barcode.takeLast(11).take(5)
                                 if (productPLU.toIntOrNull() == null) {
-                                    FancyToast.makeText(applicationContext,
+                                    FancyToast.makeText(
+                                        applicationContext,
                                         "Некорректный PLU! $productPLU",
                                         FancyToast.LENGTH_LONG,
                                         FancyToast.WARNING,
-                                        false).show()
+                                        false
+                                    ).show()
                                 } else {
                                     val weight = getWeight(barcode)
                                     println("PLU товара: $productPLU Вес товара: $weight")

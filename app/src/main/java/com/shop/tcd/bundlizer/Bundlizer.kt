@@ -1,4 +1,4 @@
-package com.shop.tcd.test
+package com.shop.tcd.bundlizer
 
 import android.os.Bundle
 import kotlinx.serialization.DeserializationStrategy

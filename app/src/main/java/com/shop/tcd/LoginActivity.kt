@@ -2,15 +2,14 @@ package com.shop.tcd
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.ActivityLoginBinding
 import com.shop.tcd.model.settings.GroupUser
 import com.shop.tcd.model.settings.Shop
-import com.shop.tcd.repository.Repository
-import com.shop.tcd.repository.RetrofitService
+import com.shop.tcd.repository.settings.RepositorySettings
+import com.shop.tcd.repository.settings.RetrofitServiceSettings
 import com.shop.tcd.utils.Common
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -18,13 +17,14 @@ import org.xmlpull.v1.XmlPullParserFactory
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import timber.log.Timber
 import java.io.IOException
 import java.io.StringReader
 
 const val EXTRA_MESSAGE = "com.shop.tcd.MESSAGE"
 
 class LoginActivity : AppCompatActivity() {
-    private val retrofitService = RetrofitService.getInstance()
+    private val retrofitService = RetrofitServiceSettings.getInstance()
     private lateinit var binding: ActivityLoginBinding
 //    private var groups: List<Group>? = null
 
@@ -80,7 +80,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun parse1C(xmlResponseString: String) {
-        val tg = "parse"
         // creating a user list string hash map arraylist
         val localShopList = ArrayList<HashMap<String, String?>>()
         val localUserList = ArrayList<HashMap<String, String?>>()
@@ -132,11 +131,11 @@ class LoginActivity : AppCompatActivity() {
                     }
                     XmlPullParser.TEXT -> {
                         text = parser.text
-                        Log.d(tg, text)
+                        Timber.d(text)
                     }
                     XmlPullParser.END_TAG -> when (tag) {
-                        "Магазин" ->{
-                            if(localShop["Адрес"]?.contains("TSD") == true){
+                        "Магазин" -> {
+                            if (localShop["Адрес"]?.contains("TSD") == true) {
                                 localShopList.add(localShop)
                             }
                         }
@@ -181,7 +180,7 @@ class LoginActivity : AppCompatActivity() {
      * Загружает настройки
      */
     private fun loadSettings() {
-        val repository = Repository(retrofitService)
+        val repository = RepositorySettings(retrofitService)
         val response = repository.getSettings()
 
         response.enqueue(object : Callback<String> {

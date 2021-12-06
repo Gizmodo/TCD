@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.shop.tcd.databinding.ActivityDetailBinding
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.test.Bundlizer
+import com.shop.tcd.bundlizer.Bundlizer
 import kotlinx.serialization.KSerializer
 
 class DetailActivity : AppCompatActivity() {

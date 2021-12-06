@@ -2,7 +2,6 @@ package com.shop.tcd
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -14,7 +13,6 @@ import com.shop.tcd.utils.Common
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val TAG = "MainActivity"
     private fun isShopSelected(): Boolean {
         return Common.isInit()
     }
@@ -49,7 +47,6 @@ class MainActivity : AppCompatActivity() {
             val address = items[position].shopURL
             val parsedBaseShopURL = "http:" + address.replace("\\", "/") + "/hs/TSD/"
             Common.BASE_SHOP_URL = parsedBaseShopURL
-            Log.d(TAG, parsedBaseShopURL)
             fun getIP(raw: String): String? {
                 val matchResult: MatchResult? =
                     Regex("\\b(?:[0-9]{1,3}\\.){3}[0-9]{1,3}\\b").find(raw)
