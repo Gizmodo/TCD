@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 //            val selected = parent?.adapter?.getItem(position) as String
 //            val address = objects[position].shopURL
             Common.selectedShop = items[position]
-            Common.selectedUserPosition = position
+            Common.selectedShopPosition = position
             val address = items[position].shopURL
             val parsedBaseShopURL = "http:" + address.replace("\\", "/") + "/hs/TSD/"
             Common.BASE_SHOP_URL = parsedBaseShopURL
@@ -55,8 +55,8 @@ class MainActivity : AppCompatActivity() {
 
 //            Common.BASE_URL = items[position].shopURL
         }
-        if (Common.selectedUserPosition != -1) {
-            view.setText(adapter.getItem(Common.selectedUserPosition), false)
+        if (Common.selectedShopPosition != -1) {
+            view.setText(adapter.getItem(Common.selectedShopPosition), false)
         }
     }
 

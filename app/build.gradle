@@ -1,8 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.kapt' version '1.6.0'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.0'
+    id 'org.jetbrains.kotlin.kapt' version '1.6.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
 }
 
 android {
@@ -59,8 +59,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
 
     //Dagger 2
-    implementation 'com.google.dagger:dagger:2.28.3'
-    kapt 'com.google.dagger:dagger-compiler:2.28.3'
+    implementation 'com.google.dagger:dagger:2.40.5'
+    kapt 'com.google.dagger:dagger-compiler:2.40.5'
 
     //core
     implementation 'com.github.kittinunf.fuel:fuel:2.3.1'
@@ -79,7 +79,7 @@ dependencies {
     //viewModel
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
-    def room_version = '2.4.0-rc01'
+    def room_version = '2.4.0'
 
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"

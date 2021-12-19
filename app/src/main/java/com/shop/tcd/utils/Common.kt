@@ -33,7 +33,7 @@ object Common {
      * Хранение выбранного магазина
      */
     lateinit var selectedShop: Shop
-
+    var selectedShopPosition: Int = -1
     /**
      * Хранение выбранного пользователя и его позиции
      */

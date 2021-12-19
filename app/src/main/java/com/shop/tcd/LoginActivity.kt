@@ -1,8 +1,11 @@
 package com.shop.tcd
 
+import android.R
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.ActivityLoginBinding
@@ -26,29 +29,43 @@ const val EXTRA_MESSAGE = "com.shop.tcd.MESSAGE"
 class LoginActivity : AppCompatActivity() {
     private val retrofitService = RetrofitServiceSettings.getInstance()
     private lateinit var binding: ActivityLoginBinding
-//    private var groups: List<Group>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        Common.usersArray?.let { setupAutoComplete(binding.edtLogin, it) }
         loadSettings()
     }
 
-    /** Кнопка Войти */
+    private fun setupAutoComplete(view: AutoCompleteTextView, items: List<GroupUser>) {
+        val names: AbstractList<String?> = object : AbstractList<String?>() {
+            override fun get(index: Int): String {
+                return items[index].userLogin
+            }
+
+            override val size: Int
+                get() = items.size
+        }
+        val adapter = ArrayAdapter(this, R.layout.simple_list_item_1, names)
+        view.setAdapter(adapter)
+
+        view.setOnItemClickListener { _, _, position, _ ->
+            Common.selectedUser = items[position]
+            Common.selectedUserPosition = position
+        }
+        if (Common.selectedUserPosition != -1) {
+            view.setText(adapter.getItem(Common.selectedUserPosition), false)
+        }
+    }
+
     fun btnLogin(@Suppress("UNUSED_PARAMETER") view: View) {
-        val userName = binding.edLogin.text.toString()
-        val userPassword = binding.edPassword.text.toString()
+        val userName = binding.edtLogin.text.toString()
+        val userPassword = binding.edtPassword.text.toString()
         var isSuccess = false
         val intent = Intent(this, MainActivity::class.java).apply {
             putExtra(EXTRA_MESSAGE, "empty")
         }
-        /*groups?.forEach { grp ->
-            grp.groupUsers.forEach(fun(it: GroupUser) {
-                val isFound = check(it, userName, userPassword)
-                isSuccess = isSuccess || isFound
-            })
-        }*/
 
         Common.usersArray.forEach(fun(it: GroupUser) {
             val isFound = check(it, userName, userPassword)
@@ -80,25 +97,19 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun parse1C(xmlResponseString: String) {
-        // creating a user list string hash map arraylist
         val localShopList = ArrayList<HashMap<String, String?>>()
         val localUserList = ArrayList<HashMap<String, String?>>()
         try {
-            // creating a user string hashmap
             var localUser = HashMap<String, String?>()
             var localShop = HashMap<String, String?>()
-            // load xml from local file
+
             val istreamStringWOEncoding = StringReader(xmlResponseString)
-            //creating a XmlPull parse Factory instance
+
             val parserFactory = XmlPullParserFactory.newInstance()
             val parser = parserFactory.newPullParser()
-
-            // setting the namespaces feature to false
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-
-            // setting the input to the parser
             parser.setInput(istreamStringWOEncoding)
-            // working with the input stream
+
             var tag: String?
             var text: String?
             var event = parser.eventType
@@ -107,13 +118,8 @@ class LoginActivity : AppCompatActivity() {
                 when (event) {
                     XmlPullParser.START_TAG -> {
                         if (tag == "Магазин") {
-                            //DONE
                             localShop = HashMap()
-                            //  var tmp = ""
                             for (i in 0 until parser.attributeCount) {
-                                /*       tmp = (tmp + parser.getAttributeName(i).toString() + " = "
-                                               + parser.getAttributeValue(i).toString() + ", ")
-                                       Log.d(tg, tmp)*/
                                 localShop[parser.getAttributeName(i)] = parser.getAttributeValue(i)
                             }
                         }
@@ -123,11 +129,6 @@ class LoginActivity : AppCompatActivity() {
                                 localUser[parser.getAttributeName(i)] = parser.getAttributeValue(i)
                             }
                         }
-                        /* Log.d(
-                             tg, "START_TAG: name = " + parser.name
-                                     + ", depth = " + parser.depth + ", attrCount = "
-                                     + parser.attributeCount
-                         );*/
                     }
                     XmlPullParser.TEXT -> {
                         text = parser.text
@@ -140,9 +141,6 @@ class LoginActivity : AppCompatActivity() {
                             }
                         }
                         "Пользователь" -> localUserList.add(localUser)
-                        /* "name" -> user["name"] = text
-                         "designation" -> user["designation"] = text
-                         "user" -> userList.add(user)*/
                     }
                 }
                 event = parser.next()
@@ -176,9 +174,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Загружает настройки
-     */
     private fun loadSettings() {
         val repository = RepositorySettings(retrofitService)
         val response = repository.getSettings()
