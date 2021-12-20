@@ -6,18 +6,19 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/textInputLayoutBarcode"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:layout_margin="8dp"
-        app:layout_constraintEnd_toStartOf="@id/textInputLayout2"
+        android:hint="@string/barcode"
+        app:layout_constraintEnd_toStartOf="@id/textInputLayoutCount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtBarcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/barcode"
             android:minHeight="48dp"
             android:textColorHint="#757575"
             tools:ignore="DuplicateSpeakableTextCheck"
@@ -25,17 +26,18 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout2"
+        android:id="@+id/textInputLayoutCount"
         android:layout_width="100dp"
         android:layout_height="48dp"
         android:layout_margin="8dp"
+        android:hint="@string/count"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/count"
             android:minHeight="48dp"
             android:textColorHint="#757575"
             tools:text="123" />
@@ -51,7 +53,7 @@
         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textInputLayout"
+        app:layout_constraintTop_toBottomOf="@id/textInputLayoutBarcode"
         tools:text="Крупа Рис Индия пропаренный 1кг вес" />
 
     <TextView
@@ -147,6 +149,7 @@
         tools:text="1.042" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
