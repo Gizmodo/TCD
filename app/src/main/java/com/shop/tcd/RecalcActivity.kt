@@ -645,7 +645,8 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
             edtRecalcGood.setText(item.name)
             edtRecalcPrice.setText(item.price)
             if (isBarcodeSelected()) {
-                var barcode = edtRecalcBarcode.text.toString().padStart(13, '0').takeLast(13)
+                var barcode = edtRecalcBarcode.text.toString()
+                    .padStart(13, '0').takeLast(13)
                 if (barcode.first().toString() == "2") {
                     val prefixWeight = Common.selectedShop.shopPrefixWeight
                     val prefixWeightPLU = Common.selectedShop.shopPrefixWeightPLU

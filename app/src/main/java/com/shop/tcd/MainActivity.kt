@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
     @Suppress("UNUSED_PARAMETER")
     fun btnShowRecalc(view: View) {
         if (isShopSelected()) {
-            val intent = Intent(this, RecalcActivity::class.java)
+            val intent = Intent(this, RecalcNewActivity::class.java)
                 .apply {
                     putExtra(EXTRA_MESSAGE, "recalc")
                 }
