@@ -50,6 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:contentDescription="@string/add"
         android:onClick="btnInsert"
         android:src="@drawable/ic_baseline_add_circle_outline_24"
         app:backgroundTint="@android:color/holo_green_light"
@@ -74,92 +75,88 @@
 
     <TextView
         android:id="@+id/textView7"
+        style="@style/customTextLabelAppearance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:layout_marginStart="8dp"
         android:text="@string/price"
-        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
         app:layout_constraintBottom_toBottomOf="@id/txtZPrice"
         app:layout_constraintEnd_toStartOf="@id/txtZPrice"
         app:layout_constraintTop_toTopOf="@id/txtZPrice" />
 
     <TextView
         android:id="@+id/txtZPrice"
+        style="@style/customTextValueAppearance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/txtZBarcode"
         tools:text="15688" />
 
     <TextView
         android:id="@+id/textView11"
+        style="@style/customTextLabelAppearance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/code"
-        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
         app:layout_constraintBottom_toBottomOf="@id/txtZCode"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/txtZCode" />
 
     <TextView
         android:id="@+id/txtZCode"
+        style="@style/customTextValueAppearance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/txtZTotal"
         app:layout_constraintStart_toEndOf="@id/textView11"
         tools:text="84055" />
 
     <TextView
         android:id="@+id/txtZBarcode"
+        style="@style/customTextValueAppearance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/txtZPrice"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="2284055010421" />
 
     <TextView
         android:id="@+id/textView13"
+        style="@style/customTextLabelAppearance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/barcode"
-        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
         app:layout_constraintBottom_toBottomOf="@id/txtZBarcode"
         app:layout_constraintEnd_toStartOf="@id/txtZBarcode"
         app:layout_constraintTop_toTopOf="@id/txtZBarcode" />
 
     <TextView
         android:id="@+id/textView15"
+        style="@style/customTextLabelAppearance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/OverallCount"
-        android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
         app:layout_constraintBottom_toBottomOf="@id/txtZTotal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/txtZTotal" />
 
     <TextView
         android:id="@+id/txtZTotal"
+        style="@style/customTextValueAppearance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/textView15"
         tools:text="1.042" />
@@ -168,7 +165,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="8dp"
+        android:layout_marginEnd="0dp"
         app:layout_constraintBottom_toTopOf="@id/txtZBarcode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

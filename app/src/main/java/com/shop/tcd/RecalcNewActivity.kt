@@ -41,6 +41,8 @@ import com.shop.tcd.viewmodel.RecalcViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -85,8 +87,9 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         attachHideKeyboardListeners()
         initBarcodeFieldListener()
     }
+
     private fun sendInventory() {
-        if (list.count() == 0) {
+        if (list.isEmpty()) {
             return
         }
         progressDialog.show()
@@ -253,8 +256,36 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         txtPrice = binding.txtZPrice
     }
 
-    private fun btnInsert(view: View) {
+    fun btnInsert(view: View) {
         Timber.d("Нажата кнопка добавления элемента в номенклатуру")
+        insert()
+    }
+
+    private fun insert() {
+        val inv = InvItem("", "", "", "", "")
+        with(inv) {
+            barcode = edtBarcode.text.toString()
+            code = txtCode.text.toString()
+            name = txtGood.text.toString()
+            // TODO: PLU пустой, а должен быть заполнен
+            plu = edtBarcode.text.toString()
+            quantity = edtCount.text.toString()
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
+            Common.insertInv(inv, applicationContext)
+            adapter?.notifyDataSetChanged()
+            withContext(Dispatchers.Main) {
+                FancyToast.makeText(
+                    applicationContext,
+                    "Товар добавлен",
+                    FancyToast.LENGTH_SHORT,
+                    FancyToast.SUCCESS,
+                    false
+                ).show()
+                clearFields()
+            }
+        }
     }
 
     private fun attachHideKeyboardListeners() {
