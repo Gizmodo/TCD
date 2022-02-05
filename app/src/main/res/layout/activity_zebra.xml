@@ -20,6 +20,7 @@
             android:id="@+id/edtBarcode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
             android:minHeight="48dp"
             android:text="2284055010421"
             android:textColorHint="#757575"
@@ -40,6 +41,7 @@
             android:id="@+id/edtCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
             android:minHeight="48dp"
             android:text="12345"
             android:textColorHint="#757575" />
