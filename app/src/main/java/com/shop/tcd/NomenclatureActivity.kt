@@ -31,7 +31,7 @@ class NomenclatureActivity : AppCompatActivity() {
         getNomenclatureList()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_item, menu)
         val item = menu?.findItem(R.id.search_action)
         val searchView = item?.actionView as SearchView

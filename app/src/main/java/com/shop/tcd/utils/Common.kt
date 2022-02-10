@@ -23,12 +23,14 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 object Common {
-//      var BASE_URL_HOME = "http://10.0.2.2/"
+      var BASE_URL_LOCAL = "http://10.0.2.2/"
+      var BASE_URL_MMTR = "http://10.254.1.230/"
+      var BASE_URL_PRODUCTION = "http://192.168.0.154/"
 
     /**
      * Постоянный адрес с расположением файла настроек
      */
-    var BASE_URL = "http://192.168.0.154/"
+    var BASE_URL = BASE_URL_MMTR
 
     /**
      * Тестовый адрес с расположением файла настроек

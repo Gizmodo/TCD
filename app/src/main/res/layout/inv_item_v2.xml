@@ -10,10 +10,11 @@
         android:id="@+id/txtInvCode"
         style="@style/customTextLabelAppearance"
         android:layout_width="40dp"
-        android:layout_height="30dp"
+        android:layout_height="0dp"
         android:gravity="center|left"
+        app:layout_constraintBottom_toBottomOf="@id/txtInvName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txtInvName"
         tools:ignore="RtlHardcoded"
         tools:text="78472" />
 
@@ -25,11 +26,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/txtInvCode"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/txtInvQuantity"
         app:layout_constraintStart_toEndOf="@id/txtInvCode"
-        app:layout_constraintTop_toTopOf="@id/txtInvCode"
-        tools:text="Сыр Воскресенский 40% 1кг (вес) БЗМЖ с.Воскресенье" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Конфета Волоконовская конфета молочная неглазированная 1кг/5шт (Белгородские кор" />
 
     <TextView
         android:id="@+id/txtInvQuantity"

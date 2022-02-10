@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -19,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.shashank.sony.fancytoastlib.FancyToast
@@ -64,6 +66,8 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var txtTotal: TextView
     private lateinit var txtPrice: TextView
     private lateinit var rv: RecyclerView
+    private lateinit var btnSend: Button
+    private lateinit var btnInsert: FloatingActionButton
 
     private var db: TCDRoomDatabase? = null
     private lateinit var progressDialog: ProgressDialog
@@ -82,10 +86,21 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         binding = ActivityZebraBinding.inflate(layoutInflater)
         setContentView(binding.root)
         bindUI()
+        bindListeners()
         db = TCDRoomDatabase.getDatabase(this)
         initRecyclerView()
         attachHideKeyboardListeners()
         initBarcodeFieldListener()
+    }
+
+    private fun bindListeners() {
+        btnSend.setOnClickListener {
+            sendTo1C()
+        }
+        btnInsert.setOnClickListener {
+            Timber.d("Нажата кнопка добавления элемента в номенклатуру")
+            insert()
+        }
     }
 
     private fun sendInventory() {
@@ -142,8 +157,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         })
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun sendTo1C(view: View) {
+    fun sendTo1C() {
         val builderAlert = AlertDialog.Builder(this)
         with(builderAlert) {
             setTitle("Внимание")
@@ -254,11 +268,8 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         txtBarcode = binding.txtZBarcode
         txtTotal = binding.txtZTotal
         txtPrice = binding.txtZPrice
-    }
-
-    fun btnInsert(view: View) {
-        Timber.d("Нажата кнопка добавления элемента в номенклатуру")
-        insert()
+        btnInsert = binding.btnInsertItem
+        btnSend = binding.btnSend1C
     }
 
     private fun insert() {

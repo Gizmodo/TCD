@@ -7,6 +7,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilBarcode"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -29,13 +30,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilCount"
-        android:layout_width="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:hint="@string/count"
-        app:layout_constraintBottom_toBottomOf="@+id/btnInsertItem"
-        app:layout_constraintEnd_toStartOf="@id/btnInsertItem"
-        app:layout_constraintTop_toTopOf="@+id/btnInsertItem">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtCount"
@@ -53,12 +54,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:contentDescription="@string/add"
-        android:onClick="btnInsert"
-        android:src="@drawable/ic_baseline_add_circle_outline_24"
-        app:backgroundTint="@android:color/holo_green_light"
-        app:fabSize="mini"
+        android:src="@drawable/ic_post_add"
+        app:backgroundTint="@color/teal_200"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/txtZBarcode"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:tint="@android:color/white"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -167,11 +167,24 @@
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintBottom_toTopOf="@id/txtZBarcode"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnInsertItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtZGood"
+        tools:itemCount="15"
         tools:listitem="@layout/inv_item_v2" />
+
+    <Button
+        android:id="@+id/btnSend1C"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Отправить"
+        app:icon="@drawable/ic_inbox"
+        app:layout_constraintBottom_toBottomOf="@+id/btnInsertItem"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnInsertItem" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
