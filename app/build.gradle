@@ -135,59 +135,64 @@ dependencies {
 //Navigation
      def nav_version = '2.4.0'
 
-     // Java language implementation
-     implementation "androidx.navigation:navigation-fragment:$nav_version"
-     implementation "androidx.navigation:navigation-ui:$nav_version"
+    // Java language implementation
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
 
-     // Kotlin
-     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    // Kotlin
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+   /* implementation 'androidx.fragment:fragment-ktx:1.4.0'
+    implementation 'androidx.activity:activity-ktx:1.4.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'*/
+    // Feature module Support
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
 
-     // Feature module Support
-     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 
-     // Testing Navigation
-     androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+    // Jetpack Compose Integration
+    implementation 'androidx.navigation:navigation-compose:2.4.0-rc01'
+    //Paging
+    def paging_version = '3.1.0'
 
      // Jetpack Compose Integration
      implementation 'androidx.navigation:navigation-compose:2.5.0-alpha01'
  //Paging
      def paging_version = '3.1.0'
 
-     implementation "androidx.paging:paging-runtime:$paging_version"
+    // alternatively - without Android dependencies for tests
+    testImplementation "androidx.paging:paging-common:$paging_version"
 
-     // alternatively - without Android dependencies for tests
-     testImplementation "androidx.paging:paging-common:$paging_version"
+    // optional - RxJava2 support
+    implementation "androidx.paging:paging-rxjava2:$paging_version"
 
-     // optional - RxJava2 support
-     implementation "androidx.paging:paging-rxjava2:$paging_version"
+    // optional - RxJava3 support
+    implementation "androidx.paging:paging-rxjava3:$paging_version"
 
-     // optional - RxJava3 support
-     implementation "androidx.paging:paging-rxjava3:$paging_version"
+    // optional - Guava ListenableFuture support
+    implementation "androidx.paging:paging-guava:$paging_version"
 
-     // optional - Guava ListenableFuture support
-     implementation "androidx.paging:paging-guava:$paging_version"
+    // optional - Jetpack Compose integration
+    implementation 'androidx.paging:paging-compose:1.0.0-alpha14'
+    //WorkManager
+    def work_version = '2.7.1'
 
-     // optional - Jetpack Compose integration
-     implementation 'androidx.paging:paging-compose:1.0.0-alpha14'
- //WorkManager
-     def work_version = '2.7.1'
+    // (Java only)
+    implementation "androidx.work:work-runtime:$work_version"
 
-     // (Java only)
-     implementation "androidx.work:work-runtime:$work_version"
+    // Kotlin + coroutines
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 
-     // Kotlin + coroutines
-     implementation "androidx.work:work-runtime-ktx:$work_version"
+    // optional - RxJava2 support
+    implementation "androidx.work:work-rxjava2:$work_version"
 
-     // optional - RxJava2 support
-     implementation "androidx.work:work-rxjava2:$work_version"
+    // optional - GCMNetworkManager support
+    implementation "androidx.work:work-gcm:$work_version"
 
-     // optional - GCMNetworkManager support
-     implementation "androidx.work:work-gcm:$work_version"
+    // optional - Test helpers
+    androidTestImplementation "androidx.work:work-testing:$work_version"
 
-     // optional - Test helpers
-     androidTestImplementation "androidx.work:work-testing:$work_version"
-
-     // optional - Multiprocess support
-     implementation "androidx.work:work-multiprocess:$work_version"
+    // optional - Multiprocess support
+    implementation "androidx.work:work-multiprocess:$work_version"
 }
