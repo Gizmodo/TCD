@@ -5,7 +5,7 @@
     <enableFormatting>true</enableFormatting>
     <buildUponDefaultConfig>true</buildUponDefaultConfig>
     <enableAllRules>true</enableAllRules>
-    <configPaths>C:\Users\sesmirnov\AndroidStudioProjects\TCD\detekt\detekt.yml</configPaths>
-    <baselinePath>C:\Users\sesmirnov\AndroidStudioProjects\TCD\detekt\baseline.xml</baselinePath>
+    <configPaths>C:\Users\user\AndroidStudioProjects\TCD\detekt\detekt.yml</configPaths>
+    <baselinePath>C:\Users\user\AndroidStudioProjects\TCD\detekt\baseline.xml</baselinePath>
   </component>
 </project>

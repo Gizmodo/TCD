@@ -30,7 +30,7 @@ object Common {
     /**
      * Постоянный адрес с расположением файла настроек
      */
-    var BASE_URL = BASE_URL_MMTR
+    var BASE_URL = BASE_URL_PRODUCTION
 
     /**
      * Тестовый адрес с расположением файла настроек

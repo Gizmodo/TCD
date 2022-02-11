@@ -149,7 +149,7 @@ dependencies {
 
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.github.bumptech.glide:compiler:$glide_version"
-    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     kapt "androidx.room:room-compiler:$room_version"
 }
 tasks.named("detekt").configure {

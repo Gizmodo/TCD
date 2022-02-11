@@ -10,22 +10,23 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.adapters.InvAdapter
+import com.shop.tcd.broadcast.ReceiverLiveData
 import com.shop.tcd.bundlizer.bundle
 import com.shop.tcd.databinding.ActivityZebraBinding
 import com.shop.tcd.model.InvItem
@@ -73,10 +74,13 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     private var db: TCDRoomDatabase? = null
     private lateinit var progressDialog: ProgressDialog
 
-    private val model: RecalcViewModel by viewModels()
+    private lateinit var model: RecalcViewModel
     private var adapter: InvAdapter? = null
     override val coroutineContext: CoroutineContext = Dispatchers.Main
     private var list = mutableListOf<InvItem>()
+    private var idataBarcodeObserver: MutableLiveData<String>? = null
+    private var urovoKeyboardObserver: MutableLiveData<Boolean>? = null
+    private var urovoObserverTest: MutableLiveData<String>? = null
 
     /** Network **/
     private val retrofit = RetrofitServiceMain.getInstance()
@@ -87,12 +91,30 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         Timber.d("onCreate")
         binding = ActivityZebraBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        model = ViewModelProvider(this)[RecalcViewModel::class.java]
         bindUI()
         bindListeners()
         db = TCDRoomDatabase.getDatabase(this)
         initRecyclerView()
         attachHideKeyboardListeners()
         initBarcodeFieldListener()
+        initBarcodeListener()
+    }
+
+    private fun moveFocus(view: EditText) {
+        view.requestFocus()
+    }
+
+    private fun moveFocus(btn: Button) {
+        btn.requestFocus()
+    }
+
+    private fun doOnGetBarcode(data: String) {
+        edtBarcode.apply {
+            setText(data)
+            selectAll()
+            requestFocus()
+        }
     }
 
     private fun bindListeners() {
@@ -127,7 +149,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
                 progressDialog.dismiss()
                 FancyToast.makeText(
                     applicationContext,
-                    "Ошибка отправки запроса: ${t.message.toString()}",
+                    "Ошибка отправки запроса: ${t.message}",
                     FancyToast.LENGTH_LONG,
                     FancyToast.ERROR,
                     false
@@ -184,6 +206,53 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
                 ).show()
             }
             show()
+        }
+    }
+
+    private fun initBarcodeListener() {
+        idataBarcodeObserver = ReceiverLiveData(
+            applicationContext,
+            IntentFilter("android.intent.action.SCANRESULT")
+        ) { _, intent ->
+            var data = ""
+            intent.extras?.let { data = it["value"].toString() }
+            return@ReceiverLiveData data
+        }
+
+        urovoObserverTest = ReceiverLiveData(
+            applicationContext,
+            IntentFilter("android.intent.ACTION_DECODE_DATA")
+        ) { _, intent ->
+
+            var data = ""
+            intent.extras?.let { data = it["barcode_string"].toString() }
+            return@ReceiverLiveData data
+        }
+
+        urovoKeyboardObserver = ReceiverLiveData(
+            applicationContext,
+            IntentFilter("android.intent.action_keyboard")
+        ) { _, intent ->
+            var data = false
+            intent.extras?.let {
+                data = it["kbrd_enter"].toString() == "enter"
+            }
+            return@ReceiverLiveData data
+        }
+
+        urovoKeyboardObserver?.observe(this) {
+            Timber.d("Urovo: Enter key pressed")
+//            edtCount.setText(it.toString())
+            if (edtCount.isFocused) {
+                moveFocus(btnInsert)
+            }
+        }
+
+        urovoObserverTest?.observe(this) {
+            doOnGetBarcode(it)
+        }
+        idataBarcodeObserver?.observe(this) {
+            doOnGetBarcode(it)
         }
     }
 
@@ -301,6 +370,14 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
+    private fun onFocus(view: View?, hasFocus: Boolean, s: String) {
+        hideKeyboard()
+        if (hasFocus) {
+            Timber.d("$s focused")
+            (view as TextInputEditText).selectAll()
+        }
+    }
+
     private fun attachHideKeyboardListeners() {
         binding.tilCount.apply {
             setOnClickListener { hideKeyboard() }
@@ -310,13 +387,24 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
         }
-        binding.edtCount.apply {
+
+        edtCount.apply {
+            showSoftInputOnFocus = false
+            setSelectAllOnFocus(true)
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
+            setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus, "edtCount") }
+            /* setOnClickListener { hideKeyboard() }
+             setOnFocusChangeListener { _, _ -> hideKeyboard() }*/
         }
-        binding.edtBarcode.apply {
+        edtBarcode.apply {
+            showSoftInputOnFocus = false
+            setSelectAllOnFocus(true)
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
+            setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus, "edtBarcode") }
+            /* setOnClickListener { hideKeyboard() }
+             setOnFocusChangeListener { _, _ -> hideKeyboard() }*/
         }
     }
 
@@ -325,12 +413,15 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         if (view != null) {
             val hideMe = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             hideMe.hideSoftInputFromWindow(view.windowToken, 0)
-
         }
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
     }
 
     private fun initRecyclerView() {
+        rv.apply {
+            isFocusable = false
+            setOnFocusChangeListener { _, _ -> Timber.d("onFocus recyclerView") }
+        }
         adapter = InvAdapter(list, onItemClick)
         rv.apply {
             layoutManager = LinearLayoutManager(this@RecalcNewActivity)
@@ -343,10 +434,10 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
 
     private fun getInventarisationItems() {
         val invDao: InvDao = db!!.invDao()
-        invDao.selectAll().observe(this, Observer { items ->
+        invDao.selectAll().observe(this) { items ->
             list = items as ArrayList<InvItem>
             rv.adapter = InvAdapter(items, onItemClick)
-        })
+        }
     }
 
     private val onItemClick = object : InvAdapter.OnItemClickListener {
