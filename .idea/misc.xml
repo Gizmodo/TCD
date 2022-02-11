@@ -41,10 +41,13 @@
         <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/drawable/ic_baseline_add_circle_outline_24.xml" value="0.1" />
         <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/drawable/ic_baseline_downloading_24.xml" value="0.1" />
         <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_login.xml" value="1.3775" />
-        <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc.xml" value="0.1" />
+        <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_main.xml" value="0.3009833262077811" />
+        <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_nomenclature.xml" value="0.3009833262077811" />
+        <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc.xml" value="0.21504916631038906" />
         <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc_material.xml" value="0.24114583333333334" />
-        <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_zebra.xml" value="0.88" />
+        <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_zebra.xml" value="0.9" />
         <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/inv_item_v2.xml" value="1.0" />
+        <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/menu/menu_item.xml" value="0.3009833262077811" />
         <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_login.xml" value="0.18802083333333333" />
         <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
         <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_zebra.xml" value="0.8514150943396226" />

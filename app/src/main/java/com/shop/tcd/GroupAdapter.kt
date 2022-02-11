@@ -11,9 +11,7 @@ import timber.log.Timber
 class GroupAdapter(private val groupsList: ArrayList<Group>) :
     RecyclerView.Adapter<GroupAdapter.GroupsViewHolder>() {
     inner class GroupsViewHolder(val binding: RecyclerviewItemRowBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-    }
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupsViewHolder {
         val binding =

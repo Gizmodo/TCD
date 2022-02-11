@@ -48,20 +48,6 @@
             android:textColorHint="#757575" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btnInsertItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:contentDescription="@string/add"
-        android:src="@drawable/ic_post_add"
-        app:backgroundTint="@color/teal_200"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@+id/txtZBarcode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@android:color/white"
-        tools:ignore="SpeakableTextPresentCheck" />
-
     <TextView
         android:id="@+id/txtZGood"
         android:layout_width="0dp"
@@ -179,12 +165,27 @@
         android:id="@+id/btnSend1C"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_margin="8dp"
         android:text="Отправить"
         app:icon="@drawable/ic_inbox"
-        app:layout_constraintBottom_toBottomOf="@+id/btnInsertItem"
+        app:layout_constraintBottom_toBottomOf="@id/btnInsertItem"
+        app:layout_constraintEnd_toStartOf="@+id/btnInsertItem"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnInsertItem" />
+        app:layout_constraintTop_toTopOf="@id/btnInsertItem" />
 
+    <Button
+        android:id="@+id/btnInsertItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/add"
+        app:backgroundTint="@color/design_default_color_error"
+        app:icon="@drawable/ic_post_add"
+        app:layout_constraintBottom_toTopOf="@id/txtZBarcode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btnSend1C"
+        app:tint="@android:color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

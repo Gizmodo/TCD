@@ -62,7 +62,8 @@ class CatalogueGroupActivity : AppCompatActivity() {
             }
 
             override fun onResponse(
-                call: Call<Nomenclature>, response: Response<Nomenclature>,
+                call: Call<Nomenclature>,
+                response: Response<Nomenclature>,
             ) {
                 if (response.isSuccessful) {
                     if (response.body()?.result.equals("success", false)) {

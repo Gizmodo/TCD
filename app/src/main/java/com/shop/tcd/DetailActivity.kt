@@ -23,7 +23,6 @@ class DetailActivity : AppCompatActivity() {
                     txtDetailGood.text = invItem.name
                     txtDetailPLU.text = invItem.plu
                 }
-
             }
         }
     }

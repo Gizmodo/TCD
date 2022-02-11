@@ -33,7 +33,7 @@ class NomenclatureActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_item, menu)
-        val item = menu?.findItem(R.id.search_action)
+        val item = menu.findItem(R.id.search_action)
         val searchView = item?.actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -46,13 +46,11 @@ class NomenclatureActivity : AppCompatActivity() {
                 val searchText = newText!!.lowercase(Locale.getDefault())
                 if (searchText.isNotEmpty()) {
                     newArrayList.forEach {
-
                         if (it.name.lowercase(Locale.getDefault()).contains(searchText) ||
                             it.code.lowercase(Locale.getDefault()).contains(searchText)
                         ) {
                             tempArrayList.add(it)
                         }
-
                     }
                     rv.adapter!!.notifyDataSetChanged()
                 } else {
@@ -62,11 +60,9 @@ class NomenclatureActivity : AppCompatActivity() {
                 }
                 return false
             }
-
         })
         return super.onCreateOptionsMenu(menu)
     }
-
 
     private fun getNomenclatureList() {
         val nomenclatureDao: NomenclatureDao

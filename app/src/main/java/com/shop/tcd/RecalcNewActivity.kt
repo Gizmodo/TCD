@@ -68,7 +68,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var txtPrice: TextView
     private lateinit var rv: RecyclerView
     private lateinit var btnSend: Button
-    private lateinit var btnInsert: FloatingActionButton
+    private lateinit var btnInsert: Button
 
     private var db: TCDRoomDatabase? = null
     private lateinit var progressDialog: ProgressDialog

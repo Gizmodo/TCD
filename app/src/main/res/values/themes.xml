@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.TCD" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.TCD" parent="Theme.Material3.Light">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -32,6 +32,7 @@
     <style name="Theme.TCD.CustomButtonOld" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:layout_margin">8dp</item>
     </style>
+
     <style name="Theme.TCD.CustomButton" parent="Widget.Material3.Button.TextButton.Icon">
         <item name="android:layout_margin">8dp</item>
     </style>
@@ -61,7 +62,6 @@
         <item name="android:clickable">false</item>
         <item name="android:cursorVisible">false</item>
     </style>
-
 
 
 </resources>

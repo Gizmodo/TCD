@@ -74,7 +74,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                 return
             searchFor = searchText
             launch {
-                delay(300)  //debounce timeOut
+                delay(300)
                 if (searchText != searchFor)
                     return@launch
                 searchProduct(searchFor)
@@ -247,17 +247,15 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                         val productCode = barcode.takeLast(11).take(5)
                         val productWeight = barcode.takeLast(6).take(5)
                         println("Код товара: $productCode Вес товара: $productWeight")
-                        //TODO 	СтруктураРеквизитовНоменклатуры = НайтиНоменклатуруПоКоду(КодТовара);
+                        /* TODO 	СтруктураРеквизитовНоменклатуры = НайтиНоменклатуруПоКоду(КодТовара); */
                         val found = true
                         if (found && productWeight.isNotEmpty()) {
-
                             val kg = productWeight.take(2).toInt()
                             val gr = productWeight.takeLast(3).toInt()
                             val weight = "$kg,$gr"
                             println("Вес $weight")
 // 01,408 -> 1,408
                         } else if (productWeight.isNotEmpty()) {
-
                         }
                     }
                 }
@@ -503,6 +501,7 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
         binding.edtRecalcEnter.addTextChangedListener(watcher)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun attachBarCodeFlowListener() {
         binding.edtRecalcEnter.setOnFocusChangeListener { _, _ -> hideKeyboard() }
         binding.edtRecalcEnter.setOnClickListener { hideKeyboard() }
@@ -546,7 +545,6 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                     ).show()
                     clearFields(true)
                 }
-
             }
         }
     }
@@ -576,7 +574,6 @@ class RecalcActivity : AppCompatActivity(), CoroutineScope {
                 "Нет"
             ) { _: DialogInterface, _: Int ->
                 clearFields(true)
-
             }
             show()
         }

@@ -145,11 +145,10 @@ class LoginActivity : AppCompatActivity() {
                 }
                 event = parser.next()
             }
-
         } catch (e: IOException) {
-            e.printStackTrace()
+            Timber.e(e)
         } catch (e: XmlPullParserException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
 
         Common.shopsArray.clear()
@@ -203,7 +202,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onFailure(call: Call<String>, t: Throwable) {
                 FancyToast.makeText(
                     applicationContext,
-                    "Ошибка получения настроек ${t.message.toString()}",
+                    "Ошибка получения настроек ${t.message}",
                     FancyToast.LENGTH_LONG,
                     FancyToast.ERROR,
                     false
