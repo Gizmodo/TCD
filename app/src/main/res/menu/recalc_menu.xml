@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/removeItems"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="@string/removeAll"
+        app:showAsAction="ifRoom|withText" />
+    <group
+        android:id="@+id/group_delete"
+        android:checkableBehavior="single"
+        android:visible="true">
+        <item
+            android:id="@+id/menu_barcode"
+            android:checked="true"
+            android:title="@string/barcode" />
+        <item
+            android:id="@+id/menu_plu"
+            android:enabled="false"
+            android:title="@string/plu" />
+        <item
+            android:id="@+id/menu_code"
+            android:enabled="false"
+            android:title="@string/code" />
+    </group>
+</menu>

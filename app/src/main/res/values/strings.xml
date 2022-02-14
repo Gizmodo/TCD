@@ -30,6 +30,7 @@
     <string name="count">Кол-во</string>
     <string name="add">Добавить</string>
     <string name="search">Поиск</string>
+    <string name="removeAll">Очистить</string>
     <string name="detailTitle">Информация по товару</string>
     <string name="name">Наименование</string>
     <string name="OverallCount">Общее кол-во:</string>

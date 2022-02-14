@@ -6,6 +6,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -181,7 +183,52 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         })
     }
 
-    fun sendTo1C() {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.recalc_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.removeItems -> {
+                removeAll()
+                true
+            }
+            R.id.menu_barcode -> {
+                item.isChecked = !item.isChecked
+                true
+            }
+            R.id.menu_plu -> {
+                item.isChecked = !item.isChecked
+                true
+            }
+            R.id.menu_code -> {
+                item.isChecked = !item.isChecked
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun removeAll() {
+        val builderAlert = AlertDialog.Builder(this)
+        with(builderAlert) {
+            setTitle("Внимание")
+            setMessage("Очистить все записи документов?")
+            setPositiveButton("Да") { _: DialogInterface, _: Int ->
+                Common.deleteAllInv(applicationContext)
+            }
+            setNegativeButton(
+                "Нет"
+            ) { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            show()
+        }
+    }
+
+    private fun sendTo1C() {
         val builderAlert = AlertDialog.Builder(this)
         with(builderAlert) {
             setTitle("Внимание")

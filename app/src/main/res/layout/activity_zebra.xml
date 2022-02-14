@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:minHeight="48dp"
-            android:text="2284055010421"
+            android:text=""
             android:textColorHint="#757575"
             tools:ignore="DuplicateSpeakableTextCheck" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:minHeight="48dp"
-            android:text="12345"
+            android:text=""
             android:textColorHint="#757575" />
     </com.google.android.material.textfield.TextInputLayout>
 
