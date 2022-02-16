@@ -17,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asFlow
@@ -186,6 +187,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.recalc_menu, menu)
+        MenuCompat.setGroupDividerEnabled(menu, true);
         return super.onCreateOptionsMenu(menu)
     }
 
