@@ -476,7 +476,8 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             addItemDecoration(DividerItemDecoration(this@RecalcNewActivity, LinearLayout.VERTICAL))
             adapter = adapter
         }
-        getInventarisationItems()
+        // Отображать список с группировкой по штрихкоду
+        getInventarisationItemsGroupByBarcode()
     }
 
     private fun getInventarisationItems() {
@@ -486,7 +487,13 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             rv.adapter = InvAdapter(items, onItemClick)
         }
     }
-
+    private fun getInventarisationItemsGroupByBarcode() {
+        val invDao: InvDao = db!!.invDao()
+        invDao.selectSumGroupByBarcode().observe(this) { items ->
+            list = items as ArrayList<InvItem>
+            rv.adapter = InvAdapter(items, onItemClick)
+        }
+    }
     private val onItemClick = object : InvAdapter.OnItemClickListener {
         override fun onClick(invItem: InvItem) {
             Timber.d("Item clicked with " + invItem.name)

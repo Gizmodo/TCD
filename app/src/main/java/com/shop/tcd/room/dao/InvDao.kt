@@ -21,6 +21,6 @@ interface InvDao {
     @Query("DELETE FROM inventory")
     suspend fun deleteAll()
 
-    @Query("SELECT code,name,plu,barcode,count(barcode) as cnt, sum(quantity) as quantity FROM inventory group by barcode")
+    @Query("SELECT code,name,plu,barcode,count(barcode) as cnt, sum(cast(replace(quantity,\',\',\'.\') as float)) as quantity FROM inventory group by barcode")
     fun selectSumGroupByBarcode():LiveData<List<InvItem>>
 }
