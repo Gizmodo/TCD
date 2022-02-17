@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.rxjava3.functions.BiFunction
 
-class ReceiverLiveData<T>(
+class ReceiverLiveData<T : Any>(
     private val context: Context,
     private val filter: IntentFilter,
     private val mapFunc: BiFunction<Context, Intent, T>
@@ -29,5 +29,4 @@ class ReceiverLiveData<T>(
             value = mapFunc.apply(context, intent)
         }
     }
-
 }

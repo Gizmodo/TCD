@@ -300,9 +300,10 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
 
         urovoKeyboardObserver?.observe(this) {
             Timber.d("Urovo: Enter key pressed")
-//            edtCount.setText(it.toString())
             if (edtCount.isFocused) {
                 moveFocus(btnInsert)
+            } else if (edtBarcode.isFocused) {
+                moveFocus(edtCount)
             }
         }
 
