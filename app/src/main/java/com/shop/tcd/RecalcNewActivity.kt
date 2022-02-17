@@ -42,6 +42,7 @@ import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
 import com.shop.tcd.utils.Common
 import com.shop.tcd.utils.Common.parseBarcode
+import com.shop.tcd.utils.Common.selectedShop
 import com.shop.tcd.utils.Common.textChanges
 import com.shop.tcd.utils.ResponseState
 import com.shop.tcd.viewmodel.RecalcViewModel
@@ -197,16 +198,24 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
                 removeAll()
                 true
             }
-            R.id.menu_barcode -> {
+            R.id.menu_scan_barcode -> {
                 item.isChecked = !item.isChecked
                 true
             }
-            R.id.menu_plu -> {
+            R.id.menu_scan_plu -> {
                 item.isChecked = !item.isChecked
                 true
             }
-            R.id.menu_code -> {
+            R.id.menu_scan_code -> {
                 item.isChecked = !item.isChecked
+                true
+            }
+            R.id.menu_mode_auto -> {
+                // TODO: сделать
+                true
+            }
+            R.id.menu_mode_manual -> {
+                // TODO: сделать
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -369,7 +378,15 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
 
     private fun getProduct(barcode: String): Flow<NomenclatureItem?> {
         val nomenclatureDao: NomenclatureDao = db!!.nomDao()
-        return nomenclatureDao.getByBarcode(barcode).asFlow()
+        val prefix = barcode.take(2)
+        return if (prefix == selectedShop.shopPrefixWeight) {
+//Весовой товар
+            val productCode = barcode.takeLast(11).take(5)
+            nomenclatureDao.getByCode(productCode).asFlow()
+        } else {
+//Обычный ШК
+            nomenclatureDao.getByBarcode(barcode).asFlow()
+        }
     }
 
     private fun bindUI() {
@@ -489,6 +506,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             rv.adapter = InvAdapter(items, onItemClick)
         }
     }
+
     private fun getInventarisationItemsGroupByBarcode() {
         val invDao: InvDao = db!!.invDao()
         invDao.selectSumGroupByBarcode().observe(this) { items ->
@@ -496,6 +514,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             rv.adapter = InvAdapter(items, onItemClick)
         }
     }
+
     private val onItemClick = object : InvAdapter.OnItemClickListener {
         override fun onClick(invItem: InvItem) {
             Timber.d("Item clicked with " + invItem.name)
