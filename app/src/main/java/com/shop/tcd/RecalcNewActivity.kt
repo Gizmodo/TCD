@@ -43,6 +43,7 @@ import com.shop.tcd.room.database.TCDRoomDatabase
 import com.shop.tcd.utils.Common
 import com.shop.tcd.utils.Common.parseBarcode
 import com.shop.tcd.utils.Common.selectedShop
+import com.shop.tcd.utils.Common.setReadOnly
 import com.shop.tcd.utils.Common.textChanges
 import com.shop.tcd.utils.ResponseState
 import com.shop.tcd.viewmodel.RecalcViewModel
@@ -61,7 +62,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
 
     private lateinit var binding: ActivityZebraBinding
 
-    /// UI
+//    UI
     private lateinit var tilBarcode: TextInputLayout
     private lateinit var edtBarcode: TextInputEditText
     private lateinit var tilCount: TextInputLayout
@@ -116,7 +117,6 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     private fun doOnGetBarcode(data: String) {
         edtBarcode.apply {
             setText(data)
-            selectAll()
             requestFocus()
         }
     }
@@ -141,8 +141,8 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             message = "",
             operation = "revision",
             autor = Common.selectedUser.userLogin,
-            shop = Common.selectedShop.shopName,
-            prefix = Common.selectedShop.shopPrefix,
+            shop = selectedShop.shopName,
+            prefix = selectedShop.shopPrefix,
             document = list
         )
 
@@ -188,7 +188,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.recalc_menu, menu)
-        MenuCompat.setGroupDividerEnabled(menu, true);
+        MenuCompat.setGroupDividerEnabled(menu, true)
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -211,11 +211,13 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
                 true
             }
             R.id.menu_mode_auto -> {
-                // TODO: сделать
+                edtBarcode.setReadOnly(value = false)
+                item.isChecked = true
                 true
             }
             R.id.menu_mode_manual -> {
-                // TODO: сделать
+                edtBarcode.setReadOnly(value = true)
+                item.isChecked = true
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -301,6 +303,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         urovoKeyboardObserver?.observe(this) {
             Timber.d("Urovo: Enter key pressed")
             if (edtCount.isFocused) {
+                edtCount.setSelection(0)
                 moveFocus(btnInsert)
             } else if (edtBarcode.isFocused) {
                 moveFocus(edtCount)
@@ -433,12 +436,13 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
                     false
                 ).show()
                 clearFields()
+                moveFocus(edtBarcode)
             }
         }
     }
 
     private fun onFocus(view: View?, hasFocus: Boolean, s: String) {
-        hideKeyboard()
+//        hideKeyboard()
         if (hasFocus) {
             Timber.d("$s focused")
             (view as TextInputEditText).selectAll()

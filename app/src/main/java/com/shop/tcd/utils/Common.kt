@@ -2,6 +2,7 @@ package com.shop.tcd.utils
 
 import android.content.Context
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
 import androidx.annotation.CheckResult
@@ -23,9 +24,9 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 object Common {
-      var BASE_URL_LOCAL = "http://10.0.2.2/"
-      var BASE_URL_MMTR = "http://10.254.1.230/"
-      var BASE_URL_PRODUCTION = "http://192.168.0.154/"
+    var BASE_URL_LOCAL = "http://10.0.2.2/"
+    var BASE_URL_MMTR = "http://10.254.1.230/"
+    var BASE_URL_PRODUCTION = "http://192.168.0.154/"
 
     /**
      * Постоянный адрес с расположением файла настроек
@@ -196,5 +197,11 @@ object Common {
             }
             awaitClose { removeTextChangedListener(listener) }
         }.onStart { emit(text) }
+    }
+
+    fun EditText.setReadOnly(value: Boolean, inputType: Int = InputType.TYPE_NULL) {
+        isFocusable = !value
+        isFocusableInTouchMode = !value
+        this.inputType = inputType
     }
 }

@@ -22,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
+            android:singleLine="true"
             android:minHeight="48dp"
             android:text=""
             android:textColorHint="#757575"
@@ -43,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
+            android:singleLine="true"
             android:minHeight="48dp"
             android:text=""
             android:textColorHint="#757575" />
