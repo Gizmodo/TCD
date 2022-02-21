@@ -1,12 +1,12 @@
 package com.shop.tcd
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.Menu
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,10 +22,16 @@ class NomenclatureActivity : AppCompatActivity() {
     private lateinit var rv: RecyclerView
     private lateinit var tempArrayList: ArrayList<NomenclatureItem>
     private lateinit var newArrayList: ArrayList<NomenclatureItem>
+    private lateinit var progressDialog: ProgressDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityNomenclatureBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        progressDialog = ProgressDialog(this).apply {
+            setTitle("Загрузка...")
+            setMessage("Пожалуйста, ожидайте")
+        }
 
         initRecyclerView()
         getNomenclatureList()
@@ -47,7 +53,8 @@ class NomenclatureActivity : AppCompatActivity() {
                 if (searchText.isNotEmpty()) {
                     newArrayList.forEach {
                         if (it.name.lowercase(Locale.getDefault()).contains(searchText) ||
-                            it.code.lowercase(Locale.getDefault()).contains(searchText)
+                            it.code.lowercase(Locale.getDefault()).contains(searchText) ||
+                            it.barcode.contains(searchText)
                         ) {
                             tempArrayList.add(it)
                         }
@@ -69,12 +76,14 @@ class NomenclatureActivity : AppCompatActivity() {
         val databaseTCD: TCDRoomDatabase = TCDRoomDatabase.getDatabase(applicationContext)
         val adapter = NomenclatureAdapter(tempArrayList)
         nomenclatureDao = databaseTCD.nomDao()
-        nomenclatureDao.getAllLiveData().observe(this, Observer { items ->
+        progressDialog.show()
+        nomenclatureDao.getAllLiveData().observe(this) { items ->
             newArrayList = items as ArrayList<NomenclatureItem>
             tempArrayList.addAll(newArrayList)
             rv.adapter = adapter
 //            rv.adapter = NomenclatureAdapter(items)
-        })
+            progressDialog.dismiss()
+        }
     }
 
     private fun initRecyclerView() {
