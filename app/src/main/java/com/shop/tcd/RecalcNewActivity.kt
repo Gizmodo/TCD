@@ -62,7 +62,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
 
     private lateinit var binding: ActivityZebraBinding
 
-//    UI
+    //    UI
     private lateinit var tilBarcode: TextInputLayout
     private lateinit var edtBarcode: TextInputEditText
     private lateinit var tilCount: TextInputLayout
@@ -84,8 +84,8 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext = Dispatchers.Main
     private var list = mutableListOf<InvItem>()
     private var idataBarcodeObserver: MutableLiveData<String>? = null
-    private var urovoKeyboardObserver: MutableLiveData<Boolean>? = null
-    private var urovoObserverTest: MutableLiveData<String>? = null
+    private var urovoKeyboard: MutableLiveData<Boolean>? = null
+    private var urovoScanner: MutableLiveData<String>? = null
 
     /** Network **/
     private val retrofit = RetrofitServiceMain.getInstance()
@@ -198,18 +198,6 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
                 removeAll()
                 true
             }
-            R.id.menu_scan_barcode -> {
-                item.isChecked = !item.isChecked
-                true
-            }
-            R.id.menu_scan_plu -> {
-                item.isChecked = !item.isChecked
-                true
-            }
-            R.id.menu_scan_code -> {
-                item.isChecked = !item.isChecked
-                true
-            }
             R.id.menu_mode_auto -> {
                 edtBarcode.setReadOnly(value = false)
                 item.isChecked = true
@@ -279,17 +267,16 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             return@ReceiverLiveData data
         }
 
-        urovoObserverTest = ReceiverLiveData(
+        urovoScanner = ReceiverLiveData(
             applicationContext,
             IntentFilter("android.intent.ACTION_DECODE_DATA")
         ) { _, intent ->
-
             var data = ""
             intent.extras?.let { data = it["barcode_string"].toString() }
             return@ReceiverLiveData data
         }
 
-        urovoKeyboardObserver = ReceiverLiveData(
+        urovoKeyboard = ReceiverLiveData(
             applicationContext,
             IntentFilter("android.intent.action_keyboard")
         ) { _, intent ->
@@ -300,17 +287,19 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             return@ReceiverLiveData data
         }
 
-        urovoKeyboardObserver?.observe(this) {
+        urovoKeyboard?.observe(this) {
             Timber.d("Urovo: Enter key pressed")
             if (edtCount.isFocused) {
                 edtCount.setSelection(0)
                 moveFocus(btnInsert)
+                btnInsert.callOnClick()
             } else if (edtBarcode.isFocused) {
                 moveFocus(edtCount)
             }
         }
 
-        urovoObserverTest?.observe(this) {
+        urovoScanner?.observe(this) {
+            clearFields()
             doOnGetBarcode(it)
         }
         idataBarcodeObserver?.observe(this) {
@@ -322,6 +311,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         // TODO: Check focus on real device
         edtBarcode.setOnFocusChangeListener { _, _ -> hideKeyboard() }
         edtBarcode.setOnClickListener { hideKeyboard() }
+        edtBarcode.setReadOnly(value = false)
         edtBarcode
             .textChanges()
             .distinctUntilChanged()
@@ -380,16 +370,16 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
-    private fun getProduct(barcode: String): Flow<NomenclatureItem?> {
+    private fun getProduct(string: String): Flow<NomenclatureItem?> {
         val nomenclatureDao: NomenclatureDao = db!!.nomDao()
-        val prefix = barcode.take(2)
+        val prefix = string.take(2)
         return if (prefix == selectedShop.shopPrefixWeight) {
 //Весовой товар
-            val productCode = barcode.takeLast(11).take(5)
+            val productCode = string.takeLast(11).take(5)
             nomenclatureDao.getByCode(productCode).asFlow()
         } else {
 //Обычный ШК
-            nomenclatureDao.getByBarcode(barcode).asFlow()
+            nomenclatureDao.getByBarcode(string).asFlow()
         }
     }
 
@@ -465,8 +455,6 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
             setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus, "edtCount") }
-            /* setOnClickListener { hideKeyboard() }
-             setOnFocusChangeListener { _, _ -> hideKeyboard() }*/
         }
         edtBarcode.apply {
             showSoftInputOnFocus = false
@@ -474,8 +462,6 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
             setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus, "edtBarcode") }
-            /* setOnClickListener { hideKeyboard() }
-             setOnFocusChangeListener { _, _ -> hideKeyboard() }*/
         }
     }
 

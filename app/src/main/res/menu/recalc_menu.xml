@@ -8,23 +8,6 @@
         android:title="@string/removeAll"
         app:showAsAction="ifRoom|withText" />
     <group
-        android:id="@+id/menu_group_scan_by"
-        android:checkableBehavior="single"
-        android:visible="true">
-        <item
-            android:id="@+id/menu_scan_barcode"
-            android:checked="true"
-            android:title="@string/barcode" />
-        <item
-            android:id="@+id/menu_scan_plu"
-            android:enabled="false"
-            android:title="@string/plu" />
-        <item
-            android:id="@+id/menu_scan_code"
-            android:enabled="false"
-            android:title="@string/code" />
-    </group>
-    <group
         android:id="@+id/menu_group_mode"
         android:checkableBehavior="single"
         android:visible="true">

@@ -86,6 +86,7 @@
         android:enabled="false"
         android:onClick="btnShowPrintLabels"
         android:text="@string/printlabels"
+        android:visibility="invisible"
         app:icon="@drawable/ic_printer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

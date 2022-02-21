@@ -2,7 +2,6 @@ package com.shop.tcd.utils
 
 import android.content.Context
 import android.text.Editable
-import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
 import androidx.annotation.CheckResult
@@ -199,9 +198,8 @@ object Common {
         }.onStart { emit(text) }
     }
 
-    fun EditText.setReadOnly(value: Boolean, inputType: Int = InputType.TYPE_NULL) {
+    fun EditText.setReadOnly(value: Boolean) {
         isFocusable = !value
         isFocusableInTouchMode = !value
-        this.inputType = inputType
     }
 }
