@@ -126,8 +126,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             sendTo1C()
         }
         btnInsert.setOnClickListener {
-            Timber.d("Нажата кнопка добавления элемента в номенклатуру")
-            insert()
+            addNomenclatureItem()
         }
     }
 
@@ -288,13 +287,14 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         }
 
         urovoKeyboard?.observe(this) {
-            Timber.d("Urovo: Enter key pressed")
             if (edtCount.isFocused) {
                 edtCount.setSelection(0)
                 moveFocus(btnInsert)
-                btnInsert.callOnClick()
+                addNomenclatureItem()
             } else if (edtBarcode.isFocused) {
                 moveFocus(edtCount)
+            } else if (btnInsert.isFocused) {
+                moveFocus(edtBarcode)
             }
         }
 
@@ -308,7 +308,6 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun initBarcodeFieldListener() {
-        // TODO: Check focus on real device
         edtBarcode.setOnFocusChangeListener { _, _ -> hideKeyboard() }
         edtBarcode.setOnClickListener { hideKeyboard() }
         edtBarcode.setReadOnly(value = false)
@@ -403,30 +402,41 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         btnSend = binding.btnSend1C
     }
 
-    private fun insert() {
-        val inv = InvItem("", "", "", "", "")
-        with(inv) {
-            barcode = edtBarcode.text.toString()
-            code = txtCode.text.toString()
-            name = txtGood.text.toString()
-            // TODO: PLU пустой, а должен быть заполнен
-            plu = edtBarcode.text.toString()
-            quantity = edtCount.text.toString()
-        }
+    private fun addNomenclatureItem() {
+        val count = edtCount.text.toString().replace(',', '.')
+        if (count.toFloatOrNull() == null) {
+            FancyToast.makeText(
+                applicationContext,
+                "Укажите количество!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.CONFUSING,
+                false
+            ).show()
+        } else {
+            val inv = InvItem("", "", "", "", "")
+            with(inv) {
+                barcode = edtBarcode.text.toString()
+                code = txtCode.text.toString()
+                name = txtGood.text.toString()
+                // TODO: PLU пустой, а должен быть заполнен
+                plu = edtBarcode.text.toString()
+                quantity = edtCount.text.toString()
+            }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            Common.insertInv(inv, applicationContext)
-            adapter?.notifyDataSetChanged()
-            withContext(Dispatchers.Main) {
-                FancyToast.makeText(
-                    applicationContext,
-                    "Товар добавлен",
-                    FancyToast.LENGTH_SHORT,
-                    FancyToast.SUCCESS,
-                    false
-                ).show()
-                clearFields()
-                moveFocus(edtBarcode)
+            CoroutineScope(Dispatchers.IO).launch {
+                Common.insertInv(inv, applicationContext)
+                adapter?.notifyDataSetChanged()
+                withContext(Dispatchers.Main) {
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Товар добавлен",
+                        FancyToast.LENGTH_SHORT,
+                        FancyToast.SUCCESS,
+                        false
+                    ).show()
+                    clearFields()
+                    moveFocus(edtBarcode)
+                }
             }
         }
     }

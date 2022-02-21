@@ -125,16 +125,4 @@ class MainActivity : AppCompatActivity() {
             showError()
         }
     }
-
-    /**
-     * Открывает экран "Печать ценников".
-     * Действие по кнопке на главном экране.
-     */
-    @Suppress("UNUSED_PARAMETER")
-    fun btnShowPrintLabels(view: View) {
-        if (isShopSelected()) {
-        } else {
-            showError()
-        }
-    }
 }

@@ -29,14 +29,6 @@
         <item name="colorPrimaryInverse">@color/md_theme_light_primaryInverse</item>
     </style>
 
-    <style name="Theme.TCD.CustomButtonOld" parent="Widget.MaterialComponents.Button.TextButton.Icon">
-        <item name="android:layout_margin">8dp</item>
-    </style>
-
-    <style name="Theme.TCD.CustomButton" parent="Widget.Material3.Button.TextButton.Icon">
-        <item name="android:layout_margin">8dp</item>
-    </style>
-
     <style name="Noneditable" parent="Widget.MaterialComponents.TextView">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">0dp</item>

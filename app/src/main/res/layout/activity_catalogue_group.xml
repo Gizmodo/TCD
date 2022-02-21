@@ -18,9 +18,9 @@
 
     <Button
         android:id="@+id/btnCatalogGroupLoadSelected"
-        style="@style/Theme.TCD.CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:onClick="btnCatalogGroupLoadSelected"
         android:text="@string/txtLoadSelectedGroups"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -36,7 +36,6 @@
 
     <Button
         android:id="@+id/btnDialogOk"
-        style="@style/Theme.TCD.CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ok"
@@ -48,7 +47,6 @@
 
     <Button
         android:id="@+id/btnDialogCancel"
-        style="@style/Theme.TCD.CustomButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/cancel"

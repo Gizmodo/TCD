@@ -4,11 +4,11 @@
     <string name="password">Пароль</string>
     <string name="username">Имя пользователя</string>
     <string name="shop">Магазин</string>
-    <string name="loadcatalog">Загрузить каталог товаров</string>
+    <string name="loadcatalog">Каталог товаров</string>
     <string name="createdocument">Создать документ</string>
-    <string name="recalcgoods">Пересчет товаров</string>
+    <string name="recalcgoods">Инвентаризация</string>
     <string name="printlabels">Печать ценников</string>
-    <string name="nomenсlatura">Справочник \"Номенклатура\"</string>
+    <string name="nomenсlatura">Номенклатура</string>
     <string name="loadfulllist">Загрузить весь список товаров</string>
     <string name="loadremainder">Загрузить товары по остаткам</string>
     <string name="loadgroups">Загрузить товары с отбором по группам</string>

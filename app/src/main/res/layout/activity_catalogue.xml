@@ -8,9 +8,9 @@
 
     <Button
         android:id="@+id/btnLoadFull"
-        style="@style/Theme.TCD.CustomButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:lines="2"
         android:onClick="btnLoadFull"
         android:text="@string/loadfulllist"
@@ -23,11 +23,9 @@
 
     <Button
         android:id="@+id/btnLoadRemainders"
-        style="@style/Theme.TCD.CustomButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
-        android:fontFamily="cursive"
+        android:layout_margin="8dp"
         android:onClick="btnLoadRemainders"
         android:text="@string/loadremainder"
         app:layout_constraintBottom_toTopOf="@id/btnLoadByGroups"
@@ -38,9 +36,9 @@
 
     <Button
         android:id="@+id/btnLoadByGroups"
-        style="@style/Theme.TCD.CustomButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:maxLines="2"
         android:onClick="btnLoadByGroups"
         android:text="@string/loadgroups"
@@ -52,9 +50,9 @@
 
     <Button
         android:id="@+id/btnLoadByPeriod"
-        style="@style/Theme.TCD.CustomButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:maxLines="2"
         android:onClick="btnLoadByPeriod"
         android:text="@string/loadturnover"
