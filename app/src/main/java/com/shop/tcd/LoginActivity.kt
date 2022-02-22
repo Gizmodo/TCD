@@ -1,8 +1,11 @@
 package com.shop.tcd
 
 import android.R
+import android.content.Context
 import android.content.Intent
+import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.text.format.Formatter
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -33,9 +36,16 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
+        showIPAddress()
         setContentView(binding.root)
         Common.usersArray?.let { setupAutoComplete(binding.edtLogin, it) }
         loadSettings()
+    }
+
+    private fun showIPAddress() {
+        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val ipAddress: String = Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
+        binding.txtIPAddress.text = ipAddress
     }
 
     private fun setupAutoComplete(view: AutoCompleteTextView, items: List<GroupUser>) {

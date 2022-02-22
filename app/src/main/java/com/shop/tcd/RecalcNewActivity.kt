@@ -47,11 +47,8 @@ import com.shop.tcd.utils.Common.setReadOnly
 import com.shop.tcd.utils.Common.textChanges
 import com.shop.tcd.utils.ResponseState
 import com.shop.tcd.viewmodel.RecalcViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -229,6 +226,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun sendTo1C() {
+        Timber.d("Вызван метод отправки инвентаризации")
         val builderAlert = AlertDialog.Builder(this)
         with(builderAlert) {
             setTitle("Внимание")
@@ -236,9 +234,14 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             setPositiveButton("Да") { _: DialogInterface, _: Int ->
                 list = arrayListOf()
                 val invDao: InvDao = db!!.invDao()
-                invDao.selectAll().observe(this@RecalcNewActivity) { items ->
+                /*invDao.selectAll().observe(this@RecalcNewActivity) { items ->
                     list = items as ArrayList<InvItem>
                     sendInventory()
+                }*/
+                GlobalScope.launch {
+                    // TODO:  Продолжить
+                    val items: List<InvItem> = invDao.selectAllSuspend()
+                    list = items as ArrayList<InvItem>
                 }
             }
             setNegativeButton(
@@ -290,7 +293,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
             if (edtCount.isFocused) {
                 edtCount.setSelection(0)
                 moveFocus(btnInsert)
-                addNomenclatureItem()
+                btnInsert.callOnClick()
             } else if (edtBarcode.isFocused) {
                 moveFocus(edtCount)
             } else if (btnInsert.isFocused) {
@@ -500,13 +503,13 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         getInventarisationItemsGroupByBarcode()
     }
 
-    private fun getInventarisationItems() {
-        val invDao: InvDao = db!!.invDao()
-        invDao.selectAll().observe(this) { items ->
-            list = items as ArrayList<InvItem>
-            rv.adapter = InvAdapter(items, onItemClick)
-        }
-    }
+    /* private fun getInventarisationItems() {
+         val invDao: InvDao = db!!.invDao()
+         invDao.selectAll().observe(this) { items ->
+             list = items as ArrayList<InvItem>
+             rv.adapter = InvAdapter(items, onItemClick)
+         }
+     }*/
 
     private fun getInventarisationItemsGroupByBarcode() {
         val invDao: InvDao = db!!.invDao()
