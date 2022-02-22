@@ -1,4 +1,4 @@
-package com.shop.tcd
+package com.shop.tcd.ui
 
 import android.app.ProgressDialog
 import android.content.Context
@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.shashank.sony.fancytoastlib.FancyToast
+import com.shop.tcd.R
 import com.shop.tcd.adapters.InvAdapter
 import com.shop.tcd.broadcast.ReceiverLiveData
 import com.shop.tcd.bundlizer.bundle
@@ -47,15 +48,20 @@ import com.shop.tcd.utils.Common.setReadOnly
 import com.shop.tcd.utils.Common.textChanges
 import com.shop.tcd.utils.ResponseState
 import com.shop.tcd.viewmodel.RecalcViewModel
-import kotlinx.coroutines.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
-class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
+class InventarisationActivity : AppCompatActivity(), CoroutineScope {
 
     private lateinit var binding: ActivityZebraBinding
 
@@ -226,23 +232,29 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun sendTo1C() {
-        Timber.d("Вызван метод отправки инвентаризации")
         val builderAlert = AlertDialog.Builder(this)
         with(builderAlert) {
             setTitle("Внимание")
-            setMessage("Выгрузить документ в программу?")
+            setMessage("Выгрузить документы в 1С?")
             setPositiveButton("Да") { _: DialogInterface, _: Int ->
                 list = arrayListOf()
                 val invDao: InvDao = db!!.invDao()
+                invDao.selectAllSingle()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe { it ->
+                        list = it as ArrayList<InvItem>
+                        sendInventory()
+                    }
                 /*invDao.selectAll().observe(this@RecalcNewActivity) { items ->
                     list = items as ArrayList<InvItem>
                     sendInventory()
                 }*/
-                GlobalScope.launch {
+                /*GlobalScope.launch {
                     // TODO:  Продолжить
                     val items: List<InvItem> = invDao.selectAllSuspend()
                     list = items as ArrayList<InvItem>
-                }
+                }*/
             }
             setNegativeButton(
                 "Нет"
@@ -445,9 +457,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun onFocus(view: View?, hasFocus: Boolean, s: String) {
-//        hideKeyboard()
         if (hasFocus) {
-            Timber.d("$s focused")
             (view as TextInputEditText).selectAll()
         }
     }
@@ -494,22 +504,13 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         }
         adapter = InvAdapter(list, onItemClick)
         rv.apply {
-            layoutManager = LinearLayoutManager(this@RecalcNewActivity)
+            layoutManager = LinearLayoutManager(this@InventarisationActivity)
             setHasFixedSize(true)
-            addItemDecoration(DividerItemDecoration(this@RecalcNewActivity, LinearLayout.VERTICAL))
+            addItemDecoration(DividerItemDecoration(this@InventarisationActivity, LinearLayout.VERTICAL))
             adapter = adapter
         }
-        // Отображать список с группировкой по штрихкоду
         getInventarisationItemsGroupByBarcode()
     }
-
-    /* private fun getInventarisationItems() {
-         val invDao: InvDao = db!!.invDao()
-         invDao.selectAll().observe(this) { items ->
-             list = items as ArrayList<InvItem>
-             rv.adapter = InvAdapter(items, onItemClick)
-         }
-     }*/
 
     private fun getInventarisationItemsGroupByBarcode() {
         val invDao: InvDao = db!!.invDao()
@@ -523,7 +524,7 @@ class RecalcNewActivity : AppCompatActivity(), CoroutineScope {
         override fun onClick(invItem: InvItem) {
             Timber.d("Item clicked with " + invItem.name)
             val bundle: Bundle = invItem.bundle(InvItem.serializer())
-            val intent = Intent(this@RecalcNewActivity, DetailActivity::class.java)
+            val intent = Intent(this@InventarisationActivity, DetailActivity::class.java)
                 .apply {
                     putExtra("item", bundle)
                 }

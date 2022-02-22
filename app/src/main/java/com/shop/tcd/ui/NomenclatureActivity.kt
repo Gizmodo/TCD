@@ -1,4 +1,4 @@
-package com.shop.tcd
+package com.shop.tcd.ui
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
@@ -10,6 +10,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.shop.tcd.R
 import com.shop.tcd.adapters.NomenclatureAdapter
 import com.shop.tcd.databinding.ActivityNomenclatureBinding
 import com.shop.tcd.model.NomenclatureItem

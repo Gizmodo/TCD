@@ -1,6 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 
-package com.shop.tcd
+package com.shop.tcd.ui
 
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -14,6 +14,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.shashank.sony.fancytoastlib.FancyToast
+import com.shop.tcd.R
 import com.shop.tcd.databinding.ActivityCatalogueBinding
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.NomenclatureItem
@@ -28,7 +29,6 @@ import retrofit2.Response
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class CatalogueActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCatalogueBinding

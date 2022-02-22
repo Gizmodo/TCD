@@ -23,31 +23,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DetailActivity"
+            android:name=".ui.DetailActivity"
             android:exported="false"
             android:parentActivityName=".RecalcActivity" />
         <activity
             android:name=".RecalcActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".RecalcNewActivity"
+            android:name=".ui.InventarisationActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".NomenclatureActivity"
+            android:name=".ui.NomenclatureActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".CatalogueGroupActivity"
+            android:name=".ui.CatalogueGroupActivity"
             android:exported="true"
-            android:parentActivityName=".CatalogueActivity" />
+            android:parentActivityName=".ui.CatalogueActivity" />
         <activity
-            android:name=".CatalogueActivity"
+            android:name=".ui.CatalogueActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:parentActivityName=".LoginActivity" />
         <meta-data

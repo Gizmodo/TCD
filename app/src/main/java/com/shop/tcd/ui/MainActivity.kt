@@ -1,4 +1,4 @@
-package com.shop.tcd
+package com.shop.tcd.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
     @Suppress("UNUSED_PARAMETER")
     fun btnShowRecalc(view: View) {
         if (isShopSelected()) {
-            val intent = Intent(this, RecalcNewActivity::class.java)
+            val intent = Intent(this, InventarisationActivity::class.java)
                 .apply {
                     putExtra(EXTRA_MESSAGE, "recalc")
                 }

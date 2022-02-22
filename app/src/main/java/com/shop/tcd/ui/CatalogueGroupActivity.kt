@@ -1,4 +1,4 @@
-package com.shop.tcd
+package com.shop.tcd.ui
 
 import android.os.Bundle
 import android.view.View
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.shashank.sony.fancytoastlib.FancyToast
+import com.shop.tcd.GroupAdapter
 import com.shop.tcd.databinding.ActivityCatalogueGroupBinding
 import com.shop.tcd.model.Group
 import com.shop.tcd.model.Groups

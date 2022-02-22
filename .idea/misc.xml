@@ -48,13 +48,21 @@
         <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_zebra.xml" value="0.9" />
         <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/layout/inv_item_v2.xml" value="1.0" />
         <entry key="..\:/Users/sesmirnov/AndroidStudioProjects/TCD/app/src/main/res/menu/menu_item.xml" value="0.3009833262077811" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/drawable/ic_add_24dp.xml" value="0.13" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/drawable/ic_delete_black_24dp.xml" value="0.1295" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/drawable/ic_free_icon_ruble_currency_sign_38559.xml" value="0.13" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_catalogue.xml" value="0.45125" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_catalogue_group.xml" value="0.45125" />
         <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_login.xml" value="0.18802083333333333" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_main.xml" value="0.358695652173913" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_main.xml" value="0.6259351620947631" />
         <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc.xml" value="0.67" />
         <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_recalc_material.xml" value="0.51875" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_zebra.xml" value="0.88" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/activity_zebra.xml" value="0.8146718146718147" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/custom_dialog.xml" value="0.45125" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/inv_item_v2.xml" value="0.88" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/layout/switch_item.xml" value="0.75" />
         <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/menu/menu_item.xml" value="0.45125" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/menu/recalc_menu.xml" value="0.6166666666666667" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/TCD/app/src/main/res/menu/recalc_menu.xml" value="0.44375" />
         <entry key="..\:/Users/user/Documents/TCD/app/src/main/res/layout/activity_recalc.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/user/Documents/TCD/app/src/main/res/layout/activity_recalc_material.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/user/Documents/TCD/app/src/main/res/layout/activity_zebra.xml" value="0.4925" />

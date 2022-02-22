@@ -6,6 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.shop.tcd.model.InvItem
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface InvDao {
@@ -14,6 +16,9 @@ interface InvDao {
 
     @Query("select * from inventory order by uid desc")
     fun selectAll(): LiveData<List<InvItem>>
+
+    @Query("select * from inventory order by uid desc")
+    fun selectAllSingle(): Single<List<InvItem>>
 
     @Query("select * from inventory order by uid desc")
     suspend fun selectAllSuspend(): List<InvItem>

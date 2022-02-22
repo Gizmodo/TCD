@@ -1,4 +1,4 @@
-package com.shop.tcd
+package com.shop.tcd.ui
 
 import android.R
 import android.content.Context
