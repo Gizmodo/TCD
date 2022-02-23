@@ -32,7 +32,7 @@ import com.shop.tcd.R
 import com.shop.tcd.adapters.InvAdapter
 import com.shop.tcd.broadcast.ReceiverLiveData
 import com.shop.tcd.bundlizer.bundle
-import com.shop.tcd.databinding.ActivityZebraBinding
+import com.shop.tcd.databinding.ActivityInventarisationBinding
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
 import com.shop.tcd.model.post.Payload
@@ -40,6 +40,7 @@ import com.shop.tcd.repository.main.RepositoryMain
 import com.shop.tcd.repository.main.RetrofitServiceMain
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
+import com.shop.tcd.room.database.DatabaseHelperImpl
 import com.shop.tcd.room.database.TCDRoomDatabase
 import com.shop.tcd.utils.Common
 import com.shop.tcd.utils.Common.parseBarcode
@@ -47,7 +48,8 @@ import com.shop.tcd.utils.Common.selectedShop
 import com.shop.tcd.utils.Common.setReadOnly
 import com.shop.tcd.utils.Common.textChanges
 import com.shop.tcd.utils.ResponseState
-import com.shop.tcd.viewmodel.RecalcViewModel
+import com.shop.tcd.viewmodel.InventarisationViewModel
+import com.shop.tcd.viewmodel.InventarisationViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
@@ -63,7 +65,7 @@ import kotlin.coroutines.CoroutineContext
 
 class InventarisationActivity : AppCompatActivity(), CoroutineScope {
 
-    private lateinit var binding: ActivityZebraBinding
+    private lateinit var binding: ActivityInventarisationBinding
 
     //    UI
     private lateinit var tilBarcode: TextInputLayout
@@ -82,7 +84,8 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     private var db: TCDRoomDatabase? = null
     private lateinit var progressDialog: ProgressDialog
 
-    private lateinit var model: RecalcViewModel
+    private lateinit var viewModel: InventarisationViewModel
+    private lateinit var viewModelFactory: InventarisationViewModelFactory
     private var adapter: InvAdapter? = null
     override val coroutineContext: CoroutineContext = Dispatchers.Main
     private var list = mutableListOf<InvItem>()
@@ -97,9 +100,14 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate")
-        binding = ActivityZebraBinding.inflate(layoutInflater)
+        binding = ActivityInventarisationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        model = ViewModelProvider(this)[RecalcViewModel::class.java]
+        viewModelFactory = InventarisationViewModelFactory(
+            DatabaseHelperImpl(
+                TCDRoomDatabase.getDatabase(applicationContext)
+            )
+        )
+        viewModel = ViewModelProvider(this, viewModelFactory)[InventarisationViewModel::class.java]
         bindUI()
         bindListeners()
         db = TCDRoomDatabase.getDatabase(this)
@@ -201,12 +209,12 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 true
             }
             R.id.menu_mode_auto -> {
-                edtBarcode.setReadOnly(value = false)
+                edtBarcode.setReadOnly(value = true)
                 item.isChecked = true
                 true
             }
             R.id.menu_mode_manual -> {
-                edtBarcode.setReadOnly(value = true)
+                edtBarcode.setReadOnly(value = false)
                 item.isChecked = true
                 true
             }
@@ -238,6 +246,34 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             setMessage("Выгрузить документы в 1С?")
             setPositiveButton("Да") { _: DialogInterface, _: Int ->
                 list = arrayListOf()
+                viewModel.fetchInventarisationItems()
+                viewModel.getInventarisationItems().observe(this@InventarisationActivity) { items ->
+                    list = items as ArrayList<InvItem>
+                    sendInventory()
+                }
+            }
+            setNegativeButton(
+                "Нет"
+            ) { _: DialogInterface, _: Int ->
+                FancyToast.makeText(
+                    applicationContext,
+                    "Выгрузка отменена",
+                    FancyToast.LENGTH_SHORT,
+                    FancyToast.INFO,
+                    false
+                ).show()
+            }
+            show()
+        }
+    }
+
+    private fun sendTo1Old() {
+        val builderAlert = AlertDialog.Builder(this)
+        with(builderAlert) {
+            setTitle("Внимание")
+            setMessage("Выгрузить документы в 1С?")
+            setPositiveButton("Да") { _: DialogInterface, _: Int ->
+                list = arrayListOf()
                 val invDao: InvDao = db!!.invDao()
                 invDao.selectAllSingle()
                     .subscribeOn(Schedulers.io())
@@ -246,15 +282,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                         list = it as ArrayList<InvItem>
                         sendInventory()
                     }
-                /*invDao.selectAll().observe(this@RecalcNewActivity) { items ->
-                    list = items as ArrayList<InvItem>
-                    sendInventory()
-                }*/
-                /*GlobalScope.launch {
-                    // TODO:  Продолжить
-                    val items: List<InvItem> = invDao.selectAllSuspend()
-                    list = items as ArrayList<InvItem>
-                }*/
             }
             setNegativeButton(
                 "Нет"
@@ -325,7 +352,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     private fun initBarcodeFieldListener() {
         edtBarcode.setOnFocusChangeListener { _, _ -> hideKeyboard() }
         edtBarcode.setOnClickListener { hideKeyboard() }
-        edtBarcode.setReadOnly(value = false)
+        edtBarcode.setReadOnly(value = true)
         edtBarcode
             .textChanges()
             .distinctUntilChanged()
@@ -506,7 +533,12 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         rv.apply {
             layoutManager = LinearLayoutManager(this@InventarisationActivity)
             setHasFixedSize(true)
-            addItemDecoration(DividerItemDecoration(this@InventarisationActivity, LinearLayout.VERTICAL))
+            addItemDecoration(
+                DividerItemDecoration(
+                    this@InventarisationActivity,
+                    LinearLayout.VERTICAL
+                )
+            )
             adapter = adapter
         }
         getInventarisationItemsGroupByBarcode()

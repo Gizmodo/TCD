@@ -57,7 +57,7 @@ class CatalogueActivity : AppCompatActivity() {
      * Загружает всю номенклатуру. Сразу выполняем запрос к backend.
      */
     fun btnLoadFull(view: View) {
-        Timber.d("Загрузка остатков")
+        Timber.d("Загружает всю номенклатуру")
         val response = repository.getAllItems()
         progressDialog.show()
 

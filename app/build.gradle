@@ -62,7 +62,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+        freeCompilerArgs = ['-Xjvm-default=enable'] //enable or compatibility
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion '1.0.1'
     }
