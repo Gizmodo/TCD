@@ -199,8 +199,8 @@ object Common {
     }
 
     fun EditText.setReadOnly(value: Boolean) {
-        isFocusable = !value
+//        isFocusable = !value
         isEnabled = !value
-        isFocusableInTouchMode = !value
+//        isFocusableInTouchMode = !value
     }
 }
