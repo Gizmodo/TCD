@@ -52,11 +52,8 @@ import com.shop.tcd.viewmodel.InventarisationViewModel
 import com.shop.tcd.viewmodel.InventarisationViewModelFactory
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -96,7 +93,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     /** Network **/
     private val retrofit = RetrofitServiceMain.getInstance()
     private val repository = RepositoryMain(retrofit)
-
+    private lateinit var job: Job
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate")
@@ -216,6 +213,24 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             R.id.menu_mode_manual -> {
                 edtBarcode.setReadOnly(value = false)
                 item.isChecked = true
+                true
+            }
+            R.id.stopJob -> {
+                job.cancel()
+                true
+            }
+            R.id.startJob -> {
+                job.let {
+                    edtBarcode
+                        .textChanges()
+                        .distinctUntilChanged()
+                        // TODO: Remove as barcode can be empty
+                        .filterNot { it.isNullOrBlank() }
+                        .debounce(100)
+                        .flatMapLatest { getProduct(it.toString()) }
+                        .onEach { displayFoundedItem(it) }
+                        .launchIn(lifecycleScope)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -353,7 +368,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         edtBarcode.setOnFocusChangeListener { _, _ -> hideKeyboard() }
         edtBarcode.setOnClickListener { hideKeyboard() }
         edtBarcode.setReadOnly(value = true)
-        edtBarcode
+        job = edtBarcode
             .textChanges()
             .distinctUntilChanged()
             // TODO: Remove as barcode can be empty

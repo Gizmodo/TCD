@@ -7,6 +7,16 @@
         android:icon="@drawable/ic_delete_black_24dp"
         android:title="@string/removeAll"
         app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/stopJob"
+        android:icon="@drawable/ic_baseline_clear_all_24"
+        android:title="Остановить"
+        app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/startJob"
+        android:icon="@drawable/ic_baseline_clear_all_24"
+        android:title="Запустить"
+        app:showAsAction="ifRoom|withText" />
     <group
         android:id="@+id/menu_group_mode"
         android:checkableBehavior="single"
