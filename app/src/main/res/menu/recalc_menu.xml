@@ -8,14 +8,9 @@
         android:title="@string/removeAll"
         app:showAsAction="ifRoom|withText" />
     <item
-        android:id="@+id/stopJob"
+        android:id="@+id/menuInventoryList"
         android:icon="@drawable/ic_baseline_clear_all_24"
-        android:title="Остановить"
-        app:showAsAction="ifRoom|withText" />
-    <item
-        android:id="@+id/startJob"
-        android:icon="@drawable/ic_baseline_clear_all_24"
-        android:title="Запустить"
+        android:title="Список"
         app:showAsAction="ifRoom|withText" />
     <group
         android:id="@+id/menu_group_mode"

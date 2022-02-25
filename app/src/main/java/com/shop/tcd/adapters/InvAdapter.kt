@@ -15,7 +15,7 @@ class InvAdapter(
         RecyclerView.ViewHolder(binding.root)
 
     interface OnItemClickListener {
-        fun onClick(invItem: InvItem)
+        fun onClick(invItem: InvItem, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvViewHolder {
@@ -42,7 +42,7 @@ class InvAdapter(
 
         }
         val item: InvItem = InvList[position]
-        holder.itemView.setOnClickListener { onItemClickListener.onClick(item) }
+        holder.itemView.setOnClickListener { onItemClickListener.onClick(item, position) }
     }
 
     override fun getItemCount(): Int {

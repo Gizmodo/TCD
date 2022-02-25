@@ -1,10 +1,7 @@
 package com.shop.tcd.room.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.shop.tcd.model.InvItem
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
@@ -31,4 +28,7 @@ interface InvDao {
 
     @Query("SELECT code,name,plu,barcode,count(barcode) as cnt, sum(cast(replace(quantity,\',\',\'.\') as float)) as quantity FROM inventory group by barcode")
     fun selectSumGroupByBarcode(): LiveData<List<InvItem>>
+
+    @Query("update inventory set quantity = :newQuantity where uid = :uid")
+    fun updateInventoryQuantity(uid: Int, newQuantity: String)
 }

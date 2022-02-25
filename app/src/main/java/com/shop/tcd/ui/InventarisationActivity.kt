@@ -47,6 +47,8 @@ import com.shop.tcd.utils.Common.parseBarcode
 import com.shop.tcd.utils.Common.selectedShop
 import com.shop.tcd.utils.Common.setReadOnly
 import com.shop.tcd.utils.Common.textChanges
+import com.shop.tcd.utils.Constants.Inventory.BARCODE_LENGTH
+import com.shop.tcd.utils.Constants.Inventory.DEBOUNCE_TIME
 import com.shop.tcd.utils.ResponseState
 import com.shop.tcd.viewmodel.InventarisationViewModel
 import com.shop.tcd.viewmodel.InventarisationViewModelFactory
@@ -93,7 +95,8 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     /** Network **/
     private val retrofit = RetrofitServiceMain.getInstance()
     private val repository = RepositoryMain(retrofit)
-    private lateinit var job: Job
+    private lateinit var jobAuto: Job
+    private lateinit var jobManual: Job
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.d("onCreate")
@@ -199,6 +202,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         return super.onCreateOptionsMenu(menu)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.removeItems -> {
@@ -208,31 +212,36 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             R.id.menu_mode_auto -> {
                 edtBarcode.setReadOnly(value = true)
                 item.isChecked = true
+                jobAuto = edtBarcode
+                    .textChanges()
+                    .distinctUntilChanged()
+                    .filterNot { it.isNullOrBlank() }
+                    .debounce(DEBOUNCE_TIME)
+                    .flatMapLatest { getProduct(it.toString()) }
+                    .onEach { displayFoundedItem(it) }
+                    .launchIn(lifecycleScope)
                 true
             }
             R.id.menu_mode_manual -> {
                 edtBarcode.setReadOnly(value = false)
                 item.isChecked = true
+                jobAuto.cancel()
+                jobManual = edtBarcode
+                    .textChanges()
+                    .distinctUntilChanged()
+                    .filter { it?.length == BARCODE_LENGTH }
+                    .debounce(DEBOUNCE_TIME)
+                    .flatMapLatest { getProduct(it.toString()) }
+                    .onEach { displayFoundedItem(it) }
+                    .launchIn(lifecycleScope)
                 true
             }
-            R.id.stopJob -> {
-                job.cancel()
+            R.id.menuInventoryList -> {
+                val intent = Intent(this, ListActivity::class.java)
+                startActivity(intent)
                 true
             }
-            R.id.startJob -> {
-                job.let {
-                    edtBarcode
-                        .textChanges()
-                        .distinctUntilChanged()
-                        // TODO: Remove as barcode can be empty
-                        .filterNot { it.isNullOrBlank() }
-                        .debounce(100)
-                        .flatMapLatest { getProduct(it.toString()) }
-                        .onEach { displayFoundedItem(it) }
-                        .launchIn(lifecycleScope)
-                }
-                true
-            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -368,7 +377,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         edtBarcode.setOnFocusChangeListener { _, _ -> hideKeyboard() }
         edtBarcode.setOnClickListener { hideKeyboard() }
         edtBarcode.setReadOnly(value = true)
-        job = edtBarcode
+        jobAuto = edtBarcode
             .textChanges()
             .distinctUntilChanged()
             // TODO: Remove as barcode can be empty
@@ -568,7 +577,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private val onItemClick = object : InvAdapter.OnItemClickListener {
-        override fun onClick(invItem: InvItem) {
+        override fun onClick(invItem: InvItem, position: Int) {
             Timber.d("Item clicked with " + invItem.name)
             val bundle: Bundle = invItem.bundle(InvItem.serializer())
             val intent = Intent(this@InventarisationActivity, DetailActivity::class.java)
