@@ -18,4 +18,14 @@
         <item name="android:inputType">none</item>
         <item name="android:textColorHint">#757575</item>
     </style>
+
+    <style name="customTextValueAppearance">
+        <item name="android:textAppearance">@style/TextAppearance.Material3.LabelLarge</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="customTextLabelAppearance">
+        <item name="android:textAppearance">@style/TextAppearance.Material3.LabelMedium</item>
+        <item name="android:textStyle">normal</item>
+    </style>
 </resources>

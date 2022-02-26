@@ -3,6 +3,7 @@
     package="com.shop.tcd">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:name=".App"
@@ -14,38 +15,41 @@
         android:theme="@style/Theme.TCD"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".DetailActivity"
-            android:exported="false"
-            android:parentActivityName=".RecalcActivity" />
-        <activity
-            android:name=".RecalcActivity"
-            android:exported="true"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".NomenclatureActivity"
-            android:exported="true"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".CatalogueGroupActivity"
-            android:exported="true"
-            android:parentActivityName=".CatalogueActivity" />
-        <activity
-            android:name=".CatalogueActivity"
-            android:exported="true"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:parentActivityName=".LoginActivity" />
-        <activity
-            android:name=".LoginActivity"
+            android:name=".ui.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.ListActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.InventarisationActivity" />
+        <activity
+            android:name=".ui.DetailActivity"
+            android:exported="false"
+            android:parentActivityName=".ui.InventarisationActivity" />
+        <activity
+            android:name=".ui.InventarisationActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.NomenclatureActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.CatalogueGroupActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.CatalogueActivity" />
+        <activity
+            android:name=".ui.CatalogueActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.MainActivity" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"
+            android:parentActivityName=".ui.LoginActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

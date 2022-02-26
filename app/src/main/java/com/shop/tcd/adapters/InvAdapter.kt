@@ -15,7 +15,7 @@ class InvAdapter(
         RecyclerView.ViewHolder(binding.root)
 
     interface OnItemClickListener {
-        fun onClick(invItem: InvItem)
+        fun onClick(invItem: InvItem, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvViewHolder {
@@ -31,18 +31,13 @@ class InvAdapter(
     override fun onBindViewHolder(holder: InvViewHolder, position: Int) {
         with(holder) {
             with(InvList[position]) {
-                /*  binding.txtInvId.text = uid.toString()
-                  binding.txtInvBarcode.text = barcode
-                  binding.txtInvCode.text = code
-                  binding.txtInvPlu.text = plu*/
                 binding.txtInvCode.text = code.trim()
                 binding.txtInvName.text = name.trim()
                 binding.txtInvQuantity.text = quantity.trim()
             }
-
         }
         val item: InvItem = InvList[position]
-        holder.itemView.setOnClickListener { onItemClickListener.onClick(item) }
+        holder.itemView.setOnClickListener { onItemClickListener.onClick(item, position) }
     }
 
     override fun getItemCount(): Int {
