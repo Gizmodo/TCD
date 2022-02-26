@@ -37,4 +37,5 @@
     <string name="scanner">Авто</string>
     <string name="manual">Ручной</string>
     <string name="save">Сохранить</string>
+    <string name="title_quantity_dialog">Обновление количества:</string>
 </resources>

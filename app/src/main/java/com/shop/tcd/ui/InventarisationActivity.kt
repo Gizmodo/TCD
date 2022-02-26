@@ -241,7 +241,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 startActivity(intent)
                 true
             }
-
             else -> super.onOptionsItemSelected(item)
         }
     }

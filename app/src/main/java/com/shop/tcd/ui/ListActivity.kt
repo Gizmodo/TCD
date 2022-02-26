@@ -50,7 +50,7 @@ class ListActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
-        viewModel.getInventoryList().observe(this) {
+        viewModel.inventoryList.observe(this) {
             adapter = InvAdapter(it, onItemClick)
             rv.adapter = adapter
         }
@@ -58,30 +58,32 @@ class ListActivity : AppCompatActivity() {
 
     private val onItemClick = object : InvAdapter.OnItemClickListener {
         override fun onClick(invItem: InvItem, position: Int) {
-            Timber.d("Item clicked with " + invItem.name)
-
             val dialog = Dialog(this@ListActivity)
             dialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE)
             dialog.setCancelable(true)
-            dialog.setContentView(R.layout.inventory_quantity_dialog)
+            dialog.setContentView(R.layout.dialog_inventory_quantity)
 
             val edtQuantity = dialog.findViewById<EditText>(R.id.edtQuantity)
             val btnUpdateQuantity = dialog.findViewById<Button>(R.id.btnUpdateQuantity)
             val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
             val txtName = dialog.findViewById<TextView>(R.id.txtName)
-            val quantity = edtQuantity.text.toString()
+
             txtName.text = invItem.name
+            edtQuantity.setText(invItem.quantity)
 
             btnCancel.setOnClickListener {
                 dialog.dismiss()
             }
 
             btnUpdateQuantity.setOnClickListener {
-                viewModel.updateInventoryQuantity(invItem.uid!!, quantity)
-                adapter.notifyItemChanged(position)
+                val quantity = edtQuantity.text.toString().replace(',', '.')
+                Timber.d(quantity)
+                quantity.toFloatOrNull()?.let {
+                    viewModel.updateInventoryQuantity(invItem.uid!!, quantity)
+                    adapter.notifyDataSetChanged()
+                }
                 dialog.dismiss()
             }
-
             dialog.show()
         }
     }

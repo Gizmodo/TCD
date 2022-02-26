@@ -13,14 +13,14 @@ import timber.log.Timber
 
 class InventoryListViewModel(private val dbHelper: DatabaseHelper) : ViewModel() {
     private var _items = MutableLiveData<List<InvItem>>()
-    fun getInventoryList(): LiveData<List<InvItem>> = _items
+    val inventoryList: LiveData<List<InvItem>> get() = _items
 
     init {
-        this.fetchInventoryList()
+        fetchInventoryList()
     }
 
-    private fun fetchInventoryList() {
-        viewModelScope.launch {
+    fun fetchInventoryList() {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 _items.postValue(dbHelper.getInventarisationItems())
             } catch (e: Exception) {
@@ -32,6 +32,7 @@ class InventoryListViewModel(private val dbHelper: DatabaseHelper) : ViewModel()
     fun updateInventoryQuantity(uid: Int, newQuantity: String) {
         CoroutineScope(Dispatchers.IO).launch {
             dbHelper.updateInventoryQuantity(uid, newQuantity)
+            fetchInventoryList()
         }
     }
 
