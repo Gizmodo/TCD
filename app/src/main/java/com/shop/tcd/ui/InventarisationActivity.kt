@@ -209,6 +209,14 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 removeAll()
                 true
             }
+            R.id.menu_find_barcode -> {
+                item.isChecked = true
+                true
+            }
+            R.id.menu_find_code -> {
+                item.isChecked = true
+                true
+            }
             R.id.menu_mode_auto -> {
                 edtBarcode.setReadOnly(value = true)
                 item.isChecked = true
@@ -229,7 +237,20 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 jobManual = edtBarcode
                     .textChanges()
                     .distinctUntilChanged()
-                    .filter { it?.length == BARCODE_LENGTH }
+                    .filter {
+                        when (R.id.menu_group_find_mode) {
+                            R.id.menu_find_barcode -> {
+                                return@filter it?.length == BARCODE_LENGTH
+                            }
+                            R.id.menu_find_code -> {
+                                // TODO: Какой минимальный код для поиска (длина)
+                                return@filter (it?.length!! > 5)
+                            }
+                            else -> {
+                                false
+                            }
+                        }
+                    }
                     .debounce(DEBOUNCE_TIME)
                     .flatMapLatest { getProduct(it.toString()) }
                     .onEach { displayFoundedItem(it) }
@@ -336,7 +357,10 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             IntentFilter("android.intent.ACTION_DECODE_DATA")
         ) { _, intent ->
             var data = ""
-            intent.extras?.let { data = it["barcode_string"].toString() }
+            intent.extras?.let {
+                data = it["barcode_string"].toString()
+                data = "0000000000000$data".takeLast(BARCODE_LENGTH)
+            }
             return@ReceiverLiveData data
         }
 
@@ -381,7 +405,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             .distinctUntilChanged()
             // TODO: Remove as barcode can be empty
             .filterNot { it.isNullOrBlank() }
-            .debounce(100)
+            .debounce(DEBOUNCE_TIME)
             .flatMapLatest { getProduct(it.toString()) }
             .onEach { displayFoundedItem(it) }
             .launchIn(lifecycleScope)
@@ -434,16 +458,20 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
-    private fun getProduct(string: String): Flow<NomenclatureItem?> {
+    private fun getProduct(string: String, isFindByCode: Boolean = false): Flow<NomenclatureItem?> {
         val nomenclatureDao: NomenclatureDao = db!!.nomDao()
         val prefix = string.take(2)
-        return if (prefix == selectedShop.shopPrefixWeight) {
-//Весовой товар
-            val productCode = string.takeLast(11).take(5)
-            nomenclatureDao.getByCode(productCode).asFlow()
+        return if (isFindByCode) {
+            nomenclatureDao.getByCode(string).asFlow()
         } else {
+            if (prefix == selectedShop.shopPrefixWeight) {
+//Весовой товар
+                val productCode = string.takeLast(11).take(5)
+                nomenclatureDao.getByCode(productCode).asFlow()
+            } else {
 //Обычный ШК
-            nomenclatureDao.getByBarcode(string).asFlow()
+                nomenclatureDao.getByBarcode(string).asFlow()
+            }
         }
     }
 

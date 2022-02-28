@@ -26,4 +26,18 @@
             android:enabled="true"
             android:title="@string/manual" />
     </group>
+    <group
+        android:id="@+id/menu_group_find_mode"
+        android:checkableBehavior="single"
+        android:visible="true">
+        <item
+            android:id="@+id/menu_find_barcode"
+            android:checked="true"
+            android:enabled="true"
+            android:title="@string/barcode" />
+        <item
+            android:id="@+id/menu_find_code"
+            android:enabled="true"
+            android:title="@string/code" />
+    </group>
 </menu>
