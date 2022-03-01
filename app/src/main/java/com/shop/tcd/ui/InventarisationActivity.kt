@@ -224,12 +224,14 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 true
             }
             R.id.menu_mode_auto -> {
+                currentScanMode = Common.MODESCAN.AUTO
                 edtBarcode.setReadOnly(value = true)
                 item.isChecked = true
                 jobAuto = createJobAuto()
                 true
             }
             R.id.menu_mode_manual -> {
+                currentScanMode = Common.MODESCAN.MANUAL
                 edtBarcode.setReadOnly(value = false)
                 item.isChecked = true
                 jobAuto.cancel()
@@ -539,7 +541,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
-    private fun onFocus(view: View?, hasFocus: Boolean, s: String) {
+    private fun onFocus(view: View?, hasFocus: Boolean) {
         if (hasFocus) {
             (view as TextInputEditText).selectAll()
         }
@@ -560,14 +562,14 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             setSelectAllOnFocus(true)
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
-            setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus, "edtCount") }
+            setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus) }
         }
         edtBarcode.apply {
             showSoftInputOnFocus = false
             setSelectAllOnFocus(true)
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
-            setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus, "edtBarcode") }
+            setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus) }
         }
     }
 
