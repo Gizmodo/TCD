@@ -23,6 +23,19 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 object Common {
+    enum class MODESCAN(val modeScan: Int = 0) {
+        AUTO(0),
+        MANUAL(1)
+    }
+
+    enum class MODESEARCH(val modeSearch: Int = 0) {
+        BARCODE(0),
+        CODE(1)
+    }
+
+    var currentScanMode: MODESCAN = MODESCAN.AUTO
+    var currentSearchMode: MODESEARCH = MODESEARCH.BARCODE
+
     var BASE_URL_LOCAL = "http://10.0.2.2/"
     var BASE_URL_MMTR = "http://10.254.1.230/"
     var BASE_URL_PRODUCTION = "http://192.168.0.154/"

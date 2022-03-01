@@ -1,3 +1,5 @@
+@file:OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
+
 package com.shop.tcd.ui
 
 import android.app.ProgressDialog
@@ -43,6 +45,8 @@ import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.DatabaseHelperImpl
 import com.shop.tcd.room.database.TCDRoomDatabase
 import com.shop.tcd.utils.Common
+import com.shop.tcd.utils.Common.currentScanMode
+import com.shop.tcd.utils.Common.currentSearchMode
 import com.shop.tcd.utils.Common.parseBarcode
 import com.shop.tcd.utils.Common.selectedShop
 import com.shop.tcd.utils.Common.setReadOnly
@@ -211,50 +215,25 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             }
             R.id.menu_find_barcode -> {
                 item.isChecked = true
+                currentSearchMode = Common.MODESEARCH.BARCODE
                 true
             }
             R.id.menu_find_code -> {
                 item.isChecked = true
+                currentSearchMode = Common.MODESEARCH.CODE
                 true
             }
             R.id.menu_mode_auto -> {
                 edtBarcode.setReadOnly(value = true)
                 item.isChecked = true
-                jobAuto = edtBarcode
-                    .textChanges()
-                    .distinctUntilChanged()
-                    .filterNot { it.isNullOrBlank() }
-                    .debounce(DEBOUNCE_TIME)
-                    .flatMapLatest { getProduct(it.toString()) }
-                    .onEach { displayFoundedItem(it) }
-                    .launchIn(lifecycleScope)
+                jobAuto = createJobAuto()
                 true
             }
             R.id.menu_mode_manual -> {
                 edtBarcode.setReadOnly(value = false)
                 item.isChecked = true
                 jobAuto.cancel()
-                jobManual = edtBarcode
-                    .textChanges()
-                    .distinctUntilChanged()
-                    .filter {
-                        when (R.id.menu_group_find_mode) {
-                            R.id.menu_find_barcode -> {
-                                return@filter it?.length == BARCODE_LENGTH
-                            }
-                            R.id.menu_find_code -> {
-                                // TODO: Какой минимальный код для поиска (длина)
-                                return@filter (it?.length!! > 5)
-                            }
-                            else -> {
-                                false
-                            }
-                        }
-                    }
-                    .debounce(DEBOUNCE_TIME)
-                    .flatMapLatest { getProduct(it.toString()) }
-                    .onEach { displayFoundedItem(it) }
-                    .launchIn(lifecycleScope)
+                jobManual = createJobManual()
                 true
             }
             R.id.menuInventoryList -> {
@@ -400,19 +379,40 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         edtBarcode.setOnFocusChangeListener { _, _ -> hideKeyboard() }
         edtBarcode.setOnClickListener { hideKeyboard() }
         edtBarcode.setReadOnly(value = true)
-        jobAuto = edtBarcode
-            .textChanges()
-            .distinctUntilChanged()
-            // TODO: Remove as barcode can be empty
-            .filterNot { it.isNullOrBlank() }
-            .debounce(DEBOUNCE_TIME)
-            .flatMapLatest { getProduct(it.toString()) }
-            .onEach { displayFoundedItem(it) }
-            .launchIn(lifecycleScope)
+        jobAuto = createJobAuto()
     }
+
+    private fun createJobAuto() = edtBarcode
+        .textChanges()
+        .distinctUntilChanged()
+        // TODO: Remove as barcode can be empty
+        .filterNot { it.isNullOrBlank() }
+        .debounce(DEBOUNCE_TIME)
+        .flatMapLatest { getProduct(it.toString()) }
+        .onEach { displayFoundedItem(it) }
+        .launchIn(lifecycleScope)
+
+    private fun createJobManual() = edtBarcode
+        .textChanges()
+        .distinctUntilChanged()
+        .filter {
+            Timber.d("Inside filter")
+            (it?.length!! > 1) && (it.isNotBlank())
+        }
+        .debounce(DEBOUNCE_TIME)
+        .flatMapLatest {
+            Timber.d("Inside flatMapLatest")
+            getProduct(it.toString())
+        }
+        .onEach {
+            Timber.d("Inside onEach")
+            displayFoundedItem(it)
+        }
+        .launchIn(lifecycleScope)
 
     private fun displayFoundedItem(item: NomenclatureItem?) = when {
         item != null -> {
+            Timber.d("Метод отображения найденого товара в номенклатуре")
             txtGood.text = item.name
             txtCode.text = item.code
             txtBarcode.text = item.barcode
@@ -442,7 +442,14 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             }
         }
         else -> {
-            clearFields()
+            when (currentScanMode) {
+                Common.MODESCAN.AUTO -> {
+                    clearFields()
+                }
+                else -> {
+
+                }
+            }
         }
     }
 
@@ -458,19 +465,24 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         }
     }
 
-    private fun getProduct(string: String, isFindByCode: Boolean = false): Flow<NomenclatureItem?> {
+    private fun getProduct(
+        string: String,
+    ): Flow<NomenclatureItem?> {
         val nomenclatureDao: NomenclatureDao = db!!.nomDao()
         val prefix = string.take(2)
-        return if (isFindByCode) {
-            nomenclatureDao.getByCode(string).asFlow()
-        } else {
-            if (prefix == selectedShop.shopPrefixWeight) {
-//Весовой товар
-                val productCode = string.takeLast(11).take(5)
-                nomenclatureDao.getByCode(productCode).asFlow()
-            } else {
-//Обычный ШК
-                nomenclatureDao.getByBarcode(string).asFlow()
+        when (currentSearchMode) {
+            Common.MODESEARCH.BARCODE -> {
+                return if (prefix == selectedShop.shopPrefixWeight) {
+                    //Весовой товар
+                    val productCode = string.takeLast(11).take(5)
+                    nomenclatureDao.getByCode(productCode).asFlow()
+                } else {
+                    //Обычный ШК
+                    nomenclatureDao.getByBarcode(string).asFlow()
+                }
+            }
+            Common.MODESEARCH.CODE -> {
+                return nomenclatureDao.getByCode(string).asFlow()
             }
         }
     }
@@ -520,13 +532,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 Common.insertInv(inv, applicationContext)
                 adapter?.notifyDataSetChanged()
                 withContext(Dispatchers.Main) {
-                    FancyToast.makeText(
-                        applicationContext,
-                        "Товар добавлен",
-                        FancyToast.LENGTH_SHORT,
-                        FancyToast.SUCCESS,
-                        false
-                    ).show()
                     clearFields()
                     moveFocus(edtBarcode)
                 }
