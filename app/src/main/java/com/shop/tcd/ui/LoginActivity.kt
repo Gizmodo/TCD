@@ -3,7 +3,11 @@ package com.shop.tcd.ui
 import android.R
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.os.Bundle
 import android.text.format.Formatter
 import android.view.View
@@ -27,6 +31,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.io.StringReader
 
+
 const val EXTRA_MESSAGE = "com.shop.tcd.MESSAGE"
 
 class LoginActivity : AppCompatActivity() {
@@ -37,9 +42,41 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         showIPAddress()
+        showVPNUsage()
         setContentView(binding.root)
         Common.usersArray?.let { setupAutoComplete(binding.edtLogin, it) }
         loadSettings()
+    }
+
+    private fun showVPNUsage() {
+        when {
+            vpnActive(applicationContext) -> {
+                binding.txtVPNStatus.text = "VPN используется"
+            }
+            else -> {
+                binding.txtVPNStatus.text = "VPN не используется"
+            }
+        }
+    }
+
+    fun vpnActive(context: Context): Boolean {
+        var vpnInUse = false
+        val connectivityManager =
+            context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val activeNetwork: Network? = connectivityManager.activeNetwork
+            val caps = connectivityManager.getNetworkCapabilities(activeNetwork)
+            return caps!!.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
+        }
+        val networks: Array<Network> = connectivityManager.allNetworks
+        for (i in networks.indices) {
+            val caps = connectivityManager.getNetworkCapabilities(networks[i])
+            if (caps!!.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+                vpnInUse = true
+                break
+            }
+        }
+        return vpnInUse
     }
 
     private fun showIPAddress() {
