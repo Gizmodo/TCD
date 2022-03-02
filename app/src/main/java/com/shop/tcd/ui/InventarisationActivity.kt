@@ -63,7 +63,6 @@ import kotlinx.coroutines.flow.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 class InventarisationActivity : AppCompatActivity(), CoroutineScope {
@@ -103,7 +102,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     private lateinit var jobManual: Job
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("onCreate")
         binding = ActivityInventarisationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModelFactory = InventarisationViewModelFactory(
@@ -175,7 +173,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             }
 
             override fun onResponse(call: Call<String>, response: Response<String>) {
-                Timber.i("Response " + response.body())
                 progressDialog.dismiss()
                 if (response.isSuccessful) {
                     Common.deleteAllInv(applicationContext)
@@ -398,23 +395,19 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         .textChanges()
         .distinctUntilChanged()
         .filter {
-            Timber.d("Inside filter")
-            (it?.length!! > 1) && (it.isNotBlank())
+            it?.isNotBlank() == true
         }
         .debounce(DEBOUNCE_TIME)
         .flatMapLatest {
-            Timber.d("Inside flatMapLatest")
             getProduct(it.toString())
         }
         .onEach {
-            Timber.d("Inside onEach")
             displayFoundedItem(it)
         }
         .launchIn(lifecycleScope)
 
     private fun displayFoundedItem(item: NomenclatureItem?) = when {
         item != null -> {
-            Timber.d("Метод отображения найденого товара в номенклатуре")
             txtGood.text = item.name
             txtCode.text = item.code
             txtBarcode.text = item.barcode
@@ -444,18 +437,11 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             }
         }
         else -> {
-            when (currentScanMode) {
-                Common.MODESCAN.AUTO -> {
-                    clearFields()
-                }
-                else -> {
-
-                }
-            }
+            clearFields()
         }
     }
 
-    private fun clearFields() {
+    private fun clearFieldsAfterInsert() {
         "".also {
             edtBarcode.setText(it)
             edtCount.setText(it)
@@ -465,6 +451,33 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             txtTotal.text = it
             txtPrice.text = it
         }
+    }
+
+    private fun clearFields() {
+        when (currentScanMode) {
+            Common.MODESCAN.AUTO -> {
+                "".also {
+                    edtBarcode.setText(it)
+                    edtCount.setText(it)
+                    txtGood.text = it
+                    txtCode.text = it
+                    txtBarcode.text = it
+                    txtTotal.text = it
+                    txtPrice.text = it
+                }
+            }
+            Common.MODESCAN.MANUAL -> {
+                "".also {
+                    edtCount.setText(it)
+                    txtGood.text = it
+                    txtCode.text = it
+                    txtBarcode.text = it
+                    txtTotal.text = it
+                    txtPrice.text = it
+                }
+            }
+        }
+
     }
 
     private fun getProduct(
@@ -519,6 +532,13 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 FancyToast.CONFUSING,
                 false
             ).show()
+        } else if (edtBarcode.text.toString().toBigIntegerOrNull() == null) {
+            FancyToast.makeText(
+                applicationContext, "ШК пустой!",
+                FancyToast.LENGTH_SHORT,
+                FancyToast.CONFUSING,
+                false
+            ).show()
         } else {
             val inv = InvItem("", "", "", "", "")
             with(inv) {
@@ -534,7 +554,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 Common.insertInv(inv, applicationContext)
                 adapter?.notifyDataSetChanged()
                 withContext(Dispatchers.Main) {
-                    clearFields()
+                    clearFieldsAfterInsert()
                     moveFocus(edtBarcode)
                 }
             }
@@ -583,12 +603,9 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun initRecyclerView() {
-        rv.apply {
-            isFocusable = false
-            setOnFocusChangeListener { _, _ -> Timber.d("onFocus recyclerView") }
-        }
         adapter = InvAdapter(list, onItemClick)
         rv.apply {
+            isFocusable = false
             layoutManager = LinearLayoutManager(this@InventarisationActivity)
             setHasFixedSize(true)
             addItemDecoration(
@@ -612,7 +629,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
 
     private val onItemClick = object : InvAdapter.OnItemClickListener {
         override fun onClick(invItem: InvItem, position: Int) {
-            Timber.d("Item clicked with " + invItem.name)
             val bundle: Bundle = invItem.bundle(InvItem.serializer())
             val intent = Intent(this@InventarisationActivity, DetailActivity::class.java)
                 .apply {

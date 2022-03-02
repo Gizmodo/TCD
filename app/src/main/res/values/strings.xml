@@ -38,4 +38,5 @@
     <string name="manual">Ручной</string>
     <string name="save">Сохранить</string>
     <string name="title_quantity_dialog">Обновление количества:</string>
+    <string name="chronology">Хронология</string>
 </resources>
