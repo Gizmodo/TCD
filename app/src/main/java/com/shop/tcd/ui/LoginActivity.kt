@@ -14,12 +14,14 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.ActivityLoginBinding
 import com.shop.tcd.model.settings.GroupUser
 import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.repository.settings.RepositorySettings
 import com.shop.tcd.repository.settings.RetrofitServiceSettings
+import com.shop.tcd.ui.login.LoginViewModel
 import com.shop.tcd.utils.Common
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -220,7 +222,15 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var viewModel: LoginViewModel
     private fun loadSettings() {
+        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+        viewModel.usersLiveData.observe(this) {
+            Timber.d(it.toString())
+        }
+    }
+
+    private fun loadSettings1() {
         val repository = RepositorySettings(retrofitService)
         val response = repository.getSettings()
 
