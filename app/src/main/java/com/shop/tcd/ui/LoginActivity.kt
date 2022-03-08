@@ -21,7 +21,7 @@ import com.shop.tcd.model.settings.GroupUser
 import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.repository.settings.RepositorySettings
 import com.shop.tcd.repository.settings.RetrofitServiceSettings
-import com.shop.tcd.ui.login.LoginViewModel
+import com.shop.tcd.ui.login.LoginViewModel1
 import com.shop.tcd.utils.Common
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -222,9 +222,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var viewModel: LoginViewModel
+    private lateinit var viewModel: LoginViewModel1
     private fun loadSettings() {
-        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+        viewModel = ViewModelProvider(this)[LoginViewModel1::class.java]
         viewModel.usersLiveData.observe(this) {
             Timber.d(it.toString())
         }
