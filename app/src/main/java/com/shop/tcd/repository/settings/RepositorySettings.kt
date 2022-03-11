@@ -6,4 +6,5 @@ class RepositorySettings constructor(private val retrofitServiceSettings: Retrof
      * Загрузить настройки
      */
     fun getSettings() = retrofitServiceSettings.getSettings()
+    fun getPrintersList() = retrofitServiceSettings.getPrinters()
 }

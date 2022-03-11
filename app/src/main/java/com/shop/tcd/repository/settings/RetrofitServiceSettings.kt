@@ -1,11 +1,15 @@
 package com.shop.tcd.repository.settings
 
 import com.google.gson.GsonBuilder
+import com.shop.tcd.model.newsettigs.PrintersList
 import com.shop.tcd.utils.Common
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
@@ -19,6 +23,9 @@ interface RetrofitServiceSettings {
      **/
     @GET("SettingsForTSD.xml")
     fun getSettings(): Call<String>
+
+    @GET("Tech/hs/tsd/printers/get")
+    fun getPrinters(): Observable<PrintersList>
 
     companion object {
         private var retrofitServiceSettings: RetrofitServiceSettings? = null
@@ -46,6 +53,8 @@ interface RetrofitServiceSettings {
                     .client(client)
 //                    .baseUrl("http://192.168.88.33/TSD/hs/TSD/") // боевой адрес для Wi-Fi
                     .addConverterFactory(ScalarsConverterFactory.create())
+                    .addCallAdapterFactory(RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io()))
+
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
                 retrofitServiceSettings = retrofit.create(RetrofitServiceSettings::class.java)

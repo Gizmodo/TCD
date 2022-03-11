@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shop.tcd.App
 import com.shop.tcd.di.DaggerViewModelInjector
 import com.shop.tcd.di.DataBaseModule
 import com.shop.tcd.di.NetworkModule
@@ -18,11 +19,11 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class LoginViewModel(application: Application) : ViewModel() {
+class LoginViewModel : ViewModel() {
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
         .networkModule(NetworkModule())
-        .databaseModule(DataBaseModule(application))
+        .databaseModule(DataBaseModule(App.applicationContext() as Application))
         .build()
 
     init {
@@ -40,7 +41,6 @@ class LoginViewModel(application: Application) : ViewModel() {
         get() = _usersLiveData
 
     init {
-
         test()
     }
 

@@ -1,7 +1,6 @@
 package com.shop.tcd.di
 
 import android.app.Application
-import android.content.Context
 import com.shop.tcd.room.dao.GroupDao
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
@@ -11,11 +10,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class DataBaseModule(private val application: Application)  {
-
-    @Provides
-    @Singleton
-    fun provideApplicationContext(): Context = application.applicationContext
+class DataBaseModule(private val application: Application) {
 
     @Singleton
     @Provides
@@ -38,7 +33,7 @@ class DataBaseModule(private val application: Application)  {
     @Singleton
     @Provides
     fun provideDBInstance(): TCDRoomDatabase {
-        return TCDRoomDatabase.getDatabase(provideApplicationContext())
+        return TCDRoomDatabase.getDatabase(application)
     }
 
 

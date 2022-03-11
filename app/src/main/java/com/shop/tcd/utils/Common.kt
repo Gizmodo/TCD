@@ -7,6 +7,7 @@ import android.widget.EditText
 import androidx.annotation.CheckResult
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
+import com.shop.tcd.model.newsettigs.Printer
 import com.shop.tcd.model.settings.GroupUser
 import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.room.dao.InvDao
@@ -38,12 +39,13 @@ object Common {
 
     var BASE_URL_LOCAL = "http://10.0.2.2/"
     var BASE_URL_MMTR = "http://10.254.1.230/"
+    var BASE_URL_MMTR_NODEJS = "http://192.168.88.87:3000/"
     var BASE_URL_PRODUCTION = "http://192.168.0.154/"
 
     /**
      * Постоянный адрес с расположением файла настроек
      */
-    var BASE_URL = BASE_URL_PRODUCTION
+    var BASE_URL = BASE_URL_MMTR_NODEJS
 
     /**
      * Тестовый адрес с расположением файла настроек
@@ -73,6 +75,12 @@ object Common {
     fun isInit(): Boolean {
         return this::selectedShop.isInitialized
     }
+
+    /**
+     * Хранение выбранного принтера и его позиции
+     */
+    lateinit var selectedPrinter: Printer
+    var selectedPrinterPosition: Int = -1
 
     @DelicateCoroutinesApi
     suspend fun saveNomenclatureList(list: List<NomenclatureItem>, context: Context) {
