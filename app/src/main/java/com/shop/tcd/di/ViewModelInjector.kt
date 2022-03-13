@@ -1,6 +1,6 @@
 package com.shop.tcd.di
 
-import com.shop.tcd.ui.login.LoginViewModel
+import com.shop.tcd.v2.screen.login.LoginViewModel
 import dagger.Component
 import javax.inject.Singleton
 

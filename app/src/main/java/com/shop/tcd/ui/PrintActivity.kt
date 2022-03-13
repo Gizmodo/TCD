@@ -1,6 +1,8 @@
 package com.shop.tcd.ui
 
 import android.R
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -10,6 +12,7 @@ import com.shop.tcd.databinding.ActivityPrintBinding
 import com.shop.tcd.model.newsettigs.PrintersList
 import com.shop.tcd.repository.settings.RepositorySettings
 import com.shop.tcd.repository.settings.RetrofitServiceSettings
+import com.shop.tcd.v2.screen.login.TcpClientService
 import com.shop.tcd.utils.Common
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -62,5 +65,19 @@ class PrintActivity : AppCompatActivity() {
         }
     }
 
-    private fun btnPrint(view: View) {}
+    private fun btnPrint(view: View) {
+        runService()
+    }
+    private fun runService() {
+        val intent = Intent(this, TcpClientService::class.java)
+        intent.putExtra("payload", "payload")
+        intent.putExtra("ip", Common.selectedPrinter.ip)
+        stopService(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+    }
+
 }

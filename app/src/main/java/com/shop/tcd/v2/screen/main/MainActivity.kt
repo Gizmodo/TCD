@@ -1,14 +1,21 @@
-package com.shop.tcd.ui
+package com.shop.tcd.v2.screen.main
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
 import com.shashank.sony.fancytoastlib.FancyToast
+import com.shop.tcd.R
 import com.shop.tcd.databinding.ActivityMainBinding
 import com.shop.tcd.model.settings.Shop
+import com.shop.tcd.ui.CatalogueActivity
+import com.shop.tcd.ui.EXTRA_MESSAGE
+import com.shop.tcd.ui.InventarisationActivity
+import com.shop.tcd.ui.NomenclatureActivity
 import com.shop.tcd.utils.Common
 
 class MainActivity : AppCompatActivity() {
@@ -62,17 +69,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val model: MainActivityViewModel by viewModels()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupAutoComplete(binding.list, Common.shopsArray)
 
-        /*  // Get the Intent that started this activity and extract the string
-          val message = intent.getStringExtra(EXTRA_MESSAGE)
 
-          // Capture the layout's TextView and set the string as its text
-          val textView = findViewById<TextView>(R.id.textView).apply {
-              text = message
-          }*/
+//        setupAutoComplete(binding.list, Common.shopsArray)
+
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+       /* if (savedInstanceState == null) {
+            model.getIsAlreadyRegistered().observe(this) {
+                when (it) {
+                    true -> {
+                        navHostFragment.findNavController()
+                            .navigate(LoginFragmentDirections.actionLoginFragmentToMainFragment())
+                    }
+                    else -> Timber.i("NoAction")
+                }
+            }
+        }*/
     }
 
     /**

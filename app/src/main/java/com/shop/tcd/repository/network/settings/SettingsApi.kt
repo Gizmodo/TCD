@@ -4,6 +4,7 @@ import com.shop.tcd.model.newsettigs.PrintersList
 import com.shop.tcd.model.newsettigs.UserListItem
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.GET
 
 interface SettingsApi {
@@ -11,7 +12,9 @@ interface SettingsApi {
     fun getSettings(): Call<String>
 
     @GET("Tech/hs/tsd/users/get")
-    fun getUsers(): Observable<List<UserListItem>>
+    fun getUsersObservable(): Observable<List<UserListItem>>
+    @GET("Tech/hs/tsd/users/get")
+    suspend fun getUsersSuspend(): Response<List<UserListItem>>
 
     @GET("Tech/hs/tsd/shops/get")
     fun getShops(): Observable<List<UserListItem>>

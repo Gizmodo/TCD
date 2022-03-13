@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/ic_launcher_background"
-    tools:context=".ui.login.LoginFragment">
+    android:color="@drawable/ic_launcher_background"
+    tools:context=".v2.screen.login.LoginFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginInputLayout"
@@ -86,8 +86,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="368dp"
-        android:layout_height="393dp"
+        android:layout_width="389dp"
+        android:layout_height="234dp"
         android:backgroundTint="#EC0D0D"
         android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintBottom_toTopOf="@+id/loginInputLayout"

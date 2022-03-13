@@ -1,4 +1,4 @@
-package com.shop.tcd.ui.login
+package com.shop.tcd.v2.screen.login
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -15,11 +15,21 @@ import com.shop.tcd.model.newsettigs.UserListItem
 import com.shop.tcd.repository.network.settings.SettingsApi
 import com.shop.tcd.room.dao.InvDao
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 class LoginViewModel : ViewModel() {
+    val errorMessage = MutableLiveData<String>()
+    val movieList = MutableLiveData<List<UserListItem>>()
+    var job: Job? = null
+    val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        onError("Exception handled: ${throwable.localizedMessage}")
+    }
+    val loading = MutableLiveData<Boolean>()
+
+    private var usersList: List<UserListItem>? = null
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
         .networkModule(NetworkModule())
@@ -36,12 +46,51 @@ class LoginViewModel : ViewModel() {
     @Inject
     lateinit var invDao: InvDao
 
+    @Inject
+    lateinit var settingsApi: SettingsApi
+
     private var _usersLiveData = MutableLiveData<List<UserListItem>>()
     val usersLiveData: LiveData<List<UserListItem>>
         get() = _usersLiveData
 
     init {
-        test()
+//        test()
+        loadUsers()
+    }
+
+    fun getAllMovies() {
+        job = CoroutineScope(Dispatchers.IO).launch {
+            val response = mainRepository.getAllMovies()
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    movieList.postValue(response.body())
+                    loading.value = false
+                } else {
+                    onError("Error : ${response.message()} ")
+                }
+            }
+        }
+
+    }
+
+    private fun onError(message: String) {
+        errorMessage.value = message
+        loading.value = false
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        job?.cancel()
+    }
+
+    private fun loadUsers() {
+        settingsApi.getUsers().observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                usersList = it
+            }, {
+                usersList = null
+            })
     }
 
     private fun test() {

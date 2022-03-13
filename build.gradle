@@ -1,5 +1,50 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
+buildscript {
+    ext {
+        sdk = 32
+        appcompat = "1.4.1"
+        broadcast_receiver = "1.0.6"
+        constraintlayout = "2.1.3"
+        core_ktx = "1.7.0"
+        coroutines = "1.6.0"
+        coroutines = "1.6.0"
+        dagger = "2.41"
+        datastore = "1.0.0"
+        fancy = "2.0.1"
+        fragment_ktx = "1.5.0-alpha03"
+        glide = '4.13.1'
+        kotlin = "1.6.20-RC"
+        lifecycle = "2.5.0-alpha04"
+        lifecycle_extensions = "2.2.0"
+        material = "1.6.0-alpha03"
+        navigation  = '2.5.0-alpha03'
+        okhttp = '5.0.0-alpha.5'
+        retrofit = "2.9.0"
+        room = "2.4.2"
+        rxandroid = "3.0.0"
+        rxjava = "3.1.3"
+        serialization_json = "1.3.2"
+        swiperefreshlayout = "1.2.0-alpha01"
+        timber = "5.0.1"
+        work = "2.8.0-alpha01"
+    }
+    repositories {
+        google()
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation"
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.19.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
+    }
+}
+plugins {
+    id 'com.android.application' version '7.3.0-alpha05' apply false
+    id 'com.android.library' version '7.3.0-alpha05' apply false
+    id 'org.jetbrains.kotlin.android' version "$kotlin" apply false
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin" apply false
+    id "org.jetbrains.kotlin.plugin.serialization" version "$kotlin"
+}
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

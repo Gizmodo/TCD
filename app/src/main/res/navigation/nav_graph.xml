@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.shop.tcd.ui.login.LoginFragment"
+        android:name="com.shop.tcd.v2.screen.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <action
@@ -38,10 +38,18 @@
         <action
             android:id="@+id/action_mainFragment_to_inventoryFragment"
             app:destination="@id/inventoryFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_printFragment"
+            app:destination="@id/printFragment" />
     </fragment>
     <fragment
         android:id="@+id/nomenclatureFragment"
         android:name="com.shop.tcd.ui.nomenclature.NomenclatureFragment"
         android:label="fragment_nomenclature"
         tools:layout="@layout/fragment_nomenclature" />
+    <fragment
+        android:id="@+id/printFragment"
+        android:name="com.shop.tcd.ui.print.PrintFragment"
+        android:label="fragment_print"
+        tools:layout="@layout/fragment_print" />
 </navigation>

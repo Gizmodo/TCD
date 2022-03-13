@@ -14,21 +14,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TCD"
         android:usesCleartextTraffic="true">
+        <service
+            android:name=".TcpClientService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name=".ui.PrintActivity"
             android:exported="false"
-            android:parentActivityName=".ui.MainActivity"
-
-            />
+            android:parentActivityName="com.shop.tcd.v2.screen.main.MainActivity" />
         <activity
             android:name=".ui.LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".ui.ListActivity"
             android:exported="false"
@@ -40,11 +37,11 @@
         <activity
             android:name=".ui.InventarisationActivity"
             android:exported="true"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName="com.shop.tcd.v2.screen.main.MainActivity" />
         <activity
             android:name=".ui.NomenclatureActivity"
             android:exported="true"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName="com.shop.tcd.v2.screen.main.MainActivity" />
         <activity
             android:name=".ui.CatalogueGroupActivity"
             android:exported="true"
@@ -52,11 +49,16 @@
         <activity
             android:name=".ui.CatalogueActivity"
             android:exported="true"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName="com.shop.tcd.v2.screen.main.MainActivity" />
+
         <activity
-            android:name=".ui.MainActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.LoginActivity" />
+            android:name="com.shop.tcd.v2.screen.main.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"
