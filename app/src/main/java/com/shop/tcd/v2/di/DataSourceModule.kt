@@ -1,4 +1,4 @@
-package com.shop.tcd.di
+package com.shop.tcd.v2.di
 
 import com.shop.tcd.room.database.DatabaseHelper
 import com.shop.tcd.room.database.DatabaseHelperImpl

@@ -1,4 +1,4 @@
-package com.shop.tcd.di
+package com.shop.tcd.v2.di
 
 import android.app.Application
 import android.content.Context

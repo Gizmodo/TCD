@@ -1,6 +1,7 @@
-package com.shop.tcd.di
+package com.shop.tcd.v2.di
 
 import com.shop.tcd.v2.screen.login.LoginViewModel
+import com.shop.tcd.v2.screen.main.MainViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -13,6 +14,7 @@ import javax.inject.Singleton
 )
 interface ViewModelInjector {
     fun inject(viewmodel: LoginViewModel)
+    fun inject(viewmodel: MainViewModel)
 
     @Component.Builder
     interface Builder {

@@ -31,7 +31,7 @@ interface RetrofitServiceSettings {
         private var retrofitServiceSettings: RetrofitServiceSettings? = null
 
         fun getInstance(): RetrofitServiceSettings {
-            Timber.d("RetrofitServiceSettings.getInstance Called");
+            Timber.d("RetrofitServiceSettings.getInstance Called")
             if (retrofitServiceSettings == null) {
                 val logging = HttpLoggingInterceptor { message -> Timber.i(message) }
                 logging.setLevel(HttpLoggingInterceptor.Level.BODY)

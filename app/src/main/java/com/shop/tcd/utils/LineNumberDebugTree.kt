@@ -9,6 +9,6 @@ class LineNumberDebugTree : Timber.DebugTree() {
     }
 
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        super.log(priority, "TCD_TAG_$tag", message, t)
+        super.log(priority, "telega_$tag", message, t)
     }
 }

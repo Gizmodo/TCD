@@ -22,7 +22,7 @@
         <activity
             android:name=".ui.PrintActivity"
             android:exported="false"
-            android:parentActivityName="com.shop.tcd.v2.screen.main.MainActivity" />
+            android:parentActivityName="com.shop.tcd.v2.screen.MainActivity" />
         <activity
             android:name=".ui.LoginActivity"
             android:exported="true"></activity>
@@ -37,11 +37,11 @@
         <activity
             android:name=".ui.InventarisationActivity"
             android:exported="true"
-            android:parentActivityName="com.shop.tcd.v2.screen.main.MainActivity" />
+            android:parentActivityName="com.shop.tcd.v2.screen.MainActivity" />
         <activity
             android:name=".ui.NomenclatureActivity"
             android:exported="true"
-            android:parentActivityName="com.shop.tcd.v2.screen.main.MainActivity" />
+            android:parentActivityName="com.shop.tcd.v2.screen.MainActivity" />
         <activity
             android:name=".ui.CatalogueGroupActivity"
             android:exported="true"
@@ -49,10 +49,10 @@
         <activity
             android:name=".ui.CatalogueActivity"
             android:exported="true"
-            android:parentActivityName="com.shop.tcd.v2.screen.main.MainActivity" />
+            android:parentActivityName="com.shop.tcd.v2.screen.MainActivity" />
 
         <activity
-            android:name="com.shop.tcd.v2.screen.main.MainActivity"
+            android:name="com.shop.tcd.v2.screen.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

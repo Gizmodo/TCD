@@ -5,10 +5,10 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.MainFragment">
+    tools:context=".v2.screen.main.MainFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/menu"
+        android:id="@+id/tilShopsList"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <AutoCompleteTextView
-            android:id="@+id/list"
+            android:id="@+id/edtShop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/shop_select"
@@ -29,53 +29,53 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnCatalog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:onClick="btnShowCatalogue"
         android:text="@string/loadcatalog"
         app:icon="@drawable/ic_note"
-        app:layout_constraintBottom_toTopOf="@id/button2"
+        app:layout_constraintBottom_toTopOf="@id/btnNomenclature"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menu"
+        app:layout_constraintTop_toBottomOf="@id/tilShopsList"
         app:layout_constraintVertical_bias="0.45"
         app:layout_constraintVertical_chainStyle="packed"
         tools:ignore="UsingOnClickInXml" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btnNomenclature"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:onClick="btnShowNomenclature"
         android:text="@string/nomenсlatura"
         app:icon="@drawable/ic_book"
-        app:layout_constraintBottom_toTopOf="@id/button4"
+        app:layout_constraintBottom_toTopOf="@id/btnInventory"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button"
+        app:layout_constraintTop_toBottomOf="@id/btnCatalog"
         tools:ignore="UsingOnClickInXml" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btnInventory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:onClick="btnShowRecalc"
         android:text="@string/recalcgoods"
         app:icon="@drawable/ic_baseline_downloading_24"
-        app:layout_constraintBottom_toTopOf="@id/button5"
+        app:layout_constraintBottom_toTopOf="@id/btnPrint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button2"
+        app:layout_constraintTop_toBottomOf="@id/btnNomenclature"
         tools:ignore="UsingOnClickInXml" />
 
     <Button
-        android:id="@+id/button5"
+        android:id="@+id/btnPrint"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -86,6 +86,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button4"
+        app:layout_constraintTop_toBottomOf="@id/btnInventory"
         tools:ignore="UsingOnClickInXml" />
 </androidx.constraintlayout.widget.ConstraintLayout>

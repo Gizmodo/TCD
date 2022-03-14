@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.screen.main
+package com.shop.tcd.v2.screen
 
 import android.content.Intent
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.shop.tcd.di
+package com.shop.tcd.v2.di
 
 import com.google.gson.GsonBuilder
 import com.shop.tcd.repository.network.main.MainApi
@@ -36,9 +36,9 @@ class NetworkModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectTimeout(1, TimeUnit.MINUTES)
-            .readTimeout(1, TimeUnit.MINUTES)
-            .writeTimeout(1, TimeUnit.MINUTES)
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
             .build()
     }
 

@@ -21,7 +21,7 @@ import com.shop.tcd.model.settings.GroupUser
 import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.repository.settings.RepositorySettings
 import com.shop.tcd.repository.settings.RetrofitServiceSettings
-import com.shop.tcd.v2.screen.main.MainActivity
+import com.shop.tcd.v2.screen.MainActivity
 import com.shop.tcd.v2.screen.login.LoginViewModel
 import com.shop.tcd.utils.Common
 import org.xmlpull.v1.XmlPullParser
@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
         showIPAddress()
         showVPNUsage()
         setContentView(binding.root)
-        Common.usersArray?.let { setupAutoComplete(binding.edtLogin, it) }
+        Common.usersArray.let { setupAutoComplete(binding.edtLogin, it) }
         loadSettings()
     }
 

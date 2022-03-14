@@ -7,6 +7,7 @@ plugins {
     id 'androidx.navigation.safeargs'
     id 'com.google.devtools.ksp' version '1.6.20-RC-1.0.4'
     id "org.jetbrains.kotlin.plugin.serialization"
+    id "scabbard.gradle" version "0.5.0"
 }
 ext.versionMajor = 1
 ext.versionMinor = 1
@@ -47,7 +48,6 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
         dataBinding true
@@ -65,11 +65,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
-        freeCompilerArgs = ['-Xjvm-default=enable'] //enable or compatibility
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.0.1'
+        freeCompilerArgs = ['-Xjvm-default=all'] //enable or compatibility
     }
 }
 detekt {
@@ -118,7 +114,7 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.karczews:rx2-broadcast-receiver:$broadcast_receiver"
     implementation "com.google.android.material:material:$material"
-    implementation "com.google.code.gson:gson:$retrofit"
+    implementation "com.google.code.gson:gson:$gson"
     implementation "com.google.dagger:dagger:$dagger"
     implementation "com.jakewharton.timber:timber:$timber"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
@@ -132,11 +128,17 @@ dependencies {
     implementation "io.reactivex.rxjava3:rxjava:$rxjava"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_json"
     kapt "com.google.dagger:dagger-compiler:$dagger"
     kapt "com.github.bumptech.glide:compiler:$glide"
     ksp "androidx.room:room-compiler:$room"
+}
+scabbard {
+    enabled true
+    failOnError true
+    fullBindingGraphValidation true
+    qualifiedNames false
+    outputFormat "svg"
 }
 kotlin {
     sourceSets {
