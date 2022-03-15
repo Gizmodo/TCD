@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.shop.tcd.repository.network.main.MainApi
 import com.shop.tcd.repository.network.settings.SettingsApi
 import com.shop.tcd.utils.Common
+import com.shop.tcd.utils.Common.OK_HTTP_TIMEOUT
 import dagger.Module
 import dagger.Provides
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -18,7 +19,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
-class NetworkModule {
+object NetworkModule {
 
     @Singleton
     @Provides
@@ -36,9 +37,9 @@ class NetworkModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
+            .writeTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
             .build()
     }
 

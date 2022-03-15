@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.appcompat.app.AppCompatActivity
 import com.shop.tcd.databinding.ActivityPrintBinding
-import com.shop.tcd.model.newsettigs.PrintersList
+import com.shop.tcd.v2.data.printer.PrintersList
 import com.shop.tcd.repository.settings.RepositorySettings
 import com.shop.tcd.repository.settings.RetrofitServiceSettings
 import com.shop.tcd.v2.screen.login.TcpClientService

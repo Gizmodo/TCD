@@ -7,12 +7,12 @@ import android.widget.EditText
 import androidx.annotation.CheckResult
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
-import com.shop.tcd.model.newsettigs.Printer
 import com.shop.tcd.model.settings.GroupUser
 import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.room.dao.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
+import com.shop.tcd.v2.data.printer.Printer
 import com.shop.tcd.v2.data.shop.ShopModel
 import com.shop.tcd.v2.data.user.UserModel
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -26,6 +26,12 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 object Common {
+    const val OK_HTTP_TIMEOUT = 15L
+    const val TCP_SERVICE_TCP_TIMEOUT_INT = 2000
+    const val TCP_SERVICE_PORT = 9100
+    const val TCP_SERVICE_DNS_TIMEOUT = 2000L
+    const val TCP_SERVICE_THREAD_TIMEOUT = 2000L
+
     enum class MODESCAN(val modeScan: Int = 0) {
         AUTO(0),
         MANUAL(1)

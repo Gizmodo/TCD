@@ -5,16 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.model.newsettigs.UserListItem
 import com.shop.tcd.repository.network.settings.SettingsApi
 import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.v2.data.user.UsersList
-import com.shop.tcd.v2.di.DaggerViewModelInjector
-import com.shop.tcd.v2.di.DataBaseModule
-import com.shop.tcd.v2.di.NetworkModule
-import com.shop.tcd.v2.di.ViewModelInjector
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.shop.tcd.v2.datastore.DataStoreRepository
+import com.shop.tcd.v2.di.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -25,17 +20,21 @@ class LoginViewModel : ViewModel() {
         onError("Exception handled: ${throwable.localizedMessage}")
     }
     val loading = MutableLiveData<Boolean>()
-
-    private var usersListObservable: List<UserListItem>? = null
+    private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .networkModule(NetworkModule())
-        .databaseModule(DataBaseModule(App.applicationContext() as Application))
+        .app(AppModule(context))
+        .nm(NetworkModule)
+        .dbm(DataBaseModule(context))
+        .datastore(DataStoreModule)
         .build()
 
     init {
         injector.inject(this)
     }
+
+    @Inject
+    lateinit var dataStoreRepositoryImpl: DataStoreRepository
 
     @Inject
     lateinit var homeApi: SettingsApi
@@ -49,12 +48,6 @@ class LoginViewModel : ViewModel() {
     private var _usersLiveData = MutableLiveData<UsersList>()
     val usersLiveData: LiveData<UsersList>
         get() = _usersLiveData
-
-    init {
-//        test()
-//        loadUsersObservable()
-//        loadUsersSuspend()
-    }
 
     fun loadUsersSuspend() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -78,16 +71,6 @@ class LoginViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         job?.cancel()
-    }
-
-    private fun loadUsersObservable() {
-        settingsApi.getUsersObservable().observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                usersListObservable = it
-            }, {
-                usersListObservable = null
-            })
     }
 
     /* private fun test() {

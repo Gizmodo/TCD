@@ -1,4 +1,4 @@
-package com.shop.tcd.model.newsettigs
+package com.shop.tcd.v2.data.printer
 
 data class Printer(
     val ip: String,

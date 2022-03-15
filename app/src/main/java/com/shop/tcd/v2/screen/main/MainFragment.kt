@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.Animation
-import android.view.animation.RotateAnimation
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -17,9 +15,7 @@ import androidx.navigation.fragment.findNavController
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.FragmentMainBinding
 import com.shop.tcd.utils.Common
-import com.shop.tcd.utils.Common.setReadOnly
 import com.shop.tcd.v2.data.shop.ShopsList
-import com.shop.tcd.v2.data.user.UsersList
 import timber.log.Timber
 
 class MainFragment : Fragment() {
@@ -30,11 +26,12 @@ class MainFragment : Fragment() {
     private lateinit var btnCatalog: Button
     private lateinit var btnNomenclature: Button
     private lateinit var btnInventory: Button
+    private lateinit var shimmer: ConstraintLayout
     private lateinit var shopsList: ShopsList
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this, MainViewModelFactory())[MainViewModel::class.java]
@@ -46,8 +43,24 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initUI()
         setStateUI(enabled = false)
+        restoreSelectedShop()
         initViewModelObservers()
         viewModel.loadShopsSuspend()
+    }
+
+    private fun restoreSelectedShop() {
+        if (Common.selectedShopModelPosition != -1) {
+            binding.edtShop.setText(Common.selectedShopModel.name)
+            setStateUI(enabled = true)
+        }
+    }
+
+    private fun showShimmer() {
+        shimmer.visibility = View.VISIBLE
+    }
+
+    private fun hideShimmer() {
+        shimmer.visibility = View.GONE
     }
 
     private fun setStateUI(enabled: Boolean) {
@@ -58,6 +71,7 @@ class MainFragment : Fragment() {
     }
 
     private fun initViewModelObservers() {
+// TODO: Двойной вызов! 
         viewModel.shopsLiveData.observe(this) {
             Timber.d(it.toString())
             shopsList = it
@@ -76,10 +90,13 @@ class MainFragment : Fragment() {
         }
 
         viewModel.loading.observe(this) {
-            if (it) {
-                setStateUI(enabled = false)
-            } else {
-                setStateUI(enabled = true)
+            when {
+                it -> {
+                    showShimmer()
+                }
+                else -> {
+                    hideShimmer()
+                }
             }
         }
     }
@@ -100,6 +117,9 @@ class MainFragment : Fragment() {
         view.setOnItemClickListener { _, _, position, _ ->
             Common.selectedShopModel = items[position]
             Common.selectedShopModelPosition = position
+            Common.BASE_SHOP_URL =
+                "http://" + items[position].address + "/" + items[position].service + "/hs/TSD/"
+            setStateUI(enabled = true)
         }
         if (Common.selectedShopModelPosition != -1) {
             view.setText(adapter.getItem(Common.selectedShopModelPosition), false)
@@ -111,6 +131,7 @@ class MainFragment : Fragment() {
         btnNomenclature = binding.btnNomenclature
         btnInventory = binding.btnInventory
         btnPrint = binding.btnPrint
+        shimmer = binding.shimmer
         initUIListeners()
     }
 

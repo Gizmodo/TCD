@@ -8,8 +8,11 @@ import javax.inject.Singleton
 @Singleton
 @Component(
     modules = [
+        AppModule::class,
         NetworkModule::class,
-        DataBaseModule::class
+        DataBaseModule::class,
+        DataSourceModule::class,
+        DataStoreModule::class
     ]
 )
 interface ViewModelInjector {
@@ -19,7 +22,10 @@ interface ViewModelInjector {
     @Component.Builder
     interface Builder {
         fun build(): ViewModelInjector
-        fun networkModule(networkModule: NetworkModule): Builder
-        fun databaseModule(dataBaseModule: DataBaseModule): Builder
+        fun app(appModule: AppModule):Builder
+        fun nm(networkModule: NetworkModule): Builder
+        fun dbm(dataBaseModule: DataBaseModule): Builder
+        fun dbh(databaseHelper: DataSourceModule): Builder
+        fun datastore(datastore: DataStoreModule): Builder
     }
 }

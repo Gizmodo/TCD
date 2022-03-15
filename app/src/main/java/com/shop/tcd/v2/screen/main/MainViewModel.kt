@@ -5,28 +5,29 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.v2.di.DaggerViewModelInjector
-import com.shop.tcd.v2.di.DataBaseModule
-import com.shop.tcd.v2.di.NetworkModule
-import com.shop.tcd.v2.di.ViewModelInjector
-import com.shop.tcd.model.newsettigs.UserListItem
 import com.shop.tcd.repository.network.settings.SettingsApi
-import com.shop.tcd.room.dao.InvDao
+import com.shop.tcd.room.database.DatabaseHelper
 import com.shop.tcd.v2.data.shop.ShopsList
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.shop.tcd.v2.di.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MainViewModel : ViewModel() {
+    private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .networkModule(NetworkModule())
+        .app(AppModule(context))
+        .nm(NetworkModule)
+        .dbm(DataBaseModule(context))
+        .dbh(DataSourceModule)
         .build()
 
+    // TODO:  Сделать DataBaseModule без context как DataSourceModule
     init {
         injector.inject(this)
     }
+//@Inject lateinit var dbhelpr: DatabaseHelper
+
 
     @Inject
     lateinit var settingsApi: SettingsApi
@@ -35,8 +36,14 @@ class MainViewModel : ViewModel() {
     val shopsLiveData: LiveData<ShopsList>
         get() = _shopsLiveData
 
-    val errorMessage = MutableLiveData<String>()
-    val loading = MutableLiveData<Boolean>()
+    private var _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String>
+        get() = _errorMessage
+
+    private var _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean>
+        get() = _loading
+
     var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
@@ -48,7 +55,7 @@ class MainViewModel : ViewModel() {
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     _shopsLiveData.postValue(response.body())
-                    loading.value = false
+                    _loading.value = false
                 } else {
                     onError("Error : ${response.message()} ")
                 }
@@ -57,8 +64,8 @@ class MainViewModel : ViewModel() {
     }
 
     private fun onError(message: String) {
-        errorMessage.postValue(message)
-        loading.postValue(true)
+        _errorMessage.postValue(message)
+        _loading.postValue(true)
     }
 
     override fun onCleared() {

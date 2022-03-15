@@ -2,7 +2,6 @@ package com.shop.tcd.v2.screen.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.shop.tcd.v2.screen.login.LoginViewModel
 
 @Suppress("UNCHECKED_CAST")
 class MainViewModelFactory : ViewModelProvider.Factory {

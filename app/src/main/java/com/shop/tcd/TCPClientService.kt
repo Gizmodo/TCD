@@ -11,6 +11,10 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.shop.tcd.R
+import com.shop.tcd.utils.Common.TCP_SERVICE_DNS_TIMEOUT
+import com.shop.tcd.utils.Common.TCP_SERVICE_PORT
+import com.shop.tcd.utils.Common.TCP_SERVICE_TCP_TIMEOUT_INT
+import com.shop.tcd.utils.Common.TCP_SERVICE_THREAD_TIMEOUT
 import com.shop.tcd.utils.TimeSliceExecutor
 import timber.log.Timber
 import java.io.DataOutputStream
@@ -26,8 +30,8 @@ class TcpClientService : Service() {
     @Throws(IOException::class)
     private fun buildSocket(): Socket {
         val socket = Socket()
-        socket.soTimeout = 2000
-        socket.connect(InetSocketAddress(resolveHost(ip, 2000), 9100), 3000)
+        socket.soTimeout = TCP_SERVICE_TCP_TIMEOUT_INT
+        socket.connect(InetSocketAddress(resolveHost(ip, TCP_SERVICE_DNS_TIMEOUT), TCP_SERVICE_PORT), TCP_SERVICE_TCP_TIMEOUT_INT)
         return socket
     }
 
@@ -68,7 +72,7 @@ class TcpClientService : Service() {
             while (working.get()) {
                 try {
                     dataOutputStream!!.writeUTF(message)
-                    Thread.sleep(2000L)
+                    Thread.sleep(TCP_SERVICE_THREAD_TIMEOUT)
                     dataOutputStream!!.close()
                     working.set(false)
                     terminateService()

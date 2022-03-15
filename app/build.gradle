@@ -116,6 +116,10 @@ dependencies {
     implementation "com.google.android.material:material:$material"
     implementation "com.google.code.gson:gson:$gson"
     implementation "com.google.dagger:dagger:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
+    implementation "com.google.dagger:dagger-android:$dagger"
+    implementation "com.google.dagger:dagger-android-support:$dagger"
+    kapt "com.google.dagger:dagger-android-processor:$dagger"
     implementation "com.jakewharton.timber:timber:$timber"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
     implementation "com.squareup.okhttp3:okhttp:$okhttp"
@@ -129,12 +133,11 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_json"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
     kapt "com.github.bumptech.glide:compiler:$glide"
     ksp "androidx.room:room-compiler:$room"
 }
 scabbard {
-    enabled true
+    enabled false
     failOnError true
     fullBindingGraphValidation true
     qualifiedNames false
