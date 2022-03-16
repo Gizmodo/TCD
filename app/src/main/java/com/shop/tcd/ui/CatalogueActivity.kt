@@ -177,9 +177,7 @@ class CatalogueActivity : AppCompatActivity() {
      * Загрузка по группам. Открывается дочернее окно со списком групп.
      */
     fun btnLoadByGroups(view: View) {
-        val intent = Intent(this, CatalogueGroupActivity::class.java).apply {
-            putExtra(EXTRA_MESSAGE, "test")
-        }
+        val intent = Intent(this, CatalogueGroupActivity::class.java)
         startActivity(intent)
     }
 

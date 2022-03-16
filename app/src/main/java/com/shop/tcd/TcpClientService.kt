@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.screen.login
+package com.shop.tcd
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -10,7 +10,6 @@ import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.shop.tcd.R
 import com.shop.tcd.utils.Common.TCP_SERVICE_DNS_TIMEOUT
 import com.shop.tcd.utils.Common.TCP_SERVICE_PORT
 import com.shop.tcd.utils.Common.TCP_SERVICE_TCP_TIMEOUT_INT
@@ -67,7 +66,7 @@ class TcpClientService : Service() {
 
     private val runnable: Runnable = Runnable {
         try {
-            Timber.d("Start service")
+            Timber.d("Runnable")
             socket = buildSocket()
             dataOutputStream = DataOutputStream(socket.getOutputStream())
             while (working.get()) {
@@ -103,6 +102,7 @@ class TcpClientService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Timber.d("onStartCommand")
         message = intent?.extras?.getString("payload").toString()
         ip = intent?.extras?.getString("ip").toString()
         return super.onStartCommand(intent, flags, startId)
@@ -124,6 +124,7 @@ class TcpClientService : Service() {
     }
 
     private fun startMeForeground() {
+        Timber.d("startMeForeground")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannelId = packageName
             val channelName = "Tcp Client Background Service"

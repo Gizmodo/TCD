@@ -18,7 +18,7 @@ buildscript {
         lifecycle_extensions = "2.2.0"
         material = "1.6.0-alpha03"
         navigation  = "2.5.0-alpha03"
-        okhttp = "5.0.0-alpha.5"
+        okhttp = "5.0.0-alpha.6"
         retrofit = "2.9.0"
         room = "2.4.2"
         rxandroid = "3.0.0"

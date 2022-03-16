@@ -10,17 +10,16 @@ import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.FragmentMainBinding
 import com.shop.tcd.utils.Common
 import com.shop.tcd.v2.data.shop.ShopsList
+import com.shop.tcd.v2.screen.print.PrintViewModel
+import com.shop.tcd.v2.utils.extension.getViewModel
+import com.shop.tcd.v2.utils.navigateExt
 import timber.log.Timber
 
 class MainFragment : Fragment() {
-    private lateinit var nav: NavController
-    private lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentMainBinding
     private lateinit var btnPrint: Button
     private lateinit var btnCatalog: Button
@@ -28,14 +27,15 @@ class MainFragment : Fragment() {
     private lateinit var btnInventory: Button
     private lateinit var shimmer: ConstraintLayout
     private lateinit var shopsList: ShopsList
-
+    private val viewModel: MainViewModel by lazy {
+        getViewModel { MainViewModel() }
+    }
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this, MainViewModelFactory())[MainViewModel::class.java]
-        nav = findNavController()
         return binding.root
     }
 
@@ -72,13 +72,13 @@ class MainFragment : Fragment() {
 
     private fun initViewModelObservers() {
 // TODO: Двойной вызов! 
-        viewModel.shopsLiveData.observe(this) {
+        viewModel.shopsLiveData.observe(viewLifecycleOwner) {
             Timber.d(it.toString())
             shopsList = it
             setupShops(binding.edtShop, it)
         }
 
-        viewModel.errorMessage.observe(this) {
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
             FancyToast.makeText(
                 activity?.applicationContext,
@@ -89,7 +89,7 @@ class MainFragment : Fragment() {
             ).show()
         }
 
-        viewModel.loading.observe(this) {
+        viewModel.loading.observe(viewLifecycleOwner) {
             when {
                 it -> {
                     showShimmer()
@@ -136,32 +136,16 @@ class MainFragment : Fragment() {
 
     private fun initUIListeners() {
         btnCatalog.setOnClickListener {
-            navigateCatalogFragment()
+            navigateExt(MainFragmentDirections.actionMainFragmentToCatalogFragment())
         }
         btnNomenclature.setOnClickListener {
-            navigateNomenclatureFragment()
+            navigateExt(MainFragmentDirections.actionMainFragmentToNomenclatureFragment())
         }
         btnInventory.setOnClickListener {
-            navigateInventoryFragment()
+            navigateExt(MainFragmentDirections.actionMainFragmentToInventoryFragment())
         }
         btnPrint.setOnClickListener {
-            navigatePrintFragment()
+            navigateExt(MainFragmentDirections.actionMainFragmentToPrintFragment())
         }
-    }
-
-    private fun navigateCatalogFragment() {
-        nav.navigate(MainFragmentDirections.actionMainFragmentToCatalogFragment())
-    }
-
-    private fun navigateNomenclatureFragment() {
-        nav.navigate(MainFragmentDirections.actionMainFragmentToNomenclatureFragment())
-    }
-
-    private fun navigateInventoryFragment() {
-        nav.navigate(MainFragmentDirections.actionMainFragmentToInventoryFragment())
-    }
-
-    private fun navigatePrintFragment() {
-        nav.navigate(MainFragmentDirections.actionMainFragmentToPrintFragment())
     }
 }

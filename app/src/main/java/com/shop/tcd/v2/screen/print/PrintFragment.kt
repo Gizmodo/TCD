@@ -11,31 +11,35 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import androidx.work.*
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.FragmentPrintBinding
 import com.shop.tcd.utils.Common
 import com.shop.tcd.v2.data.printer.PrintersList
-import com.shop.tcd.v2.screen.login.TcpClientService
+import com.shop.tcd.TcpClientService
+import com.shop.tcd.v2.ExampleWorker
+import com.shop.tcd.v2.utils.extension.getViewModel
 import timber.log.Timber
 
 class PrintFragment : Fragment() {
-    private lateinit var nav: NavController
-    private lateinit var viewModel: PrintViewModel
+    /*  val vm = getViewModel<CatchViewModel>()
+      val vm1: CatchViewModel = getViewModel()
+      val activityScopedVm = activity?.getViewModel<CatchViewModel>()
+      val activityScopedVm2 = activity?.getViewModel { CatchViewModel().apply { init(stuff) } }*/
     private lateinit var binding: FragmentPrintBinding
     private lateinit var btnPrint: Button
     private lateinit var shimmer: ConstraintLayout
     private lateinit var printersList: PrintersList
+    private val viewModel: PrintViewModel by lazy {
+        getViewModel { PrintViewModel() }
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentPrintBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this, PrintViewModelFactory())[PrintViewModel::class.java]
-        nav = findNavController()
         return binding.root
     }
 
@@ -81,13 +85,13 @@ class PrintFragment : Fragment() {
 
     private fun initViewModelObservers() {
 // TODO: Двойной вызов!
-        viewModel.printersLiveData.observe(this) {
+        viewModel.printersLiveData.observe(viewLifecycleOwner) {
             Timber.d(it.toString())
             printersList = it
             setupAutoComplete(binding.edtPrinter, it)
         }
 
-        viewModel.errorMessage.observe(this) {
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
             FancyToast.makeText(
                 activity?.applicationContext,
@@ -98,7 +102,7 @@ class PrintFragment : Fragment() {
             ).show()
         }
 
-        viewModel.loading.observe(this) {
+        viewModel.loading.observe(viewLifecycleOwner) {
             when {
                 it -> {
                     showShimmer()
@@ -110,7 +114,7 @@ class PrintFragment : Fragment() {
         }
     }
 
-    fun getRandomString(length: Int): String {
+    private fun getRandomString(length: Int): String {
         val charset = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz0123456789"
         return (1..length)
             .map { charset.random() }
@@ -122,12 +126,30 @@ class PrintFragment : Fragment() {
         val intent = Intent(requireContext(), TcpClientService::class.java)
         intent.putExtra("payload", getRandomString(15))
         intent.putExtra("ip", Common.selectedPrinter.ip)
-        activity?.stopService(intent)
+        requireContext().stopService(intent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            activity?.startForegroundService(intent)
+            requireContext().startForegroundService(intent)
         } else {
-            activity?.startService(intent)
+            requireContext().startService(intent)
         }
+    }
+
+    fun runHeavyWork() {
+
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresStorageNotLow(true)
+            .build()
+
+        val heavyWorkRequest: WorkRequest =
+            OneTimeWorkRequest.Builder(ExampleWorker::class.java)
+                .setConstraints(constraints)
+                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                .build()
+
+        WorkManager
+            .getInstance(requireContext())
+            .enqueue(heavyWorkRequest)
     }
 
     private fun setupAutoComplete(view: AutoCompleteTextView, items: PrintersList) {

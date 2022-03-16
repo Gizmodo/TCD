@@ -48,7 +48,6 @@ class PrintViewModel : ViewModel() {
     @Inject
     lateinit var settingsApi: SettingsApi
 
-
     fun loadPrinters() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = settingsApi.getPrinters()

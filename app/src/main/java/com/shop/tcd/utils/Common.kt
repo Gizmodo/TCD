@@ -31,6 +31,10 @@ object Common {
     const val TCP_SERVICE_PORT = 9100
     const val TCP_SERVICE_DNS_TIMEOUT = 2000L
     const val TCP_SERVICE_THREAD_TIMEOUT = 2000L
+    const val ANIMATION_TIMEOUT = 1000L
+    const val ANIMATION_FROM_DEGREE = 0f
+    const val ANIMATION_TO_DEGREE = 360f
+    const val ANIMATION_PIVOT = 0.5f
 
     enum class MODESCAN(val modeScan: Int = 0) {
         AUTO(0),
@@ -53,7 +57,7 @@ object Common {
     /**
      * Постоянный адрес с расположением файла настроек
      */
-    var BASE_URL = BASE_URL_MMTR_NODEJS
+    var BASE_URL = BASE_URL_HOME_NODEJS
 
     /**
      * Тестовый адрес с расположением файла настроек

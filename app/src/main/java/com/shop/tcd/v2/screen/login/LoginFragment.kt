@@ -19,30 +19,37 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.databinding.FragmentLoginBinding
 import com.shop.tcd.utils.Common
+import com.shop.tcd.utils.Common.ANIMATION_FROM_DEGREE
+import com.shop.tcd.utils.Common.ANIMATION_PIVOT
+import com.shop.tcd.utils.Common.ANIMATION_TIMEOUT
+import com.shop.tcd.utils.Common.ANIMATION_TO_DEGREE
 import com.shop.tcd.utils.Common.setReadOnly
 import com.shop.tcd.v2.data.user.UserModel
 import com.shop.tcd.v2.data.user.UsersList
+import com.shop.tcd.v2.utils.extension.getViewModel
 import timber.log.Timber
 
 class LoginFragment : Fragment() {
 
     private lateinit var usersList: UsersList
-    private lateinit var viewModel: LoginViewModel
     private lateinit var binding: FragmentLoginBinding
     private lateinit var nav: NavController
     private lateinit var btnLogin: Button
+    private val viewModel: LoginViewModel by lazy {
+        getViewModel { LoginViewModel() }
+    }
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentLoginBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this, LoginViewModelFactory())[LoginViewModel::class.java]
         nav = findNavController()
         return binding.root
     }
@@ -51,9 +58,14 @@ class LoginFragment : Fragment() {
         with(binding) {
             if (!enabled) {
                 val rotate = RotateAnimation(
-                    0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f
+                    ANIMATION_FROM_DEGREE,
+                    ANIMATION_TO_DEGREE,
+                    Animation.RELATIVE_TO_SELF,
+                    ANIMATION_PIVOT,
+                    Animation.RELATIVE_TO_SELF,
+                    ANIMATION_PIVOT
                 )
-                rotate.duration = 1000L
+                rotate.duration = ANIMATION_TIMEOUT
                 rotate.repeatMode = Animation.INFINITE
                 rotate.repeatCount = Animation.INFINITE
                 rotate.interpolator = AccelerateDecelerateInterpolator()
@@ -85,13 +97,13 @@ class LoginFragment : Fragment() {
     }
 
     private fun initViewModelObservers() {
-        viewModel.usersLiveData.observe(this) {
+        viewModel.usersLiveData.observe(viewLifecycleOwner) {
             Timber.d(it.toString())
             usersList = it
             setupLogins(binding.edtLogin, it)
         }
 
-        viewModel.errorMessage.observe(this) {
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
             FancyToast.makeText(
                 activity?.applicationContext,
@@ -102,7 +114,7 @@ class LoginFragment : Fragment() {
             ).show()
         }
 
-        viewModel.loading.observe(this) {
+        viewModel.loading.observe(viewLifecycleOwner) {
             if (it) {
                 setStateUI(enabled = false)
             } else {
@@ -156,10 +168,10 @@ class LoginFragment : Fragment() {
     private fun showVPNUsage() {
         when {
             vpnActive(requireContext().applicationContext) -> {
-                binding.txtVPNStatus.text = "VPN используется"
+                binding.txtVPNStatus.text = "VPN"
             }
             else -> {
-                binding.txtVPNStatus.text = "VPN не используется"
+                binding.txtVPNStatus.text = "No VPN"
             }
         }
     }
@@ -192,7 +204,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun setupLogins(view: AutoCompleteTextView, items: UsersList) {
-
         val names: AbstractList<String?> = object : AbstractList<String?>() {
             override fun get(index: Int): String {
                 return items[index].name
@@ -212,5 +223,4 @@ class LoginFragment : Fragment() {
             view.setText(adapter.getItem(Common.selectedUserModelPosition), false)
         }
     }
-
 }
