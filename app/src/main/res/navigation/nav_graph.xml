@@ -49,7 +49,7 @@
         tools:layout="@layout/fragment_nomenclature" />
     <fragment
         android:id="@+id/printFragment"
-        android:name="com.shop.tcd.ui.print.PrintFragment"
+        android:name="com.shop.tcd.v2.screen.print.PrintFragment"
         android:label="fragment_print"
         tools:layout="@layout/fragment_print" />
 </navigation>

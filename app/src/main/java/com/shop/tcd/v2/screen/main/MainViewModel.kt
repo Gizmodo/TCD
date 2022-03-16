@@ -49,7 +49,7 @@ class MainViewModel : ViewModel() {
         onError("Exception handled: ${throwable.localizedMessage}")
     }
 
-    fun loadShopsSuspend() {
+    fun loadShops() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = settingsApi.getShopsSuspend()
             withContext(Dispatchers.Main) {

@@ -2,7 +2,6 @@ package com.shop.tcd.utils
 
 import java.util.concurrent.*
 
-
 object TimeSliceExecutor {
     fun execute(runnable: Runnable?, timeoutInMillis: Long) {
         val executor = Executors.newSingleThreadExecutor()

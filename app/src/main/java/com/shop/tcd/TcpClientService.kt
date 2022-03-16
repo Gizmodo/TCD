@@ -35,7 +35,7 @@ class TcpClientService : Service() {
         return socket
     }
 
-    @Throws(IOException::class)
+    @Throws(IOException::class, UnknownHostException::class)
     private fun resolveHost(host: String, dnsTimeout: Long): InetAddress? {
         return try {
             TimeSliceExecutor.execute<InetAddress>({
@@ -67,6 +67,7 @@ class TcpClientService : Service() {
 
     private val runnable: Runnable = Runnable {
         try {
+            Timber.d("Start service")
             socket = buildSocket()
             dataOutputStream = DataOutputStream(socket.getOutputStream())
             while (working.get()) {
@@ -124,16 +125,16 @@ class TcpClientService : Service() {
 
     private fun startMeForeground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val NOTIFICATION_CHANNEL_ID = packageName
+            val notificationChannelId = packageName
             val channelName = "Tcp Client Background Service"
-            val chan = NotificationChannel(NOTIFICATION_CHANNEL_ID,
+            val chan = NotificationChannel(notificationChannelId,
                 channelName,
                 NotificationManager.IMPORTANCE_NONE)
             chan.lightColor = Color.BLUE
             chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
             val manager = (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             manager.createNotificationChannel(chan)
-            val notificationBuilder = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            val notificationBuilder = NotificationCompat.Builder(this, notificationChannelId)
             val notification = notificationBuilder.setOngoing(true)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle("Tcp Client is running in background")

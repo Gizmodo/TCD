@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".v2.screen.main.MainFragment">
@@ -23,7 +22,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/shop_select"
             android:inputType="none"
-            android:labelFor="@id/menu"
+            android:labelFor="@id/tilShopsList"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>

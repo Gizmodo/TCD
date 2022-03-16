@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.screen.login
+package com.shop.tcd.v2.screen.print
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -6,14 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
 import com.shop.tcd.repository.network.settings.SettingsApi
-import com.shop.tcd.room.dao.InvDao
-import com.shop.tcd.v2.data.user.UsersList
+import com.shop.tcd.v2.data.printer.PrintersList
 import com.shop.tcd.v2.datastore.DataStoreRepository
 import com.shop.tcd.v2.di.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+class PrintViewModel : ViewModel() {
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String>
         get() = _errorMessage
@@ -22,11 +21,11 @@ class LoginViewModel : ViewModel() {
     val loading: LiveData<Boolean>
         get() = _loading
 
-    private var _usersLiveData = MutableLiveData<UsersList>()
-    val usersLiveData: LiveData<UsersList>
-        get() = _usersLiveData
+    private var _printersLiveData = MutableLiveData<PrintersList>()
+    val printersLiveData: LiveData<PrintersList>
+        get() = _printersLiveData
 
-    var job: Job? = null
+    private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
@@ -47,21 +46,15 @@ class LoginViewModel : ViewModel() {
     lateinit var dataStoreRepositoryImpl: DataStoreRepository
 
     @Inject
-    lateinit var homeApi: SettingsApi
-
-    @Inject
-    lateinit var invDao: InvDao
-
-    @Inject
     lateinit var settingsApi: SettingsApi
 
 
-    fun loadUsers() {
+    fun loadPrinters() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = settingsApi.getUsersSuspend()
+            val response = settingsApi.getPrinters()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    _usersLiveData.postValue(response.body())
+                    _printersLiveData.postValue(response.body())
                     _loading.value = false
                 } else {
                     onError("Error : ${response.message()} ")

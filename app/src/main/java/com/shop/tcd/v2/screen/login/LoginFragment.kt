@@ -81,7 +81,7 @@ class LoginFragment : Fragment() {
         initUI()
         setStateUI(enabled = false)
         initViewModelObservers()
-        viewModel.loadUsersSuspend()
+        viewModel.loadUsers()
     }
 
     private fun initViewModelObservers() {

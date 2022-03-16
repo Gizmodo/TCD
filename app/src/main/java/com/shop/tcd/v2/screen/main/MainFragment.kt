@@ -45,7 +45,7 @@ class MainFragment : Fragment() {
         setStateUI(enabled = false)
         restoreSelectedShop()
         initViewModelObservers()
-        viewModel.loadShopsSuspend()
+        viewModel.loadShops()
     }
 
     private fun restoreSelectedShop() {
@@ -102,7 +102,6 @@ class MainFragment : Fragment() {
     }
 
     private fun setupShops(view: AutoCompleteTextView, items: ShopsList) {
-
         val names: AbstractList<String?> = object : AbstractList<String?>() {
             override fun get(index: Int): String {
                 return items[index].name

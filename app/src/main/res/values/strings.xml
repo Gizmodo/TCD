@@ -42,6 +42,5 @@
     <string name="title_quantity_dialog">Обновление количества:</string>
     <string name="chronology">Хронология</string>
     <string name="label_printing">Печать этикеток</string>
-    <string name="PrinterSelect">Выбор принтера</string>
-    <string name="Print">Печать</string>
+    <string name="print">Печать</string>
 </resources>
