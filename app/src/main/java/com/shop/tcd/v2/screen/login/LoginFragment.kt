@@ -8,9 +8,7 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.text.format.Formatter
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
@@ -19,70 +17,53 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
 import com.shashank.sony.fancytoastlib.FancyToast
+import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentLoginBinding
-import com.shop.tcd.utils.Common
-import com.shop.tcd.utils.Common.ANIMATION_FROM_DEGREE
-import com.shop.tcd.utils.Common.ANIMATION_PIVOT
-import com.shop.tcd.utils.Common.ANIMATION_TIMEOUT
-import com.shop.tcd.utils.Common.ANIMATION_TO_DEGREE
-import com.shop.tcd.utils.Common.setReadOnly
+import com.shop.tcd.v2.core.extension.getViewModel
+import com.shop.tcd.v2.core.extension.navigateExt
+import com.shop.tcd.v2.core.extension.viewBindingWithBinder
+import com.shop.tcd.v2.core.utils.Common
+import com.shop.tcd.v2.core.utils.Common.ANIMATION_FROM_DEGREE
+import com.shop.tcd.v2.core.utils.Common.ANIMATION_PIVOT
+import com.shop.tcd.v2.core.utils.Common.ANIMATION_TIMEOUT
+import com.shop.tcd.v2.core.utils.Common.ANIMATION_TO_DEGREE
+import com.shop.tcd.v2.core.utils.Common.setReadOnly
 import com.shop.tcd.v2.data.user.UserModel
 import com.shop.tcd.v2.data.user.UsersList
-import com.shop.tcd.v2.utils.extension.getViewModel
 import timber.log.Timber
 
-class LoginFragment : Fragment() {
-
+class LoginFragment : Fragment(R.layout.fragment_login) {
+    private val binding by viewBindingWithBinder(FragmentLoginBinding::bind)
     private lateinit var usersList: UsersList
-    private lateinit var binding: FragmentLoginBinding
-    private lateinit var nav: NavController
     private lateinit var btnLogin: Button
     private val viewModel: LoginViewModel by lazy {
         getViewModel { LoginViewModel() }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentLoginBinding.inflate(layoutInflater)
-        nav = findNavController()
-        return binding.root
-    }
-
-    private fun setStateUI(enabled: Boolean) {
-        with(binding) {
-            if (!enabled) {
-                val rotate = RotateAnimation(
-                    ANIMATION_FROM_DEGREE,
-                    ANIMATION_TO_DEGREE,
-                    Animation.RELATIVE_TO_SELF,
-                    ANIMATION_PIVOT,
-                    Animation.RELATIVE_TO_SELF,
-                    ANIMATION_PIVOT
-                )
-                rotate.duration = ANIMATION_TIMEOUT
-                rotate.repeatMode = Animation.INFINITE
-                rotate.repeatCount = Animation.INFINITE
-                rotate.interpolator = AccelerateDecelerateInterpolator()
-                imageView.startAnimation(rotate)
-            } else {
-                imageView.clearAnimation()
-            }
-            tilLogin.isFocusableInTouchMode = enabled
-            tilPassword.isFocusableInTouchMode = enabled
-            btnLogin.isEnabled = enabled
-            edtLogin.setReadOnly(!enabled)
-            edtPassword.setReadOnly(!enabled)
+    private fun setStateUI(enabled: Boolean) = with(binding) {
+        if (!enabled) {
+            val rotate = RotateAnimation(
+                ANIMATION_FROM_DEGREE,
+                ANIMATION_TO_DEGREE,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_PIVOT,
+                Animation.RELATIVE_TO_SELF,
+                ANIMATION_PIVOT
+            )
+            rotate.duration = ANIMATION_TIMEOUT
+            rotate.repeatMode = Animation.INFINITE
+            rotate.repeatCount = Animation.INFINITE
+            rotate.interpolator = AccelerateDecelerateInterpolator()
+            imageView.startAnimation(rotate)
+        } else {
+            imageView.clearAnimation()
         }
-    }
-
-    private fun navigateMainFragment() {
-        nav.navigate(LoginFragmentDirections.actionLoginFragmentToMainFragment())
+        tilLogin.isFocusableInTouchMode = enabled
+        tilPassword.isFocusableInTouchMode = enabled
+        btnLogin.isEnabled = enabled
+        edtLogin.setReadOnly(!enabled)
+        edtPassword.setReadOnly(!enabled)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -93,7 +74,6 @@ class LoginFragment : Fragment() {
         initUI()
         setStateUI(enabled = false)
         initViewModelObservers()
-        viewModel.loadUsers()
     }
 
     private fun initViewModelObservers() {
@@ -133,7 +113,7 @@ class LoginFragment : Fragment() {
     private fun authenticate(
         selectedUser: UserModel,
         userName: String,
-        userPassword: String
+        userPassword: String,
     ): Boolean {
         val result = selectedUser.name == userName && selectedUser.password == userPassword
         if (result) {
@@ -151,7 +131,7 @@ class LoginFragment : Fragment() {
         }
         when {
             isSuccess -> {
-                navigateMainFragment()
+                navigateExt(LoginFragmentDirections.actionLoginFragmentToMainFragment())
             }
             else -> {
                 FancyToast.makeText(

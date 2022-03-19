@@ -7,9 +7,9 @@ import androidx.room.RoomDatabase
 import com.shop.tcd.model.Group
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.model.NomenclatureItem
-import com.shop.tcd.room.dao.GroupDao
-import com.shop.tcd.room.dao.InvDao
-import com.shop.tcd.room.dao.NomenclatureDao
+import com.shop.tcd.v2.domain.database.GroupDao
+import com.shop.tcd.v2.domain.database.InvDao
+import com.shop.tcd.v2.domain.database.NomenclatureDao
 
 @Database(entities = [
     Group::class,

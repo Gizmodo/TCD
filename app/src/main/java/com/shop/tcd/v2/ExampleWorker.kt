@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.shop.tcd.utils.Common
-import com.shop.tcd.utils.TimeSliceExecutor
+import com.shop.tcd.v2.core.utils.Common
+import com.shop.tcd.v2.core.utils.TimeSliceExecutor
 import timber.log.Timber
 import java.io.DataOutputStream
 import java.io.IOException

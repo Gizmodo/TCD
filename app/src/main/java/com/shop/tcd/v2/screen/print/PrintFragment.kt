@@ -3,53 +3,69 @@ package com.shop.tcd.v2.screen.print
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
+import com.google.android.material.textfield.TextInputEditText
 import com.shashank.sony.fancytoastlib.FancyToast
-import com.shop.tcd.databinding.FragmentPrintBinding
-import com.shop.tcd.utils.Common
-import com.shop.tcd.v2.data.printer.PrintersList
+import com.shop.tcd.R
 import com.shop.tcd.TcpClientService
+import com.shop.tcd.databinding.FragmentPrintBinding
 import com.shop.tcd.v2.ExampleWorker
-import com.shop.tcd.v2.utils.extension.getViewModel
+import com.shop.tcd.v2.core.extension.getViewModel
+import com.shop.tcd.v2.core.extension.viewBindingWithBinder
+import com.shop.tcd.v2.core.utils.Common
+import com.shop.tcd.v2.data.printer.PrintersList
+import com.shop.tcd.v2.ui.adapters.PriceTagAdapter
 import timber.log.Timber
 
-class PrintFragment : Fragment() {
+class PrintFragment : Fragment(R.layout.fragment_print) {
     /*  val vm = getViewModel<CatchViewModel>()
       val vm1: CatchViewModel = getViewModel()
       val activityScopedVm = activity?.getViewModel<CatchViewModel>()
       val activityScopedVm2 = activity?.getViewModel { CatchViewModel().apply { init(stuff) } }*/
-    private lateinit var binding: FragmentPrintBinding
+    private val binding by viewBindingWithBinder(FragmentPrintBinding::bind)
     private lateinit var btnPrint: Button
+    private lateinit var btnInsertItem: Button
+    private lateinit var edtBarcode: TextInputEditText
     private lateinit var shimmer: ConstraintLayout
+    private lateinit var rvPriceTags: RecyclerView
     private lateinit var printersList: PrintersList
+    private lateinit var adapter: PriceTagAdapter
+    val list = mutableListOf<String>()
     private val viewModel: PrintViewModel by lazy {
         getViewModel { PrintViewModel() }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentPrintBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
+        initUIListeners()
+        initRecyclerView()
         setStateUI(enabled = false)
         restoreSelectedPrinter()
         initViewModelObservers()
         viewModel.loadPrinters()
+    }
+
+    private fun initRecyclerView() {
+        adapter = PriceTagAdapter(list)
+        rvPriceTags.adapter = adapter
+        rvPriceTags.setHasFixedSize(true)
+        rvPriceTags.layoutManager = LinearLayoutManager(requireContext())
+        rvPriceTags.addItemDecoration(DividerItemDecoration(
+            requireContext(),
+            LinearLayout.VERTICAL
+        ))
+        //getInventarisationItemsGroupByBarcode()
     }
 
     private fun restoreSelectedPrinter() {
@@ -62,12 +78,21 @@ class PrintFragment : Fragment() {
     private fun initUI() {
         btnPrint = binding.btnPrint
         shimmer = binding.shimmer
-        initUIListeners()
+        edtBarcode = binding.edtBarcode
+        btnInsertItem = binding.btnInsertItem
+        rvPriceTags = binding.rvPriceTags
     }
 
     private fun initUIListeners() {
         btnPrint.setOnClickListener {
             runService()
+        }
+        btnInsertItem.setOnClickListener {
+            val inputString = edtBarcode.text.toString()
+            if (inputString.isNotEmpty()) {
+                list.add(inputString)
+                adapter.notifyDataSetChanged()
+            }
         }
     }
 

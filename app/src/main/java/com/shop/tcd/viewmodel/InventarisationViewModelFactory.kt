@@ -2,7 +2,7 @@ package com.shop.tcd.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.shop.tcd.room.database.DatabaseHelper
+import com.shop.tcd.v2.domain.database.DatabaseHelper
 
 class InventarisationViewModelFactory(private val dbHelper: DatabaseHelper) :
     ViewModelProvider.Factory {

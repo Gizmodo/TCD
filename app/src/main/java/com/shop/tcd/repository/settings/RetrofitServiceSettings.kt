@@ -1,8 +1,8 @@
 package com.shop.tcd.repository.settings
 
 import com.google.gson.GsonBuilder
+import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.data.printer.PrintersList
-import com.shop.tcd.utils.Common
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.OkHttpClient

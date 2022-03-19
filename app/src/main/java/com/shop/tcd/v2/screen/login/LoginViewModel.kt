@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.repository.network.settings.SettingsApi
-import com.shop.tcd.room.dao.InvDao
 import com.shop.tcd.v2.data.user.UsersList
 import com.shop.tcd.v2.datastore.DataStoreRepository
-import com.shop.tcd.v2.di.*
+import com.shop.tcd.v2.core.di.*
+import com.shop.tcd.v2.domain.database.InvDao
+import com.shop.tcd.v2.domain.rest.SettingsApi
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -41,6 +41,7 @@ class LoginViewModel : ViewModel() {
 
     init {
         injector.inject(this)
+        loadUsers()
     }
 
     @Inject
@@ -55,8 +56,7 @@ class LoginViewModel : ViewModel() {
     @Inject
     lateinit var settingsApi: SettingsApi
 
-
-    fun loadUsers() {
+    private fun loadUsers() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = settingsApi.getUsersSuspend()
             withContext(Dispatchers.Main) {

@@ -5,13 +5,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import com.shop.tcd.R
 import com.shop.tcd.databinding.ActivityMainBinding
 import com.shop.tcd.ui.CatalogueActivity
 import com.shop.tcd.ui.InventarisationActivity
 import com.shop.tcd.ui.NomenclatureActivity
-import com.shop.tcd.v2.screen.login.LoginFragmentDirections
 import java.lang.Deprecated
 
 class MainActivity : AppCompatActivity() {
@@ -21,8 +19,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(ActivityMainBinding.inflate(layoutInflater).root)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navHostFragment.findNavController()
-            .navigate(LoginFragmentDirections.actionLoginFragmentToPrintFragment())
+      /*  navHostFragment.findNavController()
+            .navigate(LoginFragmentDirections.actionLoginFragmentToPrintFragment())*/
     }
 
     /**

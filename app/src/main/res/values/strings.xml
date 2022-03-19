@@ -25,6 +25,7 @@
     <string name="code">Код</string>
     <string name="plu">PLU</string>
     <string name="barcode">Штрихкод</string>
+    <string name="barcode_or_code">Штрихкод/код</string>
     <string name="good">Товар</string>
     <string name="price">Цена</string>
     <string name="entercode">Введите код</string>

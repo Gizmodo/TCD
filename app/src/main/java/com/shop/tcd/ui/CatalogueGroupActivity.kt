@@ -14,7 +14,7 @@ import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.NomenclatureItem
 import com.shop.tcd.repository.main.RepositoryMain
 import com.shop.tcd.repository.main.RetrofitServiceMain
-import com.shop.tcd.utils.Common.saveNomenclatureList
+import com.shop.tcd.v2.core.utils.Common.saveNomenclatureList
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import retrofit2.Call

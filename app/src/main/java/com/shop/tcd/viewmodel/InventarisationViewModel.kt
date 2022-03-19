@@ -3,8 +3,8 @@ package com.shop.tcd.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.room.database.DatabaseHelper
-import com.shop.tcd.utils.SingleLiveEvent
+import com.shop.tcd.v2.domain.database.DatabaseHelper
+import com.shop.tcd.v2.core.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
 import timber.log.Timber
 

@@ -34,5 +34,4 @@ class NomenclatureAdapter(private val nomenclatureList: List<NomenclatureItem>) 
     override fun getItemCount(): Int {
         return nomenclatureList.size
     }
-
 }

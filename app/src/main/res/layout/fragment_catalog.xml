@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.catalog.CatalogFragment">
+    tools:context=".v2.screen.catalog.CatalogFragment">
 
     <Button
         android:id="@+id/btnLoadFull"
@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:lines="2"
-        android:onClick="btnLoadFull"
         android:text="@string/loadfulllist"
         app:layout_constraintBottom_toTopOf="@id/btnLoadRemainders"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +25,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:onClick="btnLoadRemainders"
         android:text="@string/loadremainder"
         app:layout_constraintBottom_toTopOf="@id/btnLoadByGroups"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,7 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:maxLines="2"
-        android:onClick="btnLoadByGroups"
         android:text="@string/loadgroups"
         app:layout_constraintBottom_toTopOf="@id/btnLoadByPeriod"
         app:layout_constraintEnd_toEndOf="parent"
@@ -54,7 +51,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:maxLines="2"
-        android:onClick="btnLoadByPeriod"
         android:text="@string/loadturnover"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

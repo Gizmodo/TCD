@@ -14,7 +14,7 @@ import com.shop.tcd.R
 import com.shop.tcd.adapters.NomenclatureAdapter
 import com.shop.tcd.databinding.ActivityNomenclatureBinding
 import com.shop.tcd.model.NomenclatureItem
-import com.shop.tcd.room.dao.NomenclatureDao
+import com.shop.tcd.v2.domain.database.NomenclatureDao
 import com.shop.tcd.room.database.TCDRoomDatabase
 import java.util.*
 

@@ -54,6 +54,10 @@ android {
         viewBinding true
     }
     buildTypes {
+        debug{
+            minifyEnabled false
+            shrinkResources false
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -79,6 +83,9 @@ detekt {
     parallel = true
 }
 dependencies {
+    implementation "com.bugsnag:bugsnag-plugin-android-okhttp:$bugsnag"
+    debugImplementation "com.bugsnag:bugsnag-android:$bugsnag"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
     implementation "androidx.core:core-ktx:$core_ktx"
@@ -117,6 +124,7 @@ dependencies {
     implementation "com.google.android.material:material:$material"
     implementation "com.google.code.gson:gson:$gson"
     implementation "com.google.dagger:dagger:$dagger"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt "com.google.dagger:dagger-compiler:$dagger"
     implementation "com.google.dagger:dagger-android:$dagger"
     implementation "com.google.dagger:dagger-android-support:$dagger"

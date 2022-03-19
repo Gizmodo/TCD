@@ -1,26 +1,24 @@
 package com.shop.tcd.v2.screen.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.shashank.sony.fancytoastlib.FancyToast
+import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentMainBinding
-import com.shop.tcd.utils.Common
+import com.shop.tcd.v2.core.extension.getViewModel
+import com.shop.tcd.v2.core.extension.navigateExt
+import com.shop.tcd.v2.core.extension.viewBindingWithBinder
+import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.data.shop.ShopsList
-import com.shop.tcd.v2.screen.print.PrintViewModel
-import com.shop.tcd.v2.utils.extension.getViewModel
-import com.shop.tcd.v2.utils.navigateExt
 import timber.log.Timber
 
-class MainFragment : Fragment() {
-    private lateinit var binding: FragmentMainBinding
+class MainFragment : Fragment(R.layout.fragment_main) {
+    private val binding by viewBindingWithBinder(FragmentMainBinding::bind)
     private lateinit var btnPrint: Button
     private lateinit var btnCatalog: Button
     private lateinit var btnNomenclature: Button
@@ -29,14 +27,6 @@ class MainFragment : Fragment() {
     private lateinit var shopsList: ShopsList
     private val viewModel: MainViewModel by lazy {
         getViewModel { MainViewModel() }
-    }
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentMainBinding.inflate(inflater, container, false)
-        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

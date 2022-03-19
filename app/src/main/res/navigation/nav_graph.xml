@@ -19,9 +19,13 @@
     </fragment>
     <fragment
         android:id="@+id/catalogFragment"
-        android:name="com.shop.tcd.ui.catalog.CatalogFragment"
+        android:name="com.shop.tcd.v2.screen.catalog.CatalogFragment"
         android:label="fragment_catalog"
-        tools:layout="@layout/fragment_catalog" />
+        tools:layout="@layout/fragment_catalog" >
+        <action
+            android:id="@+id/action_catalogFragment_to_groupFragment"
+            app:destination="@id/groupFragment" />
+    </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
         android:name="com.shop.tcd.ui.inventory.InventoryFragment"
@@ -55,4 +59,9 @@
         android:name="com.shop.tcd.v2.screen.print.PrintFragment"
         android:label="fragment_print"
         tools:layout="@layout/fragment_print" />
+    <fragment
+        android:id="@+id/groupFragment"
+        android:name="com.shop.tcd.v2.screen.catalog.group.GroupFragment"
+        android:label="fragment_group"
+        tools:layout="@layout/fragment_group" />
 </navigation>

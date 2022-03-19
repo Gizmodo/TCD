@@ -4,7 +4,7 @@ import com.google.gson.GsonBuilder
 import com.shop.tcd.model.Groups
 import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.post.Payload
-import com.shop.tcd.utils.Common
+import com.shop.tcd.v2.core.utils.Common
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
