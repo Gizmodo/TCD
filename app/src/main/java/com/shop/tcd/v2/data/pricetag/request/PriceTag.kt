@@ -11,5 +11,5 @@ data class PriceTag(
 
 data class BarcodeTag(
     @SerializedName("barcode")
-    val barcode: String,
+    var barcode: String,
 )

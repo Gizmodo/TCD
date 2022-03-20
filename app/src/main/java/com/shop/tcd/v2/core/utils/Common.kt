@@ -57,7 +57,7 @@ object Common {
     /**
      * Постоянный адрес с расположением файла настроек
      */
-    var BASE_URL = BASE_URL_MMTR_NODEJS
+    var BASE_URL = BASE_URL_HOME_NODEJS
 
     /**
      * Изменяемый адрес, который указывает на выбранный магазин (сервер 1С)

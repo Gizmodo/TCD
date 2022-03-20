@@ -6,13 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
 import com.shop.tcd.v2.core.di.*
+import com.shop.tcd.v2.core.utils.Common
+import com.shop.tcd.v2.data.pricetag.BarcodeTag
 import com.shop.tcd.v2.data.pricetag.PriceTag
 import com.shop.tcd.v2.data.pricetag.response.PriceTagResponse
 import com.shop.tcd.v2.data.printer.PrintersList
-import com.shop.tcd.v2.datastore.DataStoreRepository
 import com.shop.tcd.v2.domain.rest.SettingsApi
 import com.shop.tcd.v2.domain.rest.ShopApi
 import kotlinx.coroutines.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class PrintViewModel : ViewModel() {
@@ -50,9 +52,6 @@ class PrintViewModel : ViewModel() {
     }
 
     @Inject
-    lateinit var dataStoreRepositoryImpl: DataStoreRepository
-
-    @Inject
     lateinit var settingsApi: SettingsApi
 
     @Inject
@@ -71,13 +70,41 @@ class PrintViewModel : ViewModel() {
             }
         }
     }
-
-    fun loadPriceTags(priceTag: PriceTag) {
-        job?.cancel()
+    fun loadPrintersTest() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = shopApi.postPriceTag(priceTag = priceTag)
+            val response = shopApi.getPrintersTest()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
+                    Timber.d(response.body().toString())
+                    _loading.value = false
+                } else {
+                    onError("Error : ${response.message()} ")
+                }
+            }
+        }
+    }
+    fun converterToPriceTag(list: MutableList<String>): PriceTag {
+        val barcodeList: MutableList<BarcodeTag> = mutableListOf()
+        val barcode: BarcodeTag = BarcodeTag("")
+        for (item in list) {
+            barcode.barcode = item
+            barcodeList.add(barcode)
+        }
+        var priceTag = PriceTag(
+            Common.selectedShopModel.prefix,
+            barcodesList = barcodeList
+        )
+        return priceTag
+    }
+
+    fun loadPriceTags(list: MutableList<String>) {
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val priceTag = converterToPriceTag(list)
+            val response = shopApi.postPriceTag(priceTag)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    Timber.d(response.body().toString())
                     _priceTagsLiveData.postValue(response.body())
                     _loading.value = false
                 } else {

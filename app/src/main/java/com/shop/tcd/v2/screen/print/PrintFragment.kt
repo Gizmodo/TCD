@@ -40,7 +40,7 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     private lateinit var rvPriceTags: RecyclerView
     private lateinit var printersList: PrintersList
     private lateinit var adapter: PriceTagAdapter
-    val list = mutableListOf<String>()
+    val list: MutableList<String> = mutableListOf<String>()
     private val viewModel: PrintViewModel by lazy {
         getViewModel { PrintViewModel() }
     }
@@ -61,11 +61,12 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
         rvPriceTags.adapter = adapter
         rvPriceTags.setHasFixedSize(true)
         rvPriceTags.layoutManager = LinearLayoutManager(requireContext())
-        rvPriceTags.addItemDecoration(DividerItemDecoration(
-            requireContext(),
-            LinearLayout.VERTICAL
-        ))
-        //getInventarisationItemsGroupByBarcode()
+        rvPriceTags.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                LinearLayout.VERTICAL
+            )
+        )
     }
 
     private fun restoreSelectedPrinter() {
@@ -85,13 +86,15 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
 
     private fun initUIListeners() {
         btnPrint.setOnClickListener {
-            runService()
+            //runService()
+//            viewModel.loadPriceTags(list)
+            viewModel.loadPrintersTest()
         }
         btnInsertItem.setOnClickListener {
             val inputString = edtBarcode.text.toString()
             if (inputString.isNotEmpty()) {
-                list.add(inputString)
-                adapter.notifyDataSetChanged()
+                list.add(0, inputString)
+                adapter.notifyItemInserted(0)
             }
         }
     }
@@ -160,7 +163,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     }
 
     fun runHeavyWork() {
-
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresStorageNotLow(true)

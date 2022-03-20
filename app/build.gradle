@@ -37,7 +37,7 @@ def generateVersionName() {
 }
 
 android {
-    compileSdk 31
+    compileSdk sdk
 
     defaultConfig {
         applicationId "com.shop.tcd"
@@ -71,6 +71,8 @@ android {
         jvmTarget = '1.8'
         freeCompilerArgs = ['-Xjvm-default=all'] //enable or compatibility
     }
+    buildToolsVersion '32.1.0 rc1'
+    ndkVersion '21.4.7075529'
 }
 detekt {
     toolVersion = "1.19.0"

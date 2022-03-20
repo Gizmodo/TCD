@@ -40,7 +40,11 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         Timber.d("Создан provideOkHttpClient")
+        val logging = HttpLoggingInterceptor { message -> Timber.i(message) }
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+
         return OkHttpClient.Builder()
+            .addInterceptor(logging)
             .eventListener(BugsnagOkHttpPlugin())
             .connectTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
@@ -51,9 +55,6 @@ object NetworkModule {
     @Provides
     fun provideRetrofitInterface(okHttpClient: OkHttpClient): Retrofit {
         Timber.d("Создан provideRetrofitInterface")
-        val logging = HttpLoggingInterceptor { message -> Timber.i(message) }
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
-
         val gson = GsonBuilder().setLenient().create()
         return Retrofit.Builder()
             .baseUrl(Common.BASE_URL)
