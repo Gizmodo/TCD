@@ -17,29 +17,26 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 object NetworkModule {
-
     @Singleton
     @Provides
-    fun provideSettingsApi(retrofit: Retrofit): SettingsApi {
-        Timber.d("Создан provideSettingsApi")
+    fun provideSettingsApi(@Named("Settings") retrofit: Retrofit): SettingsApi {
         return retrofit.create(SettingsApi::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideShopApi(retrofit: Retrofit): ShopApi {
-        Timber.d("Создан provideShopApi")
+    fun provideShopApi(@Named("Shop") retrofit: Retrofit): ShopApi {
         return retrofit.create(ShopApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        Timber.d("Создан provideOkHttpClient")
         val logging = HttpLoggingInterceptor { message -> Timber.i(message) }
         logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
@@ -53,11 +50,24 @@ object NetworkModule {
     }
 
     @Provides
+    @Named("Settings")
     fun provideRetrofitInterface(okHttpClient: OkHttpClient): Retrofit {
-        Timber.d("Создан provideRetrofitInterface")
         val gson = GsonBuilder().setLenient().create()
         return Retrofit.Builder()
             .baseUrl(Common.BASE_URL)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Named("Shop")
+    fun provideRetrofitForShop(okHttpClient: OkHttpClient): Retrofit {
+        val gson = GsonBuilder().setLenient().create()
+        return Retrofit.Builder()
+            .baseUrl(Common.BASE_SHOP_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io()))

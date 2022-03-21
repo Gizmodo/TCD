@@ -13,6 +13,8 @@ import com.shop.tcd.v2.data.pricetag.response.PriceTagResponse
 import com.shop.tcd.v2.data.printer.PrintersList
 import com.shop.tcd.v2.domain.rest.SettingsApi
 import com.shop.tcd.v2.domain.rest.ShopApi
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -63,60 +65,48 @@ class PrintViewModel : ViewModel() {
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     _printersLiveData.postValue(response.body())
-                    _loading.value = false
                 } else {
                     onError("Error : ${response.message()} ")
                 }
+                _loading.value = false
             }
         }
     }
-    fun loadPrintersTest() {
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = shopApi.getPrintersTest()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Timber.d(response.body().toString())
-                    _loading.value = false
-                } else {
-                    onError("Error : ${response.message()} ")
-                }
-            }
-        }
-    }
-    fun converterToPriceTag(list: MutableList<String>): PriceTag {
+
+    private fun converterToPriceTag(list: MutableList<String>): PriceTag {
         val barcodeList: MutableList<BarcodeTag> = mutableListOf()
-        val barcode: BarcodeTag = BarcodeTag("")
-        for (item in list) {
-            barcode.barcode = item
-            barcodeList.add(barcode)
-        }
-        var priceTag = PriceTag(
+        list.mapTo(barcodeList) { BarcodeTag(it) }
+        return PriceTag(
             Common.selectedShopModel.prefix,
             barcodesList = barcodeList
         )
-        return priceTag
     }
 
-    fun loadPriceTags(list: MutableList<String>) {
+    fun loadPriceTagsObservable(list: MutableList<String>) {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val priceTag = converterToPriceTag(list)
             val response = shopApi.postPriceTag(priceTag)
             withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    Timber.d(response.body().toString())
-                    _priceTagsLiveData.postValue(response.body())
-                    _loading.value = false
-                } else {
-                    onError("Error : ${response.message()} ")
-                }
+                response.subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        _loading.value = false
+                        if (it.isSuccessful) {
+                            _priceTagsLiveData.postValue(it.body())
+                        } else {
+                            Timber.d("Not successfully")
+                        }
+                    }, {
+                        onError("Error : $it")
+                    })
             }
         }
     }
 
     private fun onError(message: String) {
         _errorMessage.postValue(message)
-        _loading.postValue(true)
+        _loading.postValue(false)
     }
 
     override fun onCleared() {

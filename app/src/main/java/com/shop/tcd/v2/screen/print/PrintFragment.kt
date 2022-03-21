@@ -40,7 +40,7 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     private lateinit var rvPriceTags: RecyclerView
     private lateinit var printersList: PrintersList
     private lateinit var adapter: PriceTagAdapter
-    val list: MutableList<String> = mutableListOf<String>()
+    val list: MutableList<String> = mutableListOf()
     private val viewModel: PrintViewModel by lazy {
         getViewModel { PrintViewModel() }
     }
@@ -86,9 +86,9 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
 
     private fun initUIListeners() {
         btnPrint.setOnClickListener {
+            viewModel.loadPriceTagsObservable(list)
+// TODO: Преобразовать ответ в модель для принтера и отправить ему для печати
             //runService()
-//            viewModel.loadPriceTags(list)
-            viewModel.loadPrintersTest()
         }
         btnInsertItem.setOnClickListener {
             val inputString = edtBarcode.text.toString()
@@ -117,6 +117,11 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
             Timber.d(it.toString())
             printersList = it
             setupAutoComplete(binding.edtPrinter, it)
+        }
+
+        viewModel.priceTagsLiveData.observe(viewLifecycleOwner) {
+            Timber.d("Ответ на POST запрос по ценникам:")
+            Timber.d(it.toString())
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {

@@ -3,17 +3,15 @@ package com.shop.tcd.v2.screen.catalog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.widget.Button
 import android.widget.EditText
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentCatalogBinding
-import com.shop.tcd.v2.core.extension.getViewModel
-import com.shop.tcd.v2.core.extension.navigateExt
-import com.shop.tcd.v2.core.extension.viewBindingWithBinder
+import com.shop.tcd.v2.core.extension.*
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,6 +21,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
     private lateinit var btnLoadRemainders: Button
     private lateinit var btnLoadByGroups: Button
     private lateinit var btnLoadByPeriod: Button
+    private lateinit var shimmer: ConstraintLayout
     private val viewModel: CatalogViewModel by lazy {
         getViewModel { CatalogViewModel() }
     }
@@ -33,7 +32,33 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
 //        setStateUI(enabled = false)
-//        initViewModelObservers()
+        initViewModelObservers()
+    }
+
+    private fun showShimmer() {
+        shimmer.visibility = View.VISIBLE
+    }
+
+    private fun hideShimmer() {
+        shimmer.visibility = View.GONE
+    }
+
+    private fun initViewModelObservers() {
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
+            longFancy { it }
+            Timber.e(it)
+        }
+
+        viewModel.loading.observe(viewLifecycleOwner) {
+            when {
+                it -> {
+                    showShimmer()
+                }
+                else -> {
+                    hideShimmer()
+                }
+            }
+        }
     }
 
     private fun initUI() {
@@ -41,7 +66,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         btnLoadRemainders = binding.btnLoadRemainders
         btnLoadByGroups = binding.btnLoadByGroups
         btnLoadByPeriod = binding.btnLoadByPeriod
-
+        shimmer = binding.shimmer
         btnLoadByGroups.setOnClickListener {
             navigateExt(CatalogFragmentDirections.actionCatalogFragmentToGroupFragment())
         }
@@ -59,7 +84,6 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
 
     private fun showPeriodDialog() {
         val dateDialog = Dialog(requireContext())
-        dateDialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE)
         dateDialog.setCancelable(true)
         dateDialog.setContentView(R.layout.custom_dialog)
 
@@ -82,28 +106,21 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
 
         btnOk.setOnClickListener {
             if (dateBegin.isNotEmpty() && dateEnd.isNotEmpty()) {
-                FancyToast.makeText(
-                    requireContext(),
-                    "$dateBegin и $dateEnd",
-                    FancyToast.LENGTH_LONG,
-                    FancyToast.INFO,
-                    false
-                ).show()
+                /// TODO:  Продолжить здесь
                 val period = "$dateBegin 0:00:00,$dateEnd 23:59:59"
                 viewModel.loadNomenclatureByPeriod(period)
             } else {
                 clearText()
-                FancyToast.makeText(
-                    requireContext(),
-                    "Диапазон указан не полностью",
-                    FancyToast.LENGTH_LONG,
-                    FancyToast.WARNING,
-                    false
-                ).show()
+                longFancy { "Диапазон указан не полностью" }
             }
             dateDialog.dismiss()
         }
 
+        edtBegin.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                edtBegin.callOnClick()
+            }
+        }
         edtEnd.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 edtEnd.callOnClick()

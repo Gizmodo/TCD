@@ -44,4 +44,5 @@
     <string name="chronology">Хронология</string>
     <string name="label_printing">Печать этикеток</string>
     <string name="print">Печать</string>
+    <string name="period_select">Укажите период</string>
 </resources>
