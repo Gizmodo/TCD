@@ -14,13 +14,13 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentLoginBinding
 import com.shop.tcd.v2.core.extension.getViewModel
+import com.shop.tcd.v2.core.extension.longFancy
 import com.shop.tcd.v2.core.extension.navigateExt
 import com.shop.tcd.v2.core.extension.viewBindingWithBinder
 import com.shop.tcd.v2.core.utils.Common
@@ -36,7 +36,6 @@ import timber.log.Timber
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private val binding by viewBindingWithBinder(FragmentLoginBinding::bind)
     private lateinit var usersList: UsersList
-    private lateinit var btnLogin: Button
     private val viewModel: LoginViewModel by lazy {
         getViewModel { LoginViewModel() }
     }
@@ -66,12 +65,16 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         edtPassword.setReadOnly(!enabled)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showIPAddress()
         showVPNUsage()
 
-        initUI()
+        initUIListener()
         setStateUI(enabled = false)
         initViewModelObservers()
     }
@@ -103,9 +106,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
     }
 
-    private fun initUI() {
-        btnLogin = binding.btnLogin
-        btnLogin.setOnClickListener {
+    private fun initUIListener() {
+        binding.btnLogin.setOnClickListener {
             login()
         }
     }
@@ -134,13 +136,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 navigateExt(LoginFragmentDirections.actionLoginFragmentToMainFragment())
             }
             else -> {
-                FancyToast.makeText(
-                    requireContext().applicationContext,
-                    "Неверно указаны данные для входа",
-                    FancyToast.LENGTH_SHORT,
-                    FancyToast.ERROR,
-                    false
-                ).show()
+                longFancy { "Неверно указаны данные для входа" }
             }
         }
     }

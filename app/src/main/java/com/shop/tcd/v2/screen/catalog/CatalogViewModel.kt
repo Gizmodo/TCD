@@ -15,17 +15,17 @@ import javax.inject.Inject
 
 class CatalogViewModel : ViewModel() {
     private var _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String>
-        get() = _errorMessage
+    val errorMessage: LiveData<String> get() = _errorMessage
+
     private var _successMessage = MutableLiveData<String>()
-    val successMessage: LiveData<String>
-        get() = _successMessage
+    val successMessage: LiveData<String> get() = _successMessage
+
     private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean>
-        get() = _loading
+    val loading: LiveData<Boolean> get() = _loading
+
     private var job: Job = Job()
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onError("Exception handled: ${throwable.localizedMessage}")
+        onError("Возникло исключение: ${throwable.localizedMessage}")
     }
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
@@ -46,6 +46,7 @@ class CatalogViewModel : ViewModel() {
     lateinit var shopAPI: ShopApi
 
     fun loadNomenclatureFull() {
+        Timber.d("Загрузка полного списка")
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopAPI.getNomenclatureFull()
@@ -69,6 +70,7 @@ class CatalogViewModel : ViewModel() {
     }
 
     fun loadNomenclatureRemainders() {
+        Timber.d("Загрузка остатков")
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopAPI.getNomenclatureRemainders()
@@ -98,7 +100,15 @@ class CatalogViewModel : ViewModel() {
             val response = shopAPI.getNomenclatureByPeriod(period)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    // TODO: Сохранить в БД
+                    if (response.body()?.result.equals("success", false)) {
+                        val nomenclatureList =
+                            response.body()?.nomenclature as ArrayList<NomenclatureItem>
+                        onSuccess("Загружено объектов ${nomenclatureList.size}")
+                        nomenclatureDao.deleteAll()
+                        nomenclatureDao.insertNomenclature(nomenclatureList)
+                    } else {
+                        onError("Данные не получены: ${response.body()?.message.toString()}")
+                    }
                     _loading.value = false
                 } else {
                     onError("Ошибка выполенения запроса : ${response.message()} ")

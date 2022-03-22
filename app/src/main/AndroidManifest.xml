@@ -16,11 +16,12 @@
         android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
-            android:value="d13ea502d3889a6d99f955103ef7e09c"/>
+            android:value="d13ea502d3889a6d99f955103ef7e09c" />
         <service
             android:name=".TcpClientService"
             android:enabled="true"
             android:exported="false" />
+
         <activity
             android:name=".ui.ListActivity"
             android:exported="false"
@@ -39,13 +40,7 @@
             android:parentActivityName="com.shop.tcd.v2.screen.MainActivity" />
         <activity
             android:name=".ui.CatalogueGroupActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.CatalogueActivity" />
-        <activity
-            android:name=".ui.CatalogueActivity"
-            android:exported="true"
-            android:parentActivityName="com.shop.tcd.v2.screen.MainActivity" />
-
+            android:exported="true" />
         <activity
             android:name="com.shop.tcd.v2.screen.MainActivity"
             android:exported="true">

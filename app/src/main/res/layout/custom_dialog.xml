@@ -24,7 +24,7 @@
         android:ems="10"
         android:hint="@string/begin"
         android:importantForAutofill="no"
-        android:inputType="none"
+        android:inputType="date"
         android:minHeight="48dp"
         android:textColorHint="#78909C"
         app:layout_constraintEnd_toEndOf="parent"

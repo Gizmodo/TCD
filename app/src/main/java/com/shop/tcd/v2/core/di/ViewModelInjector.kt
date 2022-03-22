@@ -1,6 +1,7 @@
 package com.shop.tcd.v2.core.di
 
 import com.shop.tcd.v2.screen.catalog.CatalogViewModel
+import com.shop.tcd.v2.screen.catalog.group.GroupsViewModel
 import com.shop.tcd.v2.screen.login.LoginViewModel
 import com.shop.tcd.v2.screen.main.MainViewModel
 import com.shop.tcd.v2.screen.print.PrintViewModel
@@ -22,6 +23,7 @@ interface ViewModelInjector {
     fun inject(viewmodel: MainViewModel)
     fun inject(viewmodel: PrintViewModel)
     fun inject(viewmodel: CatalogViewModel)
+    fun inject(viewmodel: GroupsViewModel)
 
     @Component.Builder
     interface Builder {

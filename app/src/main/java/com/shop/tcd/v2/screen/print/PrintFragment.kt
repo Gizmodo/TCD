@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
 import com.google.android.material.textfield.TextInputEditText
-import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.TcpClientService
 import com.shop.tcd.databinding.FragmentPrintBinding
 import com.shop.tcd.v2.ExampleWorker
 import com.shop.tcd.v2.core.extension.getViewModel
+import com.shop.tcd.v2.core.extension.longFancy
 import com.shop.tcd.v2.core.extension.viewBindingWithBinder
 import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.data.printer.PrintersList
@@ -114,7 +114,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     private fun initViewModelObservers() {
 // TODO: Двойной вызов!
         viewModel.printersLiveData.observe(viewLifecycleOwner) {
-            Timber.d(it.toString())
             printersList = it
             setupAutoComplete(binding.edtPrinter, it)
         }
@@ -126,13 +125,7 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
-            FancyToast.makeText(
-                activity?.applicationContext,
-                it,
-                FancyToast.LENGTH_SHORT,
-                FancyToast.ERROR,
-                false
-            ).show()
+            longFancy { it }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {

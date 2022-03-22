@@ -1,6 +1,7 @@
 package com.shop.tcd.v2.domain.rest
 
 import com.shop.tcd.model.Nomenclature
+import com.shop.tcd.v2.data.group.GroupsList
 import com.shop.tcd.v2.data.pricetag.PriceTag
 import com.shop.tcd.v2.data.pricetag.response.PriceTagResponse
 import io.reactivex.rxjava3.core.Observable
@@ -20,4 +21,10 @@ interface ShopApi {
     @POST("pricetag/POST")
     @Headers("Content-Type:application/json")
     fun postPriceTag(@Body priceTag: PriceTag): Observable<Response<PriceTagResponse>>
+
+    @GET("getgrouplist")
+    suspend fun getGroupsList(): Response<GroupsList>
+
+    @GET("getgrouplist")
+    suspend fun getNomenclatureByGroup(@Query("filter") filter: String): Response<Nomenclature>
 }

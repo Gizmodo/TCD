@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.shop.tcd.R
 import com.shop.tcd.databinding.ActivityMainBinding
-import com.shop.tcd.ui.CatalogueActivity
 import com.shop.tcd.ui.InventarisationActivity
 import com.shop.tcd.ui.NomenclatureActivity
 import java.lang.Deprecated
@@ -21,16 +20,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
       /*  navHostFragment.findNavController()
             .navigate(LoginFragmentDirections.actionLoginFragmentToPrintFragment())*/
-    }
-
-    /**
-     * Открывает экран "Загрузить каталог товаров".
-     * Действие по кнопке на главном экране.
-     */
-    @Deprecated
-    fun btnShowCatalogue(view: View) {
-        val intent = Intent(this, CatalogueActivity::class.java)
-        startActivity(intent)
     }
 
     /**

@@ -10,9 +10,14 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentCatalogBinding
-import com.shop.tcd.v2.core.extension.*
+import com.shop.tcd.v2.core.extension.getViewModel
+import com.shop.tcd.v2.core.extension.longFancy
+import com.shop.tcd.v2.core.extension.navigateExt
+import com.shop.tcd.v2.core.extension.viewBindingWithBinder
 import timber.log.Timber
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class CatalogFragment : Fragment(R.layout.fragment_catalog) {
@@ -22,9 +27,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
     private lateinit var btnLoadByGroups: Button
     private lateinit var btnLoadByPeriod: Button
     private lateinit var shimmer: ConstraintLayout
-    private val viewModel: CatalogViewModel by lazy {
-        getViewModel { CatalogViewModel() }
-    }
+    private val viewModel: CatalogViewModel by lazy { getViewModel { CatalogViewModel() } }
     private lateinit var dateBegin: String
     private lateinit var dateEnd: String
 
@@ -67,6 +70,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         btnLoadByGroups = binding.btnLoadByGroups
         btnLoadByPeriod = binding.btnLoadByPeriod
         shimmer = binding.shimmer
+
         btnLoadByGroups.setOnClickListener {
             navigateExt(CatalogFragmentDirections.actionCatalogFragmentToGroupFragment())
         }
@@ -77,7 +81,6 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
             viewModel.loadNomenclatureRemainders()
         }
         btnLoadByPeriod.setOnClickListener {
-            // TODO: Сделать показ диалога с датами
             showPeriodDialog()
         }
     }
@@ -106,8 +109,21 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
 
         btnOk.setOnClickListener {
             if (dateBegin.isNotEmpty() && dateEnd.isNotEmpty()) {
-                /// TODO:  Продолжить здесь
-                val period = "$dateBegin 0:00:00,$dateEnd 23:59:59"
+                val formatter = DateTimeFormatter.ofPattern("dd.MM.yyy")
+                val firstDate: LocalDate = LocalDate.parse(dateBegin, formatter)
+                val secondDate: LocalDate = LocalDate.parse(dateEnd, formatter)
+                var period = ""
+                when {
+                    firstDate.isAfter(secondDate) -> {
+                        period = "$dateEnd 0:00:00,$dateBegin 23:59:59"
+                    }
+                    firstDate.isBefore(secondDate) -> {
+                        period = "$dateBegin 0:00:00,$dateEnd 23:59:59"
+                    }
+                    firstDate.isEqual(secondDate) -> {
+                        period = "$dateBegin 0:00:00,$dateEnd 23:59:59"
+                    }
+                }
                 viewModel.loadNomenclatureByPeriod(period)
             } else {
                 clearText()
@@ -121,6 +137,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
                 edtBegin.callOnClick()
             }
         }
+
         edtEnd.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 edtEnd.callOnClick()
@@ -163,5 +180,4 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         }
         dateDialog.show()
     }
-
 }

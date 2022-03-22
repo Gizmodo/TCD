@@ -32,31 +32,6 @@ interface RetrofitServiceMain {
     fun getByGroup(@Query("filter") filter: String): Call<Nomenclature>
 
     /**
-     *Загрузить весь список товаров
-     *
-     **/
-    @GET("getitemlist")
-    fun getAllItems(): Call<Nomenclature>
-
-    /**
-     *Загрузить товары по остаткам
-     *
-     **/
-    @GET("getiteminstock")
-    fun getRemainders(): Call<Nomenclature>
-
-    /**
-     *Загрузить товары за период
-     *"01.09.2021 0:00:00,30.09.2021 23:59:59"
-     * 12.07.2021 23:59:58
-     * 11.07.2021 17:31:48
-     * 10.07.2021 23:59:58
-     * 01.10.2019 0:00:00
-     **/
-    @GET("getturnoverfortheperiod")
-    fun getPeriod(@Query("filter") filter: String): Call<Nomenclature>
-
-    /**
      * Отправить ответ по инвентаризации
      **/
     @POST("receiveddocument")

@@ -14,27 +14,7 @@ class RepositoryMain constructor(private val retrofitServiceMain: RetrofitServic
     fun getByGroup(filterString: String) = retrofitServiceMain.getByGroup(filterString)
 
     /**
-     * Загрузить весь список товаров
-     */
-    fun getAllItems() = retrofitServiceMain.getAllItems()
-
-    /**
-     * Загрузить товары по остаткам
-     */
-    fun getRemainders() = retrofitServiceMain.getRemainders()
-
-    /**
-     * Загрузить товары за период
-     */
-    fun getPeriod(filterString: String) = retrofitServiceMain.getPeriod(filterString)
-
-    /**
      * Отправить ответ по инвентаризации
      */
     fun postInventory(payload: Payload) = retrofitServiceMain.postInventory("", payload)
-
-    /**
-     * Тестовый метод с приемом полного Endpoint
-     */
-//    fun getAllGroupsUrl(url: String) = RetrofitMain.getAllGroupsURL(url)
 }
