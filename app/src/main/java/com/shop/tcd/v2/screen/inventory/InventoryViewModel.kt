@@ -1,4 +1,4 @@
-package com.shop.tcd.ui.inventory
+package com.shop.tcd.v2.screen.inventory
 
 import androidx.lifecycle.ViewModel
 

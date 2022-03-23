@@ -33,7 +33,7 @@ class InvAdapterGeneric(
                 binding.txtInvQuantity.text = quantity.toString()
             }
         }
-     holder.itemView.setOnClickListener {  }
+        holder.itemView.setOnClickListener { }
     }
 
     override fun getItemCount(): Int {

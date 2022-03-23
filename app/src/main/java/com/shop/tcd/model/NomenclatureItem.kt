@@ -7,8 +7,10 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "nomenclature")
 data class NomenclatureItem(
-    @SerializedName("barcode") @ColumnInfo(name = "barcode",
-        index = true) var barcode: String,
+    @SerializedName("barcode") @ColumnInfo(
+        name = "barcode",
+        index = true
+    ) var barcode: String,
     @SerializedName("code") @ColumnInfo(name = "code") var code: String,
     @SerializedName("name") @ColumnInfo(name = "name") var name: String,
     @SerializedName("plu") @ColumnInfo(name = "plu") var plu: String,

@@ -7,7 +7,6 @@ import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
 import androidx.viewbinding.ViewBinding
 import com.shop.tcd.v2.core.utils.FragmentAutoClearedBinding
-import com.shop.tcd.v2.utils.hideSoftKeyboardExt
 
 fun Fragment.navigateExt(directions: NavDirections) {
     view?.let { Navigation.findNavController(it).navigate(directions) }

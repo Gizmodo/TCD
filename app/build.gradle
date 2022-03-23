@@ -8,6 +8,8 @@ plugins {
     id 'com.google.devtools.ksp' version '1.6.20-RC-1.0.4'
     id "org.jetbrains.kotlin.plugin.serialization"
     id "scabbard.gradle" version "0.5.0"
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 ext.versionMajor = 1
 ext.versionMinor = 2
@@ -54,7 +56,7 @@ android {
         viewBinding true
     }
     buildTypes {
-        debug{
+        debug {
             minifyEnabled false
             shrinkResources false
         }
@@ -89,15 +91,11 @@ detekt {
 }
 dependencies {
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar"
-    implementation "com.bugsnag:bugsnag-plugin-android-okhttp:$bugsnag"
     debugImplementation "com.bugsnag:bugsnag-android:$bugsnag"
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
     implementation "androidx.core:core-ktx:$core_ktx"
-    implementation "io.coil-kt:coil:$coil"
-    implementation "io.coil-kt:coil-svg:$coil"
-    implementation "io.coil-kt:coil-gif:$coil"
     implementation "androidx.datastore:datastore-preferences-rxjava3:$datastore"
     implementation "androidx.datastore:datastore-preferences:$datastore"
     implementation "androidx.datastore:datastore-rxjava3:$datastore"
@@ -116,6 +114,11 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
     implementation "androidx.navigation:navigation-runtime:$navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation"
+    implementation "androidx.paging:paging-common-ktx:$page"
+    implementation "androidx.paging:paging-common:$page"
+    implementation "androidx.paging:paging-runtime-ktx:$page"
+    implementation "androidx.paging:paging-runtime:$page"
+    implementation "androidx.paging:paging-rxjava3:$page"
     implementation "androidx.room:room-guava:$room"
     implementation "androidx.room:room-ktx:$room"
     implementation "androidx.room:room-paging:$room"
@@ -125,16 +128,16 @@ dependencies {
     implementation "androidx.work:work-multiprocess:$work"
     implementation "androidx.work:work-runtime-ktx:$work"
     implementation "androidx.work:work-rxjava3:$work"
+    implementation "com.bugsnag:bugsnag-plugin-android-okhttp:$bugsnag"
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.karczews:rx2-broadcast-receiver:$broadcast_receiver"
     implementation "com.google.android.material:material:$material"
     implementation "com.google.code.gson:gson:$gson"
-    implementation "com.google.dagger:dagger:$dagger"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    implementation "com.google.dagger:dagger-android:$dagger"
     implementation "com.google.dagger:dagger-android-support:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    implementation "com.google.dagger:dagger-android:$dagger"
+    implementation "com.google.dagger:dagger:$dagger"
+    implementation "com.google.firebase:firebase-analytics-ktx:$analytics"
+    implementation "com.google.firebase:firebase-crashlytics-ktx:$crashlytics"
     implementation "com.jakewharton.timber:timber:$timber"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
     implementation "com.squareup.okhttp3:okhttp:$okhttp"
@@ -142,13 +145,19 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofit"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofit"
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "io.coil-kt:coil-gif:$coil"
+    implementation "io.coil-kt:coil-svg:$coil"
+    implementation "io.coil-kt:coil:$coil"
     implementation "io.github.shashank02051997:FancyToast:$fancy"
     implementation "io.reactivex.rxjava3:rxandroid:$rxandroid"
     implementation "io.reactivex.rxjava3:rxjava:$rxjava"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_json"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt "com.github.bumptech.glide:compiler:$glide"
+    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
     ksp "androidx.room:room-compiler:$room"
 }
 scabbard {

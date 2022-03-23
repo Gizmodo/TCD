@@ -18,8 +18,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(ActivityMainBinding.inflate(layoutInflater).root)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-      /*  navHostFragment.findNavController()
-            .navigate(LoginFragmentDirections.actionLoginFragmentToPrintFragment())*/
+        /*  navHostFragment.findNavController()
+              .navigate(LoginFragmentDirections.actionLoginFragmentToPrintFragment())*/
     }
 
     /**

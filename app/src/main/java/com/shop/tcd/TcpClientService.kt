@@ -30,7 +30,12 @@ class TcpClientService : Service() {
     private fun buildSocket(): Socket {
         val socket = Socket()
         socket.soTimeout = TCP_SERVICE_TCP_TIMEOUT_INT
-        socket.connect(InetSocketAddress(resolveHost(ip, TCP_SERVICE_DNS_TIMEOUT), TCP_SERVICE_PORT), TCP_SERVICE_TCP_TIMEOUT_INT)
+        socket.connect(
+            InetSocketAddress(
+                resolveHost(ip, TCP_SERVICE_DNS_TIMEOUT),
+                TCP_SERVICE_PORT
+            ), TCP_SERVICE_TCP_TIMEOUT_INT
+        )
         return socket
     }
 
@@ -128,9 +133,11 @@ class TcpClientService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationChannelId = packageName
             val channelName = "Tcp Client Background Service"
-            val chan = NotificationChannel(notificationChannelId,
+            val chan = NotificationChannel(
+                notificationChannelId,
                 channelName,
-                NotificationManager.IMPORTANCE_NONE)
+                NotificationManager.IMPORTANCE_NONE
+            )
             chan.lightColor = Color.BLUE
             chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
             val manager = (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)

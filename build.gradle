@@ -1,14 +1,15 @@
 buildscript {
     ext {
-        sdk = 32
+        analytics = "20.1.1"
         appcompat = "1.4.1"
         broadcast_receiver = "1.0.6"
-        bugsnag_gradle = "7.2.0"
         bugsnag = "5.21.0"
-        coil = '2.0.0-rc02'
+        bugsnag_gradle = "7.2.0"
+        coil = "2.0.0-rc02"
         constraintlayout = "2.1.3"
         core_ktx = "1.7.0"
         coroutines = "1.6.0"
+        crashlytics = "18.2.9"
         dagger = "2.41"
         datastore = "1.0.0"
         desugar = "1.1.5"
@@ -20,13 +21,15 @@ buildscript {
         leakcanary = "2.8.1"
         lifecycle = "2.5.0-alpha04"
         lifecycle_extensions = "2.2.0"
-        material = "1.6.0-alpha03"
+        material = "1.6.0-beta01"
         navigation = "2.5.0-alpha03"
         okhttp = "5.0.0-alpha.6"
+        page = "3.1.1"
         retrofit = "2.9.0"
-        room = "2.4.2"
+        room = "2.5.0-alpha01"
         rxandroid = "3.0.0"
-        rxjava = '3.1.4'
+        rxjava = "3.1.4"
+        sdk = 32
         serialization_json = "1.3.2"
         swiperefreshlayout = "1.2.0-alpha01"
         timber = "5.0.1"
@@ -42,6 +45,8 @@ buildscript {
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.19.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
         classpath "com.bugsnag:bugsnag-android-gradle-plugin:$bugsnag_gradle"
+        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.8.1'
     }
 }
 plugins {

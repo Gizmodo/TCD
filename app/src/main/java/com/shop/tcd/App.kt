@@ -7,11 +7,14 @@ import android.content.Context
 import com.bugsnag.android.Bugsnag
 import com.bugsnag.android.Configuration
 import com.bugsnag.android.okhttp.BugsnagOkHttpPlugin
-import com.shop.tcd.v2.core.utils.LineNumberDebugTree
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import leakcanary.LeakCanary
 import timber.log.Timber
 
 class App : Application() {
+    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
+
     init {
         instance = this
     }
@@ -23,7 +26,6 @@ class App : Application() {
         }
     }
 
-    //    lateinit var appGraph: AppGraph
     override fun onCreate() {
         super.onCreate()
         val bugsnagOkHttpPlugin = BugsnagOkHttpPlugin()
@@ -33,10 +35,22 @@ class App : Application() {
         LeakCanary.config = LeakCanary.config.copy(
             onHeapAnalyzedListener = BugsnagLeakUploader(applicationContext = this)
         )
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         if (BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
             Timber.plant(LineNumberDebugTree())
+        } else {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
         }
-        /* appGraph=DaggerAppGraph
-             .Builder()*/
+    }
+
+    inner class LineNumberDebugTree : Timber.DebugTree() {
+
+        override fun createStackElementTag(element: StackTraceElement) =
+            "(${element.fileName}:${element.lineNumber})#${element.methodName}"
+
+        override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+            super.log(priority, "telega_$tag", message, t)
+        }
     }
 }

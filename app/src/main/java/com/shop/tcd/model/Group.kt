@@ -14,7 +14,8 @@ data class Group(
 ) {
     @PrimaryKey(autoGenerate = true)
     var uid: Int? = null
-    constructor():this  ("","",false)
+
+    constructor() : this("", "", false)
 }
 /*
 

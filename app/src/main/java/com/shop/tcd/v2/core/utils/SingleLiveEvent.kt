@@ -1,6 +1,5 @@
 package com.shop.tcd.v2.core.utils
 
-
 import androidx.annotation.MainThread
 import androidx.annotation.Nullable
 import androidx.lifecycle.LifecycleOwner

@@ -1,7 +1,10 @@
 package com.shop.tcd.v2.domain.database
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.shop.tcd.model.InvItem
 import io.reactivex.rxjava3.core.Single
 

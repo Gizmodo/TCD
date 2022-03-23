@@ -38,9 +38,7 @@
             android:name=".ui.NomenclatureActivity"
             android:exported="true"
             android:parentActivityName="com.shop.tcd.v2.screen.MainActivity" />
-        <activity
-            android:name=".ui.CatalogueGroupActivity"
-            android:exported="true" />
+
         <activity
             android:name="com.shop.tcd.v2.screen.MainActivity"
             android:exported="true">

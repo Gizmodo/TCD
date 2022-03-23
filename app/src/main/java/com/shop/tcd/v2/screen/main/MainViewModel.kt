@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.v2.domain.rest.SettingsApi
-import com.shop.tcd.v2.data.shop.ShopsList
 import com.shop.tcd.v2.core.di.*
+import com.shop.tcd.v2.data.shop.ShopsList
+import com.shop.tcd.v2.domain.rest.SettingsApi
 import kotlinx.coroutines.*
 import javax.inject.Inject
 

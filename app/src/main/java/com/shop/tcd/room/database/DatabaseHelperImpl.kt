@@ -8,7 +8,7 @@ class DatabaseHelperImpl(private val appDatabase: TCDRoomDatabase) : DatabaseHel
         return appDatabase.invDao().selectAllSuspend()
     }
 
-    override suspend  fun updateInventoryQuantity(uid: Int, newQuantity: String) {
+    override suspend fun updateInventoryQuantity(uid: Int, newQuantity: String) {
         return appDatabase.invDao().updateInventoryQuantity(uid, newQuantity)
     }
 }

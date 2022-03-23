@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.utils
+package com.shop.tcd.v2.core.extension
 
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE

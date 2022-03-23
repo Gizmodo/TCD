@@ -21,14 +21,14 @@
         android:id="@+id/catalogFragment"
         android:name="com.shop.tcd.v2.screen.catalog.CatalogFragment"
         android:label="fragment_catalog"
-        tools:layout="@layout/fragment_catalog" >
+        tools:layout="@layout/fragment_catalog">
         <action
             android:id="@+id/action_catalogFragment_to_groupFragment"
             app:destination="@id/groupFragment" />
     </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
-        android:name="com.shop.tcd.ui.inventory.InventoryFragment"
+        android:name="com.shop.tcd.v2.screen.inventory.InventoryFragment"
         android:label="fragment_inventory"
         tools:layout="@layout/fragment_inventory" />
     <fragment
@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/nomenclatureFragment"
-        android:name="com.shop.tcd.ui.nomenclature.NomenclatureFragment"
+        android:name="com.shop.tcd.v2.screen.nomenclature.NomenclatureFragment"
         android:label="fragment_nomenclature"
         tools:layout="@layout/fragment_nomenclature" />
     <fragment

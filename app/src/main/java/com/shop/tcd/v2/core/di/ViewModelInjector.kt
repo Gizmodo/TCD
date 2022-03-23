@@ -4,6 +4,7 @@ import com.shop.tcd.v2.screen.catalog.CatalogViewModel
 import com.shop.tcd.v2.screen.catalog.group.GroupsViewModel
 import com.shop.tcd.v2.screen.login.LoginViewModel
 import com.shop.tcd.v2.screen.main.MainViewModel
+import com.shop.tcd.v2.screen.nomenclature.NomenclatureViewModel
 import com.shop.tcd.v2.screen.print.PrintViewModel
 import dagger.Component
 import javax.inject.Singleton
@@ -24,6 +25,7 @@ interface ViewModelInjector {
     fun inject(viewmodel: PrintViewModel)
     fun inject(viewmodel: CatalogViewModel)
     fun inject(viewmodel: GroupsViewModel)
+    fun inject(viewmodel: NomenclatureViewModel)
 
     @Component.Builder
     interface Builder {
