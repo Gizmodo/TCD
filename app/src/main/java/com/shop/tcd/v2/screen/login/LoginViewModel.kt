@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
 import com.shop.tcd.v2.core.di.*
 import com.shop.tcd.v2.data.user.UsersList
-import com.shop.tcd.v2.datastore.DataStoreRepository
 import com.shop.tcd.v2.domain.database.InvDao
+import com.shop.tcd.v2.domain.datastore.DataStoreRepository
 import com.shop.tcd.v2.domain.rest.SettingsApi
 import kotlinx.coroutines.*
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.datastore
+package com.shop.tcd.v2.domain.datastore
 
 interface DataStoreRepository {
     suspend fun putString(key: String, value: String)

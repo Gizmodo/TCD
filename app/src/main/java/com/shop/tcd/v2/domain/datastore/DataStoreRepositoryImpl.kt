@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.datastore
+package com.shop.tcd.v2.domain.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

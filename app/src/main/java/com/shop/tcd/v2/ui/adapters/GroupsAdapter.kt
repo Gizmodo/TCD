@@ -15,6 +15,7 @@ class GroupsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
+        // TODO: Переименовать xml файл
         val binding = RecyclerviewItemRowBinding.inflate(inflater, parent, false)
         return GroupsViewHolder(binding)
     }

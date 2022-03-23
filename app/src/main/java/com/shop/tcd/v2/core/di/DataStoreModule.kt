@@ -1,7 +1,7 @@
 package com.shop.tcd.v2.core.di
 
-import com.shop.tcd.v2.datastore.DataStoreRepository
-import com.shop.tcd.v2.datastore.DataStoreRepositoryImpl
+import com.shop.tcd.v2.domain.datastore.DataStoreRepository
+import com.shop.tcd.v2.domain.datastore.DataStoreRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton

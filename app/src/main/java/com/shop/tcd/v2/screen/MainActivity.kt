@@ -8,7 +8,6 @@ import androidx.navigation.fragment.NavHostFragment
 import com.shop.tcd.R
 import com.shop.tcd.databinding.ActivityMainBinding
 import com.shop.tcd.ui.InventarisationActivity
-import com.shop.tcd.ui.NomenclatureActivity
 import java.lang.Deprecated
 
 class MainActivity : AppCompatActivity() {
@@ -20,17 +19,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         /*  navHostFragment.findNavController()
               .navigate(LoginFragmentDirections.actionLoginFragmentToPrintFragment())*/
-    }
-
-    /**
-     * Открывает экран "Справочник Номенклатура".
-     * Действие по кнопке на главном экране.
-     */
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated
-    fun btnShowNomenclature(view: View) {
-        val intent = Intent(this, NomenclatureActivity::class.java)
-        startActivity(intent)
     }
 
     /**

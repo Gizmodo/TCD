@@ -62,7 +62,6 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
                 Timber.d("Restore data")
                 dataForSearchResult.clear()
                 dataForSearchResult.addAll(data)
-
             }
             adapterNomeclature.updateList(dataForSearchResult)
             adapterNomeclature.notifyDataSetChanged()

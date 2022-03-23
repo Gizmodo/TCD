@@ -1,8 +1,6 @@
 package com.shop.tcd.repository.main
 
 import com.google.gson.GsonBuilder
-import com.shop.tcd.model.Groups
-import com.shop.tcd.model.Nomenclature
 import com.shop.tcd.model.post.Payload
 import com.shop.tcd.v2.core.utils.Common
 import okhttp3.OkHttpClient
@@ -11,26 +9,14 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.Query
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 interface RetrofitServiceMain {
-    /**
-     *Загрузить группы товаров
-     *
-     **/
-//    @GET("TSD/hs/TSD/getgrouplist")
-    @GET("getgrouplist")
-    fun getAllGroups(): Call<Groups>
-
-    /**
-     * Загрузить товары по выбранным группам
-     * filter=10000, 20000, ....
-     **/
-    @GET("getgrouplist")
-    fun getByGroup(@Query("filter") filter: String): Call<Nomenclature>
-
     /**
      * Отправить ответ по инвентаризации
      **/
@@ -41,11 +27,6 @@ interface RetrofitServiceMain {
         @Body document: Payload,
     ): Call<String>
 
-    /**
-     * **** TEST ***
-    @GET //("TSD/hs/TSD/getgrouplist")
-    fun getAllGroupsURL(@Url url: String): Call<Groups>
-     **/
     companion object {
         private var retroService: RetrofitServiceMain? = null
         fun getInstance(): RetrofitServiceMain {
