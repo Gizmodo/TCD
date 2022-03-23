@@ -46,7 +46,9 @@ class NomenclatureViewModel : ViewModel() {
 
     @Inject
     lateinit var nomenclatureDao: NomenclatureDao
-    private fun loadNomenclature() {
+
+    fun loadNomenclature() {
+        job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response: List<NomenclatureItem> = nomenclatureDao.getAll()
             _nomenclatureLiveData.postValue(response)
@@ -58,6 +60,14 @@ class NomenclatureViewModel : ViewModel() {
                 }
                 _loading.value = false
             }*/
+        }
+    }
+
+    fun loadNomenclatureBySearch(search: String) {
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response: List<NomenclatureItem> = nomenclatureDao.getNomenclatureBySearch(search)
+            _nomenclatureLiveData.postValue(response)
         }
     }
 

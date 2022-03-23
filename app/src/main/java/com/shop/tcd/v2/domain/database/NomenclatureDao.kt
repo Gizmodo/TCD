@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NomenclatureDao {
+    // TODO: убрать лимит и сделать через страницы
     @Query("select * from nomenclature limit 5000")
     suspend fun getAll(): List<NomenclatureItem>
 
@@ -42,4 +43,7 @@ interface NomenclatureDao {
     /* Количество записей */
     @Query("SELECT COUNT(*) FROM nomenclature")
     suspend fun count(): Int
+
+    @Query("select * from nomenclature where code LIKE '%' || :search || '%' or barcode LIKE '%' || :search || '%' or name LIKE '%' || :search || '%'")
+    suspend fun getNomenclatureBySearch(search: String): List<NomenclatureItem>
 }

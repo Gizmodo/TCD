@@ -1,5 +1,6 @@
 package com.shop.tcd.v2.screen.nomenclature
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -22,16 +23,15 @@ import com.shop.tcd.v2.ui.adapters.NomenclatureAdapter
 import timber.log.Timber
 import java.util.*
 
+@Suppress("ktPropBy")
 class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
     private var data: List<NomenclatureItem> = mutableListOf()
-    private var dataForSearchResult: ArrayList<NomenclatureItem> = ArrayList()
     private val binding by viewBindingWithBinder(FragmentNomenclatureBinding::bind)
     private lateinit var shimmer: ConstraintLayout
     private lateinit var tilSearch: TextInputLayout
     private lateinit var edtSearch: EditText
     private lateinit var rvNomenclature: RecyclerView
     private val viewModel: NomenclatureViewModel by lazy { getViewModel { NomenclatureViewModel() } }
-    private lateinit var newArrayList: ArrayList<NomenclatureItem>
     private var adapterNomeclature = NomenclatureAdapter(mutableListOf())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,36 +45,22 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
 
     private fun initUIListeners() {
         edtSearch.onChange {
-            dataForSearchResult.clear()
-            val searchtext = it.lowercase(Locale.getDefault())
-            if (searchtext.isNotEmpty()) {
-                data.forEach { item ->
-                    if (
-                        item.name.lowercase(Locale.getDefault()).contains(searchtext) ||
-                        item.barcode.lowercase(Locale.getDefault()).contains(searchtext) ||
-                        item.code.lowercase(Locale.getDefault()).contains(searchtext)
-                    ) {
-                        Timber.d("Found")
-                        dataForSearchResult.add(item)
-                    }
-                }
+            if (it.isNotEmpty()) {
+                viewModel.loadNomenclatureBySearch(it.lowercase(Locale.getDefault()))
             } else {
-                Timber.d("Restore data")
-                dataForSearchResult.clear()
-                dataForSearchResult.addAll(data)
+                viewModel.loadNomenclature()
             }
-            adapterNomeclature.updateList(dataForSearchResult)
-            adapterNomeclature.notifyDataSetChanged()
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initViewModelObservers() {
         viewModel.nomenclatureLiveData.observe(viewLifecycleOwner) { items ->
             data = items
-            dataForSearchResult = items as ArrayList<NomenclatureItem>
             adapterNomeclature.updateList(data)
-//            newArrayList = items as ArrayList<NomenclatureItem>
+            adapterNomeclature.notifyDataSetChanged()
         }
+
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
             longFancy { it }
