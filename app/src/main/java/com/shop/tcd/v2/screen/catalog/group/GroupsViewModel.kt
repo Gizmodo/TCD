@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.model.NomenclatureItem
 import com.shop.tcd.v2.core.di.*
 import com.shop.tcd.v2.data.group.GroupsList
+import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.domain.database.NomenclatureDao
 import com.shop.tcd.v2.domain.rest.ShopApi
 import kotlinx.coroutines.*
@@ -51,6 +51,7 @@ class GroupsViewModel : ViewModel() {
     lateinit var shopApi: ShopApi
 
     private fun loadGroups() {
+        job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopApi.getGroupsList()
             withContext(Dispatchers.Main) {
@@ -80,6 +81,7 @@ class GroupsViewModel : ViewModel() {
     }
 
     fun loadSelectedGroups(filtered: String) {
+        job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopApi.getNomenclatureByGroup(filtered)
             withContext(Dispatchers.Main) {

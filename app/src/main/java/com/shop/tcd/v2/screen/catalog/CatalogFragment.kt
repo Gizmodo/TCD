@@ -88,8 +88,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
     private fun showPeriodDialog() {
         val dateDialog = Dialog(requireContext())
         dateDialog.setCancelable(true)
-        // TODO: Переименовать xml файл
-        dateDialog.setContentView(R.layout.custom_dialog)
+        dateDialog.setContentView(R.layout.dialog_period)
 
         val btnOk = dateDialog.findViewById<Button>(R.id.btnDialogOk)
         val btnCancel = dateDialog.findViewById<Button>(R.id.btnDialogCancel)

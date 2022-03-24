@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.screen.inventory
+package com.shop.tcd.v2.screen.inventory.chronology
 
 import android.app.Application
 import androidx.lifecycle.LiveData
@@ -11,15 +11,15 @@ import com.shop.tcd.v2.domain.database.InvDao
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class InventoryViewModel : ViewModel() {
+class InventoryChronologyViewModel : ViewModel() {
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
     private var _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> get() = _loading
 
-    private var _inventoryList = MutableLiveData<List<InvItem>>()
-    val inventoryList: LiveData<List<InvItem>> get() = _inventoryList
+    private var _inventoryLiveData = MutableLiveData<List<InvItem>>()
+    val inventoryLiveData: LiveData<List<InvItem>> get() = _inventoryLiveData
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -36,18 +36,18 @@ class InventoryViewModel : ViewModel() {
 
     init {
         injector.inject(this)
-        loadInventoryList()
+        loadIventoryList()
     }
 
     @Inject
     lateinit var inventoryDao: InvDao
 
-    private fun loadInventoryList() {
+    private fun loadIventoryList() {
         _loading.value = true
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response: List<InvItem> = inventoryDao.loadInventoryGrouped()
-            _inventoryList.postValue(response)
+            val response: List<InvItem> = inventoryDao.selectAllSuspend()
+            _inventoryLiveData.postValue(response)
             _loading.value = false
         }
     }

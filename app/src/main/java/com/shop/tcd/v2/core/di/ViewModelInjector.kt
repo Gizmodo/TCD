@@ -2,6 +2,9 @@ package com.shop.tcd.v2.core.di
 
 import com.shop.tcd.v2.screen.catalog.CatalogViewModel
 import com.shop.tcd.v2.screen.catalog.group.GroupsViewModel
+import com.shop.tcd.v2.screen.inventory.InventoryViewModel
+import com.shop.tcd.v2.screen.inventory.chronology.InventoryChronologyViewModel
+import com.shop.tcd.v2.screen.inventory.detail.InventoryItemDetailViewModel
 import com.shop.tcd.v2.screen.login.LoginViewModel
 import com.shop.tcd.v2.screen.main.MainViewModel
 import com.shop.tcd.v2.screen.nomenclature.NomenclatureViewModel
@@ -26,6 +29,9 @@ interface ViewModelInjector {
     fun inject(viewmodel: CatalogViewModel)
     fun inject(viewmodel: GroupsViewModel)
     fun inject(viewmodel: NomenclatureViewModel)
+    fun inject(viewmodel: InventoryViewModel)
+    fun inject(viewmodel: InventoryItemDetailViewModel)
+    fun inject(viewmodel: InventoryChronologyViewModel)
 
     @Component.Builder
     interface Builder {

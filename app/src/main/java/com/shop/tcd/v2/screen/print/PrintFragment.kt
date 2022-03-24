@@ -16,13 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.work.*
 import com.google.android.material.textfield.TextInputEditText
 import com.shop.tcd.R
-import com.shop.tcd.TcpClientService
 import com.shop.tcd.databinding.FragmentPrintBinding
 import com.shop.tcd.v2.ExampleWorker
 import com.shop.tcd.v2.core.extension.getViewModel
 import com.shop.tcd.v2.core.extension.longFancy
 import com.shop.tcd.v2.core.extension.viewBindingWithBinder
 import com.shop.tcd.v2.core.utils.Common
+import com.shop.tcd.v2.core.utils.TcpClientService
 import com.shop.tcd.v2.data.printer.PrintersList
 import com.shop.tcd.v2.ui.adapters.PriceTagAdapter
 import timber.log.Timber

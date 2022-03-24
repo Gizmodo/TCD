@@ -18,7 +18,7 @@
             android:name="com.bugsnag.android.API_KEY"
             android:value="d13ea502d3889a6d99f955103ef7e09c" />
         <service
-            android:name=".TcpClientService"
+            android:name=".v2.core.utils.TcpClientService"
             android:enabled="true"
             android:exported="false" />
 

@@ -36,7 +36,6 @@ import com.shop.tcd.broadcast.ReceiverLiveData
 import com.shop.tcd.bundlizer.bundle
 import com.shop.tcd.databinding.ActivityInventarisationBinding
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.model.NomenclatureItem
 import com.shop.tcd.model.post.Payload
 import com.shop.tcd.repository.main.RepositoryMain
 import com.shop.tcd.repository.main.RetrofitServiceMain
@@ -52,6 +51,7 @@ import com.shop.tcd.v2.core.utils.Common.textChanges
 import com.shop.tcd.v2.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.v2.core.utils.Constants.Inventory.DEBOUNCE_TIME
 import com.shop.tcd.v2.core.utils.ResponseState
+import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.domain.database.InvDao
 import com.shop.tcd.v2.domain.database.NomenclatureDao
 import com.shop.tcd.viewmodel.InventarisationViewModel
@@ -152,7 +152,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             result = "success",
             message = "",
             operation = "revision",
-            autor = Common.selectedUser.userLogin,
+            autor = Common.selectedUserModel.name,
             shop = selectedShop.shopName,
             prefix = selectedShop.shopPrefix,
             document = list
@@ -413,7 +413,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             txtBarcode.text = item.barcode
             // TODO: Это поле заполняется из ответа
             //  на запрос к БД с группировкой по штрихкоду
-            txtTotal.text = item.code
+            txtTotal.text = item.code // TODO: 1) Выводить общее кол-во!!!
             txtPrice.text = item.price
             val barcode = edtBarcode
                 .text

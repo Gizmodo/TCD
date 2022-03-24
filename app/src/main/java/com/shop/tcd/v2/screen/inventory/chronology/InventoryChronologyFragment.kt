@@ -1,9 +1,7 @@
-package com.shop.tcd.v2.screen.nomenclature
+package com.shop.tcd.v2.screen.inventory.chronology
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -11,54 +9,46 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.android.material.textfield.TextInputLayout
 import com.shop.tcd.R
-import com.shop.tcd.databinding.FragmentNomenclatureBinding
+import com.shop.tcd.databinding.FragmentInventoryChronologyBinding
+import com.shop.tcd.model.InvItem
 import com.shop.tcd.v2.core.extension.getViewModel
 import com.shop.tcd.v2.core.extension.longFancy
-import com.shop.tcd.v2.core.extension.onChange
 import com.shop.tcd.v2.core.extension.viewBindingWithBinder
-import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
-import com.shop.tcd.v2.ui.adapters.NomenclatureAdapter
+import com.shop.tcd.v2.ui.adapters.InventoryAdapter
 import timber.log.Timber
-import java.util.*
 
-@Suppress("ktPropBy")
-class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
-    private var data: List<NomenclatureItem> = mutableListOf()
-    private val binding by viewBindingWithBinder(FragmentNomenclatureBinding::bind)
+class InventoryChronologyFragment : Fragment(R.layout.fragment_inventory_chronology) {
+    private var data: List<InvItem> = mutableListOf()
+    private val binding by viewBindingWithBinder(FragmentInventoryChronologyBinding::bind)
+    private lateinit var rvInventoryChronology: RecyclerView
     private lateinit var shimmer: ConstraintLayout
-    private lateinit var tilSearch: TextInputLayout
-    private lateinit var edtSearch: EditText
-    private lateinit var rvNomenclature: RecyclerView
-    private val viewModel: NomenclatureViewModel by lazy { getViewModel { NomenclatureViewModel() } }
-    private var adapterNomeclature = NomenclatureAdapter(mutableListOf())
+    private var adapterInventory = InventoryAdapter(mutableListOf()) { inventoryItem, position ->
+        onItemClick(inventoryItem, position)
+    }
+
+    private fun onItemClick(inventoryItem: InvItem, position: Int) {
+        Timber.d("Был клик по элемену $inventoryItem в позиции $position")
+    }
+
+    private val viewModel: InventoryChronologyViewModel by lazy { getViewModel { InventoryChronologyViewModel() } }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rvInventoryChronology.adapter = null
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initUI()
-        initUIListeners()
         initRecyclerView()
         initViewModelObservers()
     }
 
-    private fun initUIListeners() {
-        edtSearch.onChange {
-            if (it.isNotEmpty()) {
-                viewModel.loadNomenclatureBySearch(it.lowercase(Locale.getDefault()))
-            } else {
-                viewModel.loadNomenclature()
-            }
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
     private fun initViewModelObservers() {
-        viewModel.nomenclatureLiveData.observe(viewLifecycleOwner) { items ->
+        viewModel.inventoryLiveData.observe(viewLifecycleOwner) { items ->
             data = items
-            adapterNomeclature.updateList(data)
-            adapterNomeclature.notifyDataSetChanged()
+            adapterInventory.updateList(items)
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
@@ -75,7 +65,7 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
     }
 
     private fun initRecyclerView() {
-        with(rvNomenclature) {
+        with(rvInventoryChronology) {
             val animator = itemAnimator
             if (animator is SimpleItemAnimator) {
                 animator.supportsChangeAnimations = false
@@ -88,20 +78,13 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
                     LinearLayout.VERTICAL
                 )
             )
-            adapter = adapterNomeclature
+            adapter = adapterInventory
         }
     }
 
     private fun initUI() {
-        tilSearch = binding.tilSearch
-        edtSearch = binding.edtSearch
-        rvNomenclature = binding.rvNomenclature
+        rvInventoryChronology = binding.rvInventoryChronology
         shimmer = binding.shimmer
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        rvNomenclature.adapter = null
     }
 
     private fun showShimmer() {

@@ -6,8 +6,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import androidx.annotation.CheckResult
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.model.NomenclatureItem
-import com.shop.tcd.model.settings.GroupUser
+import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.room.database.TCDRoomDatabase
 import com.shop.tcd.v2.data.printer.Printer
@@ -64,27 +63,18 @@ object Common {
      */
     var BASE_SHOP_URL = ""
 
-    var shopsArray: ArrayList<Shop> = arrayListOf()
-    var usersArray: ArrayList<GroupUser> = arrayListOf()
-
     /**
      * Хранение выбранного магазина
      */
     lateinit var selectedShop: Shop
     lateinit var selectedShopModel: ShopModel
-    var selectedShopPosition: Int = -1
     var selectedShopModelPosition: Int = -1
 
     /**
      * Хранение выбранного пользователя и его позиции
      */
-    lateinit var selectedUser: GroupUser
-    var selectedUserPosition: Int = -1
     lateinit var selectedUserModel: UserModel
     var selectedUserModelPosition: Int = -1
-    fun isInit(): Boolean {
-        return this::selectedShop.isInitialized
-    }
 
     /**
      * Хранение выбранного принтера и его позиции

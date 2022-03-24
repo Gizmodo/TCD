@@ -1,4 +1,4 @@
-package com.shop.tcd
+package com.shop.tcd.v2.core.utils
 
 import android.app.Application
 import com.bugsnag.android.*
@@ -45,11 +45,8 @@ class BugsnagLeakUploader(applicationContext: Application) :
                         true
                     }
                 }
-
             }
             is HeapAnalysisFailure -> {
-                // Please file any reported failure to
-                // https://github.com/square/leakcanary/issues
                 bugsnagClient.notify(heapAnalysis.exception)
             }
         }

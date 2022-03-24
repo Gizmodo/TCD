@@ -1,4 +1,4 @@
-package com.shop.tcd.model
+package com.shop.tcd.v2.data.nomenclature
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

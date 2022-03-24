@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.shop.tcd.databinding.RecyclerviewItemRowBinding
+import com.shop.tcd.databinding.ItemRowGroupsRvBinding
 import com.shop.tcd.v2.data.group.Group
 
 class GroupsAdapter(
@@ -15,8 +15,7 @@ class GroupsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        // TODO: Переименовать xml файл
-        val binding = RecyclerviewItemRowBinding.inflate(inflater, parent, false)
+        val binding = ItemRowGroupsRvBinding.inflate(inflater, parent, false)
         return GroupsViewHolder(binding)
     }
 
@@ -31,7 +30,7 @@ class GroupsAdapter(
         notifyDataSetChanged()
     }
 
-    inner class GroupsViewHolder(val binding: RecyclerviewItemRowBinding) :
+    inner class GroupsViewHolder(val binding: ItemRowGroupsRvBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(group: Group) {
             binding.itemCode.text = group.code

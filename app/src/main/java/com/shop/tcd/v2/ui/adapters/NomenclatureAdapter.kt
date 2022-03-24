@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.shop.tcd.databinding.ItemNomenclatureBinding
-import com.shop.tcd.model.NomenclatureItem
+import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 
 class NomenclatureAdapter(
     private val list: MutableList<NomenclatureItem>,

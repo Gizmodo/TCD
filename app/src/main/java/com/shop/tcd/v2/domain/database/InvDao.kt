@@ -31,6 +31,9 @@ interface InvDao {
     @Query("SELECT code,name,plu,barcode,count(barcode) as cnt, sum(cast(replace(quantity,\',\',\'.\') as float)) as quantity FROM inventory group by barcode")
     fun selectSumGroupByBarcode(): LiveData<List<InvItem>>
 
+    @Query("SELECT code,name,plu,barcode,count(barcode) as cnt, sum(cast(replace(quantity,\',\',\'.\') as float)) as quantity FROM inventory group by barcode")
+    suspend fun loadInventoryGrouped(): List<InvItem>
+
     @Query("update inventory set quantity = :newQuantity where uid = :uid")
     fun updateInventoryQuantity(uid: Int, newQuantity: String)
 }

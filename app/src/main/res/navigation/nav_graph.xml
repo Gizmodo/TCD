@@ -30,7 +30,14 @@
         android:id="@+id/inventoryFragment"
         android:name="com.shop.tcd.v2.screen.inventory.InventoryFragment"
         android:label="fragment_inventory"
-        tools:layout="@layout/fragment_inventory" />
+        tools:layout="@layout/fragment_inventory">
+        <action
+            android:id="@+id/action_inventoryFragment_to_inventoryChronologyFragment"
+            app:destination="@id/inventoryChronologyFragment" />
+        <action
+            android:id="@+id/action_inventoryFragment_to_inventoryItemDetailFragment"
+            app:destination="@id/inventoryItemDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.shop.tcd.v2.screen.main.MainFragment"
@@ -64,4 +71,14 @@
         android:name="com.shop.tcd.v2.screen.catalog.group.GroupFragment"
         android:label="fragment_group"
         tools:layout="@layout/fragment_group" />
+    <fragment
+        android:id="@+id/inventoryChronologyFragment"
+        android:name="com.shop.tcd.v2.screen.inventory.chronology.InventoryChronologyFragment"
+        android:label="fragment_inventory_chronology"
+        tools:layout="@layout/fragment_inventory_chronology" />
+    <fragment
+        android:id="@+id/inventoryItemDetailFragment"
+        android:name="com.shop.tcd.v2.screen.inventory.detail.InventoryItemDetailFragment"
+        android:label="fragment_inventory_item_detail"
+        tools:layout="@layout/fragment_inventory_item_detail" />
 </navigation>

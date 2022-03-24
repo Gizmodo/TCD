@@ -5,7 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.shop.tcd.model.NomenclatureItem
+import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import kotlinx.coroutines.flow.Flow
 
 @Dao

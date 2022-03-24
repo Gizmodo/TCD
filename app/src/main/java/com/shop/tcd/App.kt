@@ -9,6 +9,7 @@ import com.bugsnag.android.Configuration
 import com.bugsnag.android.okhttp.BugsnagOkHttpPlugin
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.shop.tcd.v2.core.utils.BugsnagLeakUploader
 import leakcanary.LeakCanary
 import timber.log.Timber
 
