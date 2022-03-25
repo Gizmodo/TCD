@@ -92,7 +92,7 @@ detekt {
 dependencies {
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar"
     debugImplementation "com.bugsnag:bugsnag-android:$bugsnag"
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
+//    debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayout"
     implementation "androidx.core:core-ktx:$core_ktx"

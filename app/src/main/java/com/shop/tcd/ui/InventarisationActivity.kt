@@ -6,7 +6,6 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -32,7 +31,6 @@ import com.google.android.material.textfield.TextInputLayout
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.adapters.InvAdapter
-import com.shop.tcd.broadcast.ReceiverLiveData
 import com.shop.tcd.bundlizer.bundle
 import com.shop.tcd.databinding.ActivityInventarisationBinding
 import com.shop.tcd.model.InvItem
@@ -48,7 +46,6 @@ import com.shop.tcd.v2.core.utils.Common.parseBarcode
 import com.shop.tcd.v2.core.utils.Common.selectedShop
 import com.shop.tcd.v2.core.utils.Common.setReadOnly
 import com.shop.tcd.v2.core.utils.Common.textChanges
-import com.shop.tcd.v2.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.v2.core.utils.Constants.Inventory.DEBOUNCE_TIME
 import com.shop.tcd.v2.core.utils.ResponseState
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
@@ -116,7 +113,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         initRecyclerView()
         attachHideKeyboardListeners()
         initBarcodeFieldListener()
-        initBarcodeListener()
     }
 
     private fun moveFocus(view: EditText) {
@@ -212,12 +208,12 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             }
             R.id.menu_find_barcode -> {
                 item.isChecked = true
-                currentSearchMode = Common.MODESEARCH.BARCODE
+                currentSearchMode = Common.SEARCHBY.BARCODE
                 true
             }
             R.id.menu_find_code -> {
                 item.isChecked = true
-                currentSearchMode = Common.MODESEARCH.CODE
+                currentSearchMode = Common.SEARCHBY.CODE
                 true
             }
             R.id.menu_mode_auto -> {
@@ -317,60 +313,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 ).show()
             }
             show()
-        }
-    }
-
-    private fun initBarcodeListener() {
-        idataBarcodeObserver = ReceiverLiveData(
-            applicationContext,
-            IntentFilter("android.intent.action.SCANRESULT")
-        ) { _, intent ->
-            var data = ""
-            intent.extras?.let { data = it["value"].toString() }
-            return@ReceiverLiveData data
-        }
-
-        urovoScanner = ReceiverLiveData(
-            applicationContext,
-            IntentFilter("android.intent.ACTION_DECODE_DATA")
-        ) { _, intent ->
-            var data = ""
-            intent.extras?.let {
-                data = it["barcode_string"].toString()
-                data = "0000000000000$data".takeLast(BARCODE_LENGTH)
-            }
-            return@ReceiverLiveData data
-        }
-
-        urovoKeyboard = ReceiverLiveData(
-            applicationContext,
-            IntentFilter("android.intent.action_keyboard")
-        ) { _, intent ->
-            var data = false
-            intent.extras?.let {
-                data = it["kbrd_enter"].toString() == "enter"
-            }
-            return@ReceiverLiveData data
-        }
-
-        urovoKeyboard?.observe(this) {
-            if (edtCount.isFocused) {
-                edtCount.setSelection(0)
-                moveFocus(btnInsert)
-                btnInsert.callOnClick()
-            } else if (edtBarcode.isFocused) {
-                moveFocus(edtCount)
-            } else if (btnInsert.isFocused) {
-                moveFocus(edtBarcode)
-            }
-        }
-
-        urovoScanner?.observe(this) {
-            clearFields()
-            doOnGetBarcode(it)
-        }
-        idataBarcodeObserver?.observe(this) {
-            doOnGetBarcode(it)
         }
     }
 
@@ -486,7 +428,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         val nomenclatureDao: NomenclatureDao = db!!.nomDao()
         val prefix = string.take(2)
         when (currentSearchMode) {
-            Common.MODESEARCH.BARCODE -> {
+            Common.SEARCHBY.BARCODE -> {
                 return if (prefix == selectedShop.shopPrefixWeight) {
                     //Весовой товар
                     val productCode = string.takeLast(11).take(5)
@@ -496,7 +438,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                     nomenclatureDao.getByBarcode(string).asFlow()
                 }
             }
-            Common.MODESEARCH.CODE -> {
+            Common.SEARCHBY.CODE -> {
                 return nomenclatureDao.getByCode(string).asFlow()
             }
         }

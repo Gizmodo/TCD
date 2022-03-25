@@ -48,7 +48,7 @@ class InventoryChronologyViewModel : ViewModel() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response: List<InvItem> = inventoryDao.selectAllSuspend()
             _inventoryLiveData.postValue(response)
-            _loading.value = false
+            _loading.postValue (false)
         }
     }
 

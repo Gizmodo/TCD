@@ -45,4 +45,9 @@
     <string name="label_printing">Печать этикеток</string>
     <string name="print">Печать</string>
     <string name="period_select">Укажите период</string>
+    <string name="menu_clean">Очистить</string>
+    <string name="menu_send">Завершить</string>
+    <string name="menu_chronology">История</string>
+    <string name="menu_insert">Добавить</string>
+    <string name="menu_setting">Настройки</string>
 </resources>

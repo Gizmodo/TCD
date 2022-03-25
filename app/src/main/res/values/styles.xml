@@ -20,12 +20,13 @@
     </style>
 
     <style name="customTextValueAppearance">
-        <item name="android:textAppearance">@style/TextAppearance.Material3.LabelLarge</item>
-        <item name="android:textStyle">normal</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.TitleMedium</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/roboto</item>
     </style>
 
     <style name="customTextLabelAppearance">
-        <item name="android:textAppearance">@style/TextAppearance.Material3.LabelMedium</item>
+        <item name="android:textAppearance">@style/TextAppearance.Material3.TitleSmall</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/roboto</item>
     </style>

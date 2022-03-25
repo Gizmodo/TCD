@@ -19,10 +19,7 @@ import androidx.fragment.app.Fragment
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentLoginBinding
-import com.shop.tcd.v2.core.extension.getViewModel
-import com.shop.tcd.v2.core.extension.longFancy
-import com.shop.tcd.v2.core.extension.navigateExt
-import com.shop.tcd.v2.core.extension.viewBindingWithBinder
+import com.shop.tcd.v2.core.extension.*
 import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.core.utils.Common.ANIMATION_FROM_DEGREE
 import com.shop.tcd.v2.core.utils.Common.ANIMATION_PIVOT
@@ -32,6 +29,7 @@ import com.shop.tcd.v2.core.utils.Common.setReadOnly
 import com.shop.tcd.v2.data.user.UserModel
 import com.shop.tcd.v2.data.user.UsersList
 import timber.log.Timber
+
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private val binding by viewBindingWithBinder(FragmentLoginBinding::bind)
@@ -107,6 +105,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun initUIListener() {
+        binding.tilLogin.apply {
+            setOnFocusChangeListener { _, _ -> this@LoginFragment.hideSoftKeyboardExt() }
+        }
+
+        binding.tilPassword.apply {
+            setOnFocusChangeListener { _, _ -> this@LoginFragment.hideSoftKeyboardExt() }
+        }
+
         binding.btnLogin.setOnClickListener {
             login()
         }

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     tools:context=".v2.screen.inventory.InventoryFragment">
-
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilBarcode"
@@ -48,7 +47,8 @@
             android:id="@+id/edtCount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="7" android:fontFamily="@font/roboto"
+            android:fontFamily="@font/roboto"
+            android:maxLength="7"
             android:maxLines="1"
             android:minHeight="48dp"
             android:singleLine="true"
@@ -60,144 +60,140 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:layout_marginStart="8dp" android:fontFamily="@font/roboto"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:fontFamily="@font/roboto"
         android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilBarcode"
         tools:text="Крупа Рис Индия пропаренный 1кг вес" />
 
-    <TextView
-        android:id="@+id/textView7"
-        style="@style/customTextLabelAppearance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginStart="8dp"
-        android:text="@string/price"
-        app:layout_constraintBottom_toBottomOf="@id/txtZPrice"
-        app:layout_constraintEnd_toStartOf="@id/txtZPrice"
-        app:layout_constraintTop_toTopOf="@id/txtZPrice" />
-
-    <TextView
-        android:id="@+id/txtZPrice"
-        style="@style/customTextValueAppearance"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/txtZBarcode"
-        tools:text="15688" />
-
-    <TextView
-        android:id="@+id/textView11"
-        style="@style/customTextLabelAppearance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="@string/code"
-        app:layout_constraintBottom_toBottomOf="@id/txtZCode"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/txtZCode" />
-
-    <TextView
-        android:id="@+id/txtZCode"
-        style="@style/customTextValueAppearance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/txtZTotal"
-        app:layout_constraintStart_toEndOf="@id/textView11"
-        tools:text="84055" />
-
-    <TextView
-        android:id="@+id/txtZBarcode"
-        style="@style/customTextValueAppearance"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@id/txtZPrice"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:text="2284055010421" />
-
-    <TextView
-        android:id="@+id/textView13"
-        style="@style/customTextLabelAppearance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/barcode"
-        app:layout_constraintBottom_toBottomOf="@id/txtZBarcode"
-        app:layout_constraintEnd_toStartOf="@id/txtZBarcode"
-        app:layout_constraintTop_toTopOf="@id/txtZBarcode" />
-
-    <TextView
-        android:id="@+id/textView15"
-        style="@style/customTextLabelAppearance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/OverallCount"
-        app:layout_constraintBottom_toBottomOf="@id/txtZTotal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/txtZTotal" />
+        app:layout_constraintTop_toBottomOf="@+id/txtZGood">
 
-    <TextView
-        android:id="@+id/txtZTotal"
-        style="@style/customTextValueAppearance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textView15"
-        tools:text="1.042" />
+
+        <TextView
+            android:id="@+id/textView7"
+            style="@style/customTextLabelAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
+            android:text="@string/price"
+            app:layout_constraintBottom_toBottomOf="@id/txtZPrice"
+            app:layout_constraintEnd_toStartOf="@id/txtZPrice"
+            app:layout_constraintTop_toTopOf="@id/txtZPrice" />
+
+        <TextView
+            android:id="@+id/txtZPrice"
+            style="@style/customTextValueAppearance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/txtZBarcode"
+            tools:text="15688" />
+
+        <TextView
+            android:id="@+id/textView11"
+            style="@style/customTextLabelAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/code"
+            app:layout_constraintBottom_toBottomOf="@id/txtZCode"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtZCode" />
+
+        <TextView
+            android:id="@+id/txtZCode"
+            style="@style/customTextValueAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/txtZTotal"
+            app:layout_constraintStart_toEndOf="@id/textView11"
+            tools:text="84055" />
+
+        <TextView
+            android:id="@+id/txtZBarcode"
+            style="@style/customTextValueAppearance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/txtZPrice"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="2284055010421" />
+
+        <TextView
+            android:id="@+id/textView13"
+            style="@style/customTextLabelAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/barcode"
+            app:layout_constraintBottom_toBottomOf="@id/txtZBarcode"
+            app:layout_constraintEnd_toStartOf="@id/txtZBarcode"
+            app:layout_constraintTop_toTopOf="@id/txtZBarcode" />
+
+        <TextView
+            android:id="@+id/textView15"
+            style="@style/customTextLabelAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/OverallCount"
+            app:layout_constraintBottom_toBottomOf="@id/txtZTotal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtZTotal" />
+
+        <TextView
+            android:id="@+id/txtZTotal"
+            style="@style/customTextValueAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textView15"
+            tools:text="1.042" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvInventory"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/border"
-        app:layout_constraintBottom_toTopOf="@+id/btnInsertItem"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtZGood"
+        app:layout_constraintTop_toBottomOf="@id/info"
+
         tools:itemCount="15"
         tools:listitem="@layout/item_row_inventory_rv" />
 
-    <Button
-        android:id="@+id/btnSend1C"
-        android:layout_width="wrap_content"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:text="@string/upload"
-        app:icon="@drawable/ic_inbox"
-        app:layout_constraintBottom_toBottomOf="@id/btnInsertItem"
-        app:layout_constraintEnd_toStartOf="@+id/btnInsertItem"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btnInsertItem" />
-
-    <Button
-        android:id="@+id/btnInsertItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:text="@string/add"
-        app:backgroundTint="@color/design_default_color_error"
-        app:icon="@drawable/ic_post_add"
-        app:layout_constraintBottom_toTopOf="@id/txtZBarcode"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btnSend1C"
-        app:tint="@android:color/white" />
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/navigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

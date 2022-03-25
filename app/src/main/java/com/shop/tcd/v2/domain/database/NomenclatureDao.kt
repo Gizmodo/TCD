@@ -46,4 +46,12 @@ interface NomenclatureDao {
 
     @Query("select * from nomenclature where code LIKE '%' || :search || '%' or barcode LIKE '%' || :search || '%' or name LIKE '%' || :search || '%'")
     suspend fun getNomenclatureBySearch(search: String): List<NomenclatureItem>
+
+   /* *//* Поиск товара по коду *//*
+    @Query("select * from nomenclature where code = :code limit 1")
+    suspend fun getProductByCode(code: String): Flow<NomenclatureItem?>
+
+    *//* Поиск товара по штрихкоду *//*
+    @Query("select * from nomenclature where barcode = :barcode limit 1")
+    suspend fun getProductByBarcode(barcode: String): Flow<NomenclatureItem?>*/
 }

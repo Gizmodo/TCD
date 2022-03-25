@@ -40,13 +40,13 @@ object Common {
         MANUAL(1)
     }
 
-    enum class MODESEARCH(val modeSearch: Int = 0) {
+    enum class SEARCHBY(val modeSearch: Int = 0) {
         BARCODE(0),
         CODE(1)
     }
 
     var currentScanMode: MODESCAN = MODESCAN.AUTO
-    var currentSearchMode: MODESEARCH = MODESEARCH.BARCODE
+    var currentSearchMode: SEARCHBY = SEARCHBY.BARCODE
 
     var BASE_URL_LOCAL = "http://10.0.2.2/"
     var BASE_URL_MMTR_NODEJS = "http://10.254.1.230:3000/"
