@@ -1,11 +1,13 @@
 package com.shop.tcd.v2.screen.inventory
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.MenuRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +25,7 @@ import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.core.utils.Common.setReadOnly
 import com.shop.tcd.v2.core.utils.Common.textChanges
 import com.shop.tcd.v2.core.utils.Constants
+import com.shop.tcd.v2.core.utils.ResponseState
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.ui.adapters.InventoryAdapter
 import kotlinx.coroutines.Job
@@ -107,7 +110,27 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     private fun displayFoundedItem(item: NomenclatureItem?) = when {
         item != null -> {
+            txtGood.text = item.name
+            txtCode.text = item.code
+            txtBarcode.text = item.barcode
+            // TODO: Это поле заполняется из ответа
+            //  на запрос к БД с группировкой по штрихкоду
+            txtTotal.text = item.code // TODO: 1) Выводить общее кол-во!!!
+            txtPrice.text = item.price
+            val barcode = edtBarcode
+                .text
+                .toString()
+                .padStart(13, '0')
+                .takeLast(13)
 
+            when (val response = Common.parseBarcode(barcode)) {
+                is ResponseState.Success -> {
+                    edtCount.setText(response.item)
+                }
+                is ResponseState.Error -> {
+                    longFancy { response.throwable.message.toString() }
+                }
+            }
         }
         else -> {
             clearFields()
@@ -118,6 +141,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         binding.navView.setOnItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.menu_clean -> {
+                    clearInventoryData()
                     true
                 }
                 R.id.menu_send -> {
@@ -133,7 +157,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     true
                 }
                 R.id.menu_setting -> {
-                    showMenu(binding.navView, R.menu.recalc_menu)
+                    showMenu(binding.navView, R.menu.menu_inventory_settings)
                     true
                 }
                 else -> false
@@ -141,23 +165,57 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         }
     }
 
-    private fun showMenu(v: View, @MenuRes menuRes: Int) {
-        val popup = PopupMenu(context!!, v)
-        popup.menuInflater.inflate(menuRes, popup.menu)
+    private fun clearInventoryData() {
+        val builderAlert = AlertDialog.Builder(requireContext())
+        with(builderAlert) {
+            setTitle("Внимание")
+            setMessage("Очистить все записи инвентаризации?")
+            setPositiveButton("Да") { _: DialogInterface, _: Int ->
+                viewModel.clearInventory()
+            }
+            setNegativeButton(
+                "Нет"
+            ) { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+            show()
+        }
+    }
 
+    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+        val popup = PopupMenu(requireContext(), v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.menu_mode_auto -> {
-                    longFancy { "menu_mode_auto" }
+                    Common.currentScanMode = Common.MODESCAN.AUTO
+                    edtBarcode.setReadOnly(true)
+                    it.isChecked = true
+                    jobManual.cancel()
+                    jobAuto = createJobAuto()
+                    true
+                }
+                R.id.menu_mode_manual -> {
+                    Common.currentScanMode = Common.MODESCAN.MANUAL
+                    edtBarcode.setReadOnly(false)
+                    it.isChecked = true
+                    jobAuto.cancel()
+                    jobManual = createJobManual()
+                    true
+                }
+                R.id.menu_find_barcode -> {
+                    it.isChecked = true
+                    Common.currentSearchMode = Common.SEARCHBY.BARCODE
+                    true
+                }
+                R.id.menu_find_code -> {
+                    it.isChecked = true
+                    Common.currentSearchMode = Common.SEARCHBY.CODE
                     true
                 }
                 else -> false
             }
         }
-        popup.setOnDismissListener {
-            // Respond to popup being dismissed.
-        }
-        // Show the popup menu.
         popup.show()
     }
 
@@ -189,19 +247,17 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     }
 
     private fun onFocus(view: View?, hasFocus: Boolean) {
-        if (hasFocus) {
-            (view as TextInputEditText).selectAll()
-        }
+        if (hasFocus) (view as TextInputEditText).selectAll()
     }
 
     private fun hideKeyboard() {
         this.hideSoftKeyboardExt()
-       /* val view = this.currentFocus
-        if (view != null) {
-            val hideMe = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            hideMe.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)*/
+        /* val view = this.currentFocus
+         if (view != null) {
+             val hideMe = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+             hideMe.hideSoftInputFromWindow(view.windowToken, 0)
+         }
+         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)*/
     }
 
     private fun initViewModelObservers() {
@@ -231,6 +287,18 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         edtBarcode.apply {
             setText(data)
             requestFocus()
+        }
+    }
+
+    private fun clearFieldsAfterInsert() {
+        "".also {
+            edtBarcode.setText(it)
+            edtCount.setText(it)
+            txtGood.text = it
+            txtCode.text = it
+            txtBarcode.text = it
+            txtTotal.text = it
+            txtPrice.text = it
         }
     }
 
@@ -297,7 +365,5 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         txtBarcode = binding.txtZBarcode
         txtTotal = binding.txtZTotal
         txtPrice = binding.txtZPrice
-//        btnInsert = binding.btnInsertItem
-//        btnSend = binding.btnSend1C
     }
 }

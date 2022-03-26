@@ -6,9 +6,9 @@ import android.text.TextWatcher
 import android.widget.EditText
 import androidx.annotation.CheckResult
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.room.database.TCDRoomDatabase
+import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.data.printer.Printer
 import com.shop.tcd.v2.data.shop.ShopModel
 import com.shop.tcd.v2.data.user.UserModel
@@ -56,7 +56,7 @@ object Common {
     /**
      * Постоянный адрес с расположением файла настроек
      */
-    var BASE_URL = BASE_URL_MMTR_NODEJS
+    var BASE_URL = BASE_URL_HOME_NODEJS
 
     /**
      * Изменяемый адрес, который указывает на выбранный магазин (сервер 1С)
@@ -100,16 +100,6 @@ object Common {
         invDao = databaseTCD.invDao()
         GlobalScope.launch {
             invDao.insert(item)
-        }
-    }
-
-    @DelicateCoroutinesApi
-    fun deleteAllInv(context: Context) {
-        val invDao: InvDao
-        val database: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)
-        invDao = database.invDao()
-        GlobalScope.launch {
-            invDao.deleteAll()
         }
     }
 

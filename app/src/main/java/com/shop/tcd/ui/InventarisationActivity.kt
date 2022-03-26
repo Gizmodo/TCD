@@ -7,8 +7,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -18,8 +16,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
@@ -29,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.shashank.sony.fancytoastlib.FancyToast
-import com.shop.tcd.R
 import com.shop.tcd.adapters.InvAdapter
 import com.shop.tcd.bundlizer.bundle
 import com.shop.tcd.databinding.ActivityInventarisationBinding
@@ -44,7 +39,6 @@ import com.shop.tcd.v2.core.utils.Common.currentScanMode
 import com.shop.tcd.v2.core.utils.Common.currentSearchMode
 import com.shop.tcd.v2.core.utils.Common.parseBarcode
 import com.shop.tcd.v2.core.utils.Common.selectedShop
-import com.shop.tcd.v2.core.utils.Common.setReadOnly
 import com.shop.tcd.v2.core.utils.Common.textChanges
 import com.shop.tcd.v2.core.utils.Constants.Inventory.DEBOUNCE_TIME
 import com.shop.tcd.v2.core.utils.ResponseState
@@ -53,8 +47,6 @@ import com.shop.tcd.v2.domain.database.InvDao
 import com.shop.tcd.v2.domain.database.NomenclatureDao
 import com.shop.tcd.viewmodel.InventarisationViewModel
 import com.shop.tcd.viewmodel.InventarisationViewModelFactory
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import retrofit2.Call
@@ -88,9 +80,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
     private var adapter: InvAdapter? = null
     override val coroutineContext: CoroutineContext = Dispatchers.Main
     private var list = mutableListOf<InvItem>()
-    private var idataBarcodeObserver: MutableLiveData<String>? = null
-    private var urovoKeyboard: MutableLiveData<Boolean>? = null
-    private var urovoScanner: MutableLiveData<String>? = null
 
     /** Network **/
     private val retrofit = RetrofitServiceMain.getInstance()
@@ -108,35 +97,13 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
         )
         viewModel = ViewModelProvider(this, viewModelFactory)[InventarisationViewModel::class.java]
         bindUI()
-        bindListeners()
         db = TCDRoomDatabase.getDatabase(this)
         initRecyclerView()
         attachHideKeyboardListeners()
-        initBarcodeFieldListener()
     }
 
     private fun moveFocus(view: EditText) {
         view.requestFocus()
-    }
-
-    private fun moveFocus(btn: Button) {
-        btn.requestFocus()
-    }
-
-    private fun doOnGetBarcode(data: String) {
-        edtBarcode.apply {
-            setText(data)
-            requestFocus()
-        }
-    }
-
-    private fun bindListeners() {
-        btnSend.setOnClickListener {
-            sendTo1C()
-        }
-        btnInsert.setOnClickListener {
-            addNomenclatureItem()
-        }
     }
 
     private fun sendInventory() {
@@ -171,7 +138,7 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 progressDialog.dismiss()
                 if (response.isSuccessful) {
-                    Common.deleteAllInv(applicationContext)
+//                    Common.deleteAllInv(applicationContext)
                     FancyToast.makeText(
                         applicationContext,
                         "Успешная загрузка документа",
@@ -190,71 +157,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
                 }
             }
         })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.recalc_menu, menu)
-        MenuCompat.setGroupDividerEnabled(menu, true)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.removeItems -> {
-                removeAll()
-                true
-            }
-            R.id.menu_find_barcode -> {
-                item.isChecked = true
-                currentSearchMode = Common.SEARCHBY.BARCODE
-                true
-            }
-            R.id.menu_find_code -> {
-                item.isChecked = true
-                currentSearchMode = Common.SEARCHBY.CODE
-                true
-            }
-            R.id.menu_mode_auto -> {
-                currentScanMode = Common.MODESCAN.AUTO
-                edtBarcode.setReadOnly(value = true)
-                item.isChecked = true
-                jobAuto = createJobAuto()
-                true
-            }
-            R.id.menu_mode_manual -> {
-                currentScanMode = Common.MODESCAN.MANUAL
-                edtBarcode.setReadOnly(value = false)
-                item.isChecked = true
-                jobAuto.cancel()
-                jobManual = createJobManual()
-                true
-            }
-            R.id.menuInventoryList -> {
-                val intent = Intent(this, ListActivity::class.java)
-                startActivity(intent)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun removeAll() {
-        val builderAlert = AlertDialog.Builder(this)
-        with(builderAlert) {
-            setTitle("Внимание")
-            setMessage("Очистить все записи документов?")
-            setPositiveButton("Да") { _: DialogInterface, _: Int ->
-                Common.deleteAllInv(applicationContext)
-            }
-            setNegativeButton(
-                "Нет"
-            ) { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-            show()
-        }
     }
 
     private fun sendTo1C() {
@@ -283,44 +185,6 @@ class InventarisationActivity : AppCompatActivity(), CoroutineScope {
             }
             show()
         }
-    }
-
-    private fun sendTo1Old() {
-        val builderAlert = AlertDialog.Builder(this)
-        with(builderAlert) {
-            setTitle("Внимание")
-            setMessage("Выгрузить документы в 1С?")
-            setPositiveButton("Да") { _: DialogInterface, _: Int ->
-                list = arrayListOf()
-                val invDao: InvDao = db!!.invDao()
-                invDao.selectAllSingle()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe { it ->
-                        list = it as ArrayList<InvItem>
-                        sendInventory()
-                    }
-            }
-            setNegativeButton(
-                "Нет"
-            ) { _: DialogInterface, _: Int ->
-                FancyToast.makeText(
-                    applicationContext,
-                    "Выгрузка отменена",
-                    FancyToast.LENGTH_SHORT,
-                    FancyToast.INFO,
-                    false
-                ).show()
-            }
-            show()
-        }
-    }
-
-    private fun initBarcodeFieldListener() {
-        edtBarcode.setOnFocusChangeListener { _, _ -> hideKeyboard() }
-        edtBarcode.setOnClickListener { hideKeyboard() }
-        edtBarcode.setReadOnly(value = true)
-        jobAuto = createJobAuto()
     }
 
     private fun createJobAuto() = edtBarcode

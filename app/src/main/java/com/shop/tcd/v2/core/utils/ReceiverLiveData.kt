@@ -1,4 +1,4 @@
-package com.shop.tcd.broadcast
+package com.shop.tcd.v2.core.utils
 
 import android.content.BroadcastReceiver
 import android.content.Context

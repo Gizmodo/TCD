@@ -37,8 +37,8 @@
     <string name="detailTitle">Информация по товару</string>
     <string name="name">Наименование</string>
     <string name="OverallCount">Общее кол-во:</string>
-    <string name="scanner">Авто</string>
-    <string name="manual">Ручной</string>
+    <string name="scanner">Ввод сканером</string>
+    <string name="manual">Ввод руками</string>
     <string name="save">Сохранить</string>
     <string name="title_quantity_dialog">Обновление количества:</string>
     <string name="chronology">Хронология</string>
@@ -50,4 +50,6 @@
     <string name="menu_chronology">История</string>
     <string name="menu_insert">Добавить</string>
     <string name="menu_setting">Настройки</string>
+    <string name="menu_find_barcode">Поиск по ШК</string>
+    <string name="menu_find_code">Поиск по коду</string>
 </resources>

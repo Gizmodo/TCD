@@ -7,13 +7,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import com.shop.tcd.App
-import com.shop.tcd.broadcast.ReceiverLiveData
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.v2.core.di.*
 import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.core.utils.Common.currentSearchMode
 import com.shop.tcd.v2.core.utils.Common.selectedShopModel
 import com.shop.tcd.v2.core.utils.Constants
+import com.shop.tcd.v2.core.utils.ReceiverLiveData
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.domain.database.InvDao
 import com.shop.tcd.v2.domain.database.NomenclatureDao
@@ -73,6 +73,12 @@ class InventoryViewModel : ViewModel() {
 
     @Inject
     lateinit var nomenclatureDao: NomenclatureDao
+
+    fun clearInventory() {
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            inventoryDao.deleteAll()
+        }
+    }
 
     fun getProduct(data: String): Flow<NomenclatureItem> {
         val prefix = data.take(2)
