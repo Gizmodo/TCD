@@ -17,9 +17,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentInventoryBinding
 import com.shop.tcd.model.InvItem
+import com.shop.tcd.model.post.Payload
 import com.shop.tcd.v2.core.extension.*
 import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.core.utils.Common.setReadOnly
@@ -28,8 +30,11 @@ import com.shop.tcd.v2.core.utils.Constants
 import com.shop.tcd.v2.core.utils.ResponseState
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.ui.adapters.InventoryAdapter
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import timber.log.Timber
 
 class InventoryFragment : Fragment(R.layout.fragment_inventory) {
@@ -74,6 +79,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         initRecyclerView()
         initViewModelObservers()
         initBarcodeFieldListener()
+        attachHideKeyboardListeners()
     }
 
     private fun initBarcodeFieldListener() {
@@ -145,7 +151,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     true
                 }
                 R.id.menu_send -> {
-//            sendTo1C()
+                    sendTo1C()
                     true
                 }
                 R.id.menu_chronology -> {
@@ -153,7 +159,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     true
                 }
                 R.id.menu_insert -> {
-//            addNomenclatureItem()
+                    addNomenclatureItem()
                     true
                 }
                 R.id.menu_setting -> {
@@ -161,6 +167,105 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     true
                 }
                 else -> false
+            }
+        }
+    }
+
+    private fun sendTo1C() {
+        val builderAlert = AlertDialog.Builder(requireContext())
+        with(builderAlert) {
+            setTitle("Внимание")
+            setMessage("Выгрузить документы в 1С?")
+            setPositiveButton("Да") { _: DialogInterface, _: Int ->
+//                 var list = mutableListOf<InvItem>()
+//                list = arrayListOf()
+                viewModel.fetchInventarisationItems()
+                viewModel.getInventarisationItems().observe(this@InventoryFragment) { items ->
+                    var list = items as ArrayList<InvItem>
+                    sendInventory(list)
+                }
+            }
+            setNegativeButton("Нет") { _, _ -> fancyInfo { "Выгрузка отменена" } }
+            show()
+        }
+    }
+
+    private fun sendInventory(list: ArrayList<InvItem>) {
+        if (list.isEmpty()) {
+            return
+        }
+        progressDialog.show()
+        val payload = Payload(
+            result = "success",
+            message = "",
+            operation = "revision",
+            autor = Common.selectedUserModel.name,
+            shop = Common.selectedShop.shopName,
+            prefix = Common.selectedShop.shopPrefix,
+            document = list
+        )
+
+        val response = repository.postInventory(payload)
+
+        response.enqueue(object : Callback<String> {
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                progressDialog.dismiss()
+                FancyToast.makeText(
+                    applicationContext,
+                    "Ошибка отправки запроса: ${t.message}",
+                    FancyToast.LENGTH_LONG,
+                    FancyToast.ERROR,
+                    false
+                ).show()
+            }
+
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                progressDialog.dismiss()
+                if (response.isSuccessful) {
+//                    Common.deleteAllInv(applicationContext)
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Успешная загрузка документа",
+                        FancyToast.LENGTH_LONG,
+                        FancyToast.SUCCESS,
+                        false
+                    ).show()
+                } else {
+                    FancyToast.makeText(
+                        applicationContext,
+                        "Код: ${response.code()}. Ошибка ${response.message()}",
+                        FancyToast.LENGTH_LONG,
+                        FancyToast.WARNING,
+                        false
+                    ).show()
+                }
+            }
+        })
+    }
+
+    private fun addNomenclatureItem() {
+        val count = edtCount.text.toString().replace(',', '.')
+        when {
+            count.toFloatOrNull() == null -> {
+                longFancyConfusing { "Укажите количество!" }
+            }
+            edtBarcode.text.toString().toBigIntegerOrNull() == null -> {
+                longFancyConfusing { "ШК пустой!" }
+            }
+            else -> {
+                val inv = InvItem("", "", "", "", "")
+                with(inv) {
+                    barcode = edtBarcode.text.toString()
+                    code = txtCode.text.toString()
+                    name = txtGood.text.toString()
+                    // TODO: PLU пустой, а должен быть заполнен
+                    plu = edtBarcode.text.toString()
+                    quantity = edtCount.text.toString()
+                }
+                viewModel.insertInventory(inv)
+                clearFieldsAfterInsert()
+                moveFocus(edtBarcode)
+//                adapterInventory.notifyDataSetChanged()
             }
         }
     }
@@ -366,4 +471,16 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         txtTotal = binding.txtZTotal
         txtPrice = binding.txtZPrice
     }
+
+    // TODO: привязать к выбору элемента из списка
+    /* private val onItemClick = object : InvAdapter.OnItemClickListener {
+         override fun onClick(invItem: InvItem, position: Int) {
+             val bundle: Bundle = invItem.bundle(InvItem.serializer())
+             val intent = Intent(this@InventoryFragment, DetailActivity::class.java)
+                 .apply {
+                     putExtra("item", bundle)
+                 }
+             startActivity(intent, bundle)
+         }
+     }*/
 }

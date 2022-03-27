@@ -2,10 +2,7 @@ package com.shop.tcd.v2.screen.inventory
 
 import android.app.Application
 import android.content.IntentFilter
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
+import androidx.lifecycle.*
 import com.shop.tcd.App
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.v2.core.di.*
@@ -14,11 +11,13 @@ import com.shop.tcd.v2.core.utils.Common.currentSearchMode
 import com.shop.tcd.v2.core.utils.Common.selectedShopModel
 import com.shop.tcd.v2.core.utils.Constants
 import com.shop.tcd.v2.core.utils.ReceiverLiveData
+import com.shop.tcd.v2.core.utils.SingleLiveEvent
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.domain.database.InvDao
 import com.shop.tcd.v2.domain.database.NomenclatureDao
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 import javax.inject.Inject
 
 class InventoryViewModel : ViewModel() {
@@ -68,6 +67,9 @@ class InventoryViewModel : ViewModel() {
         initDeviceObservables()
     }
 
+    private var _items = SingleLiveEvent<List<InvItem>>()
+    fun getInventarisationItems(): SingleLiveEvent<List<InvItem>> = _items
+
     @Inject
     lateinit var inventoryDao: InvDao
 
@@ -77,6 +79,16 @@ class InventoryViewModel : ViewModel() {
     fun clearInventory() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             inventoryDao.deleteAll()
+        }
+    }
+
+    fun fetchInventarisationItems() {
+        viewModelScope.launch {
+            try {
+                _items.postValue(inventoryDao.selectAllSuspend())
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 
@@ -98,7 +110,8 @@ class InventoryViewModel : ViewModel() {
     }
 
     private fun initDeviceObservables() {
-        _urovoScanner = ReceiverLiveData<String>(context,
+        _urovoScanner = ReceiverLiveData<String>(
+            context,
             IntentFilter("android.intent.ACTION_DECODE_DATA")
         ) { _, intent ->
             var data = ""
@@ -109,7 +122,8 @@ class InventoryViewModel : ViewModel() {
             return@ReceiverLiveData data
         }
 
-        _urovoKeyboard = ReceiverLiveData(context,
+        _urovoKeyboard = ReceiverLiveData(
+            context,
             IntentFilter("android.intent.action_keyboard")
         ) { _, intent ->
             var data = false
@@ -119,7 +133,8 @@ class InventoryViewModel : ViewModel() {
             return@ReceiverLiveData data
         }
 
-        _idataScanner = ReceiverLiveData(context,
+        _idataScanner = ReceiverLiveData(
+            context,
             IntentFilter("android.intent.action.SCANRESULT")
         ) { _, intent ->
             var data = ""
@@ -150,5 +165,13 @@ class InventoryViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         job?.cancel()
+    }
+
+    fun insertInventory(inv: InvItem) {
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            inventoryDao.insert(inv)
+            _loading.value = false
+        }
     }
 }

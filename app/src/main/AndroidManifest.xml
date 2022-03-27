@@ -25,15 +25,11 @@
         <activity
             android:name=".ui.ListActivity"
             android:exported="false"
-            android:parentActivityName=".ui.InventarisationActivity" />
+          />
         <activity
             android:name=".ui.DetailActivity"
             android:exported="false"
-            android:parentActivityName=".ui.InventarisationActivity" />
-        <activity
-            android:name=".ui.InventarisationActivity"
-            android:exported="true"
-            android:parentActivityName="com.shop.tcd.v2.screen.MainActivity" />
+             />
         <activity
             android:name="com.shop.tcd.v2.screen.MainActivity"
             android:exported="true">

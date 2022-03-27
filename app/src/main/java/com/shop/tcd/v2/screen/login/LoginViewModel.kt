@@ -7,8 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
 import com.shop.tcd.v2.core.di.*
 import com.shop.tcd.v2.data.user.UsersList
-import com.shop.tcd.v2.domain.database.InvDao
-import com.shop.tcd.v2.domain.datastore.DataStoreRepository
 import com.shop.tcd.v2.domain.rest.SettingsApi
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -45,18 +43,10 @@ class LoginViewModel : ViewModel() {
     }
 
     @Inject
-    lateinit var dataStoreRepositoryImpl: DataStoreRepository
-
-    @Inject
-    lateinit var homeApi: SettingsApi
-
-    @Inject
-    lateinit var invDao: InvDao
-
-    @Inject
     lateinit var settingsApi: SettingsApi
 
     private fun loadUsers() {
+        job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = settingsApi.getUsersSuspend()
             withContext(Dispatchers.Main) {
@@ -79,17 +69,4 @@ class LoginViewModel : ViewModel() {
         super.onCleared()
         job?.cancel()
     }
-
-    /* private fun test() {
-         homeApi.getUsers().observeOn(AndroidSchedulers.mainThread())
-             .subscribe({
-                 _usersLiveData.value = it
-             }, {
-                 val item: InvItem = InvItem("code", "name", "PLU", "2216017008221", "100500")
-                 viewModelScope.launch {
-                     invDao.insert(item)
-                 }
-                 Timber.e(it)
-             })
-     }*/
 }

@@ -30,7 +30,6 @@ import com.shop.tcd.v2.data.user.UserModel
 import com.shop.tcd.v2.data.user.UsersList
 import timber.log.Timber
 
-
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private val binding by viewBindingWithBinder(FragmentLoginBinding::bind)
     private lateinit var usersList: UsersList
@@ -61,10 +60,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         btnLogin.isEnabled = enabled
         edtLogin.setReadOnly(!enabled)
         edtPassword.setReadOnly(!enabled)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -12,25 +12,6 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MainViewModel : ViewModel() {
-    private val context = App.applicationContext() as Application
-    private val injector: ViewModelInjector = DaggerViewModelInjector
-        .builder()
-        .app(AppModule(context))
-        .nm(NetworkModule)
-        .dbm(DataBaseModule(context))
-        .dbh(DataSourceModule)
-        .build()
-
-    // TODO:  Сделать DataBaseModule без context как DataSourceModule
-    init {
-        injector.inject(this)
-    }
-//@Inject lateinit var dbhelpr: DatabaseHelper
-
-
-    @Inject
-    lateinit var settingsApi: SettingsApi
-
     private var _shopsLiveData = MutableLiveData<ShopsList>()
     val shopsLiveData: LiveData<ShopsList>
         get() = _shopsLiveData
@@ -47,8 +28,26 @@ class MainViewModel : ViewModel() {
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Exception handled: ${throwable.localizedMessage}")
     }
+    private val context = App.applicationContext() as Application
+    private val injector: ViewModelInjector = DaggerViewModelInjector
+        .builder()
+        .app(AppModule(context))
+        .nm(NetworkModule)
+        .dbm(DataBaseModule(context))
+        .dbh(DataSourceModule)
+        .build()
 
-    fun loadShops() {
+    // TODO:  Сделать DataBaseModule без context как DataSourceModule
+    init {
+        injector.inject(this)
+        loadShops()
+    }
+
+    @Inject
+    lateinit var settingsApi: SettingsApi
+
+    private fun loadShops() {
+        job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = settingsApi.getShopsSuspend()
             withContext(Dispatchers.Main) {

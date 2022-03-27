@@ -7,10 +7,10 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentMainBinding
 import com.shop.tcd.v2.core.extension.getViewModel
+import com.shop.tcd.v2.core.extension.longFancy
 import com.shop.tcd.v2.core.extension.navigateExt
 import com.shop.tcd.v2.core.extension.viewBindingWithBinder
 import com.shop.tcd.v2.core.utils.Common
@@ -32,10 +32,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
+        initUIListeners()
         setStateUI(enabled = false)
         restoreSelectedShop()
         initViewModelObservers()
-        viewModel.loadShops()
     }
 
     private fun restoreSelectedShop() {
@@ -61,7 +61,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun initViewModelObservers() {
-// TODO: Двойной вызов! 
         viewModel.shopsLiveData.observe(viewLifecycleOwner) {
             Timber.d(it.toString())
             shopsList = it
@@ -70,23 +69,13 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
-            FancyToast.makeText(
-                activity?.applicationContext,
-                it,
-                FancyToast.LENGTH_SHORT,
-                FancyToast.ERROR,
-                false
-            ).show()
+            longFancy { it }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {
             when {
-                it -> {
-                    showShimmer()
-                }
-                else -> {
-                    hideShimmer()
-                }
+                it -> showShimmer()
+                else -> hideShimmer()
             }
         }
     }
@@ -121,7 +110,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         btnInventory = binding.btnInventory
         btnPrint = binding.btnPrint
         shimmer = binding.shimmer
-        initUIListeners()
     }
 
     private fun initUIListeners() {
