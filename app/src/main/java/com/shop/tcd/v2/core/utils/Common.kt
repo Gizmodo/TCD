@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.widget.EditText
 import androidx.annotation.CheckResult
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.model.settings.Shop
 import com.shop.tcd.room.database.TCDRoomDatabase
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.data.printer.Printer
@@ -66,7 +65,6 @@ object Common {
     /**
      * Хранение выбранного магазина
      */
-    lateinit var selectedShop: Shop
     lateinit var selectedShopModel: ShopModel
     var selectedShopModelPosition: Int = -1
 
@@ -122,7 +120,7 @@ object Common {
         return if (barcode.first().toString() == "2") {
             val prefix = barcode.take(2)
             when (prefix) {
-                selectedShop.shopPrefixPiece -> {
+                selectedShopModel.prefixSingle -> {
                     if (isEAN13(barcode)) {
                         val productCode = barcode.substring(2, 9)
                         if (productCode.toIntOrNull() == null) {
@@ -135,7 +133,7 @@ object Common {
                         ResponseState.Error(InvalidBarcodeException("Штрихкод не EAN13"))
                     }
                 }
-                selectedShop.shopPrefixWeight -> {
+                selectedShopModel.prefixWeight -> {
                     if (isEAN13(barcode)) {
                         val productCode = barcode.takeLast(11).take(5)
                         val weight = getWeight(barcode)
@@ -147,7 +145,7 @@ object Common {
                         ResponseState.Error(InvalidBarcodeException("Штрихкод не EAN13"))
                     }
                 }
-                selectedShop.shopPrefixWeightPLU -> {
+                selectedShopModel.prefixPLU -> {
                     if (isEAN13(barcode)) {
                         val productPLU = barcode.takeLast(11).take(5)
                         if (productPLU.toIntOrNull() == null) {

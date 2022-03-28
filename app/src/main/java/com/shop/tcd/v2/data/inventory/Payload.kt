@@ -1,4 +1,4 @@
-package com.shop.tcd.model.post
+package com.shop.tcd.v2.data.inventory
 
 import com.google.gson.annotations.SerializedName
 import com.shop.tcd.model.InvItem

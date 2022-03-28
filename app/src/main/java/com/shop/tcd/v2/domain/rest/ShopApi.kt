@@ -1,7 +1,8 @@
 package com.shop.tcd.v2.domain.rest
 
-import com.shop.tcd.v2.data.nomenclature.NomenclatureList
+import com.shop.tcd.v2.data.inventory.Payload
 import com.shop.tcd.v2.data.group.GroupsList
+import com.shop.tcd.v2.data.nomenclature.NomenclatureList
 import com.shop.tcd.v2.data.pricetag.PriceTag
 import com.shop.tcd.v2.data.pricetag.response.PriceTagResponse
 import io.reactivex.rxjava3.core.Observable
@@ -27,4 +28,11 @@ interface ShopApi {
 
     @GET("getgrouplist")
     suspend fun getNomenclatureByGroup(@Query("filter") filter: String): Response<NomenclatureList>
+
+    @POST("receiveddocument")
+    @Headers("Content-Type:application/json")
+    fun postInventory(
+        @Query("filter") filter: String = "",
+        @Body document: Payload,
+    ): Response<String>
 }

@@ -35,5 +35,4 @@ class InventoryListViewModel(private val dbHelper: DatabaseHelper) : ViewModel()
             fetchInventoryList()
         }
     }
-
 }

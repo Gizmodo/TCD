@@ -1,5 +1,6 @@
 package com.shop.tcd.v2.screen.inventory
 
+import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.MenuItem
@@ -17,11 +18,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentInventoryBinding
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.model.post.Payload
+import com.shop.tcd.v2.data.inventory.Payload
 import com.shop.tcd.v2.core.extension.*
 import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.core.utils.Common.setReadOnly
@@ -32,9 +32,6 @@ import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.ui.adapters.InventoryAdapter
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import timber.log.Timber
 
 class InventoryFragment : Fragment(R.layout.fragment_inventory) {
@@ -49,7 +46,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private lateinit var txtTotal: TextView
     private lateinit var txtPrice: TextView
     private lateinit var rvInventory: RecyclerView
-
+    private lateinit var progressDialog: ProgressDialog
     private lateinit var jobAuto: Job
     private lateinit var jobManual: Job
 
@@ -200,47 +197,11 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             message = "",
             operation = "revision",
             autor = Common.selectedUserModel.name,
-            shop = Common.selectedShop.shopName,
-            prefix = Common.selectedShop.shopPrefix,
+            shop = Common.selectedShopModel.name,
+            prefix = Common.selectedShopModel.prefix,
             document = list
         )
-
-        val response = repository.postInventory(payload)
-
-        response.enqueue(object : Callback<String> {
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                progressDialog.dismiss()
-                FancyToast.makeText(
-                    applicationContext,
-                    "Ошибка отправки запроса: ${t.message}",
-                    FancyToast.LENGTH_LONG,
-                    FancyToast.ERROR,
-                    false
-                ).show()
-            }
-
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                progressDialog.dismiss()
-                if (response.isSuccessful) {
-//                    Common.deleteAllInv(applicationContext)
-                    FancyToast.makeText(
-                        applicationContext,
-                        "Успешная загрузка документа",
-                        FancyToast.LENGTH_LONG,
-                        FancyToast.SUCCESS,
-                        false
-                    ).show()
-                } else {
-                    FancyToast.makeText(
-                        applicationContext,
-                        "Код: ${response.code()}. Ошибка ${response.message()}",
-                        FancyToast.LENGTH_LONG,
-                        FancyToast.WARNING,
-                        false
-                    ).show()
-                }
-            }
-        })
+        viewModel.postInventory(payload)
     }
 
     private fun addNomenclatureItem() {
@@ -470,6 +431,11 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         txtBarcode = binding.txtZBarcode
         txtTotal = binding.txtZTotal
         txtPrice = binding.txtZPrice
+
+        progressDialog = ProgressDialog(requireContext()).apply {
+            setTitle("Загрузка...")
+            setMessage("Пожалуйста, ожидайте")
+        }
     }
 
     // TODO: привязать к выбору элемента из списка

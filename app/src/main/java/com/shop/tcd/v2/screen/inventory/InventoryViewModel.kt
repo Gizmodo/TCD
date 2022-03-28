@@ -5,6 +5,7 @@ import android.content.IntentFilter
 import androidx.lifecycle.*
 import com.shop.tcd.App
 import com.shop.tcd.model.InvItem
+import com.shop.tcd.v2.data.inventory.Payload
 import com.shop.tcd.v2.core.di.*
 import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.core.utils.Common.currentSearchMode
@@ -15,6 +16,7 @@ import com.shop.tcd.v2.core.utils.SingleLiveEvent
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.domain.database.InvDao
 import com.shop.tcd.v2.domain.database.NomenclatureDao
+import com.shop.tcd.v2.domain.rest.ShopApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
@@ -58,6 +60,7 @@ class InventoryViewModel : ViewModel() {
         .builder()
         .app(AppModule(context))
         .dbm(DataBaseModule(context))
+        .nm(NetworkModule)
         .datastore(DataStoreModule)
         .build()
 
@@ -76,6 +79,9 @@ class InventoryViewModel : ViewModel() {
     @Inject
     lateinit var nomenclatureDao: NomenclatureDao
 
+    @Inject
+    lateinit var shopAPI: ShopApi
+
     fun clearInventory() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             inventoryDao.deleteAll()
@@ -88,6 +94,18 @@ class InventoryViewModel : ViewModel() {
                 _items.postValue(inventoryDao.selectAllSuspend())
             } catch (e: Exception) {
                 Timber.e(e)
+            }
+        }
+    }
+
+    fun postInventory(payload: Payload) {
+        _loading.value = true
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = shopAPI.postInventory("", payload)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) inventoryDao.deleteAll() else onError("Данные не отправлены")
+                _loading.value = false
             }
         }
     }
