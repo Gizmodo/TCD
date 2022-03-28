@@ -1,7 +1,7 @@
 package com.shop.tcd.v2.domain.rest
 
-import com.shop.tcd.v2.data.inventory.Payload
 import com.shop.tcd.v2.data.group.GroupsList
+import com.shop.tcd.v2.data.inventory.Payload
 import com.shop.tcd.v2.data.nomenclature.NomenclatureList
 import com.shop.tcd.v2.data.pricetag.PriceTag
 import com.shop.tcd.v2.data.pricetag.response.PriceTagResponse

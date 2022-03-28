@@ -21,16 +21,16 @@ import com.google.android.material.textfield.TextInputLayout
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentInventoryBinding
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.v2.data.inventory.Payload
 import com.shop.tcd.v2.core.extension.*
 import com.shop.tcd.v2.core.utils.Common
 import com.shop.tcd.v2.core.utils.Common.setReadOnly
 import com.shop.tcd.v2.core.utils.Common.textChanges
 import com.shop.tcd.v2.core.utils.Constants
 import com.shop.tcd.v2.core.utils.ResponseState
+import com.shop.tcd.v2.data.inventory.Payload
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.ui.adapters.InventoryAdapter
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
