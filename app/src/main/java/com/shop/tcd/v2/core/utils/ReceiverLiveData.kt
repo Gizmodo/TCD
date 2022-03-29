@@ -10,7 +10,7 @@ import io.reactivex.rxjava3.functions.BiFunction
 class ReceiverLiveData<T : Any>(
     private val context: Context,
     private val filter: IntentFilter,
-    private val mapFunc: BiFunction<Context, Intent, T>
+    private val mapFunc: BiFunction<Context, Intent, T>,
 ) : MutableLiveData<T>() {
 
     override fun onInactive() {

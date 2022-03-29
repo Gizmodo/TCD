@@ -1,4 +1,4 @@
-package com.shop.tcd.adapters
+package com.shop.tcd.v2.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -3,8 +3,7 @@ package com.shop.tcd.v2.data.inventory
 import com.google.gson.annotations.SerializedName
 import com.shop.tcd.model.InvItem
 
-//Описание полей для POST запроса
-data class Payload(
+data class InventoryResult(
     @SerializedName("autor")
     val autor: String,
     @SerializedName("document")

@@ -14,8 +14,10 @@ import com.shop.tcd.v2.data.printer.PrintersList
 import com.shop.tcd.v2.domain.rest.SettingsApi
 import com.shop.tcd.v2.domain.rest.ShopApi
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
+import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -82,11 +84,16 @@ class PrintViewModel : ViewModel() {
         )
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        job?.cancel()
+    }
+
     fun loadPriceTagsObservable(list: MutableList<String>) {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val priceTag = converterToPriceTag(list)
-            val response = shopApi.postPriceTag(priceTag)
+            val response: Observable<Response<PriceTagResponse>> = shopApi.postPriceTag(priceTag)
             withContext(Dispatchers.Main) {
                 response.subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -109,21 +116,16 @@ class PrintViewModel : ViewModel() {
         _loading.postValue(false)
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        job?.cancel()
-    }
-
     /* private fun test() {
-         homeApi.getUsers().observeOn(AndroidSchedulers.mainThread())
-             .subscribe({
-                 _usersLiveData.value = it
-             }, {
-                 val item: InvItem = InvItem("code", "name", "PLU", "2216017008221", "100500")
-                 viewModelScope.launch {
-                     invDao.insert(item)
-                 }
-                 Timber.e(it)
-             })
-     }*/
+       homeApi.getUsers().observeOn(AndroidSchedulers.mainThread())
+           .subscribe({
+               _usersLiveData.value = it
+           }, {
+               val item: InvItem = InvItem("code", "name", "PLU", "2216017008221", "100500")
+               viewModelScope.launch {
+                   invDao.insert(item)
+               }
+               Timber.e(it)
+           })
+   }*/
 }

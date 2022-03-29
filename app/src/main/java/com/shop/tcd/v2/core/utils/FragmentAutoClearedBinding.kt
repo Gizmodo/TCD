@@ -9,7 +9,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 class FragmentAutoClearedBinding<T : ViewBinding>(
-    val binder: (View) -> T
+    val binder: (View) -> T,
 ) : ReadOnlyProperty<Fragment, T>,
     DefaultLifecycleObserver {
 

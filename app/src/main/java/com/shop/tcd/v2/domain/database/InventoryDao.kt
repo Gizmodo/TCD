@@ -7,7 +7,7 @@ import androidx.room.Query
 import com.shop.tcd.model.InvItem
 
 @Dao
-interface InvDao {
+interface InventoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(invItem: InvItem)
 

@@ -11,7 +11,7 @@ import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.data.printer.Printer
 import com.shop.tcd.v2.data.shop.ShopModel
 import com.shop.tcd.v2.data.user.UserModel
-import com.shop.tcd.v2.domain.database.InvDao
+import com.shop.tcd.v2.domain.database.InventoryDao
 import com.shop.tcd.v2.domain.database.NomenclatureDao
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -93,11 +93,11 @@ object Common {
 
     @DelicateCoroutinesApi
     suspend fun insertInv(item: InvItem, context: Context) {
-        val invDao: InvDao
+        val inventoryDao: InventoryDao
         val databaseTCD: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)
-        invDao = databaseTCD.invDao()
+        inventoryDao = databaseTCD.invDao()
         GlobalScope.launch {
-            invDao.insert(item)
+            inventoryDao.insert(item)
         }
     }
 

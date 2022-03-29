@@ -12,9 +12,9 @@ import com.shop.tcd.v2.core.utils.Common.selectedShopModel
 import com.shop.tcd.v2.core.utils.Constants
 import com.shop.tcd.v2.core.utils.ReceiverLiveData
 import com.shop.tcd.v2.core.utils.SingleLiveEvent
-import com.shop.tcd.v2.data.inventory.Payload
+import com.shop.tcd.v2.data.inventory.InventoryResult
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
-import com.shop.tcd.v2.domain.database.InvDao
+import com.shop.tcd.v2.domain.database.InventoryDao
 import com.shop.tcd.v2.domain.database.NomenclatureDao
 import com.shop.tcd.v2.domain.rest.ShopApi
 import kotlinx.coroutines.*
@@ -74,7 +74,7 @@ class InventoryViewModel : ViewModel() {
     fun getInventarisationItems(): SingleLiveEvent<List<InvItem>> = _items
 
     @Inject
-    lateinit var inventoryDao: InvDao
+    lateinit var inventoryDao: InventoryDao
 
     @Inject
     lateinit var nomenclatureDao: NomenclatureDao
@@ -98,11 +98,11 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    fun postInventory(payload: Payload) {
+    fun postInventory(inventoryResult: InventoryResult) {
         _loading.value = true
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = shopAPI.postInventory("", payload)
+            val response = shopAPI.postInventory("", inventoryResult)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) inventoryDao.deleteAll() else onError("Данные не отправлены")
                 _loading.value = false

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.v2.core.di.*
-import com.shop.tcd.v2.domain.database.InvDao
+import com.shop.tcd.v2.domain.database.InventoryDao
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -40,7 +40,7 @@ class InventoryChronologyViewModel : ViewModel() {
     }
 
     @Inject
-    lateinit var inventoryDao: InvDao
+    lateinit var inventoryDao: InventoryDao
 
     private fun loadIventoryList() {
         _loading.value = true

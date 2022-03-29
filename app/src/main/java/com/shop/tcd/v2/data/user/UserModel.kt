@@ -8,5 +8,5 @@ data class UserModel(
     @SerializedName("Наименование")
     val name: String,
     @SerializedName("Пароль")
-    val password: String
+    val password: String,
 )

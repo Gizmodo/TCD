@@ -27,7 +27,7 @@ import com.shop.tcd.v2.core.utils.Common.setReadOnly
 import com.shop.tcd.v2.core.utils.Common.textChanges
 import com.shop.tcd.v2.core.utils.Constants
 import com.shop.tcd.v2.core.utils.ResponseState
-import com.shop.tcd.v2.data.inventory.Payload
+import com.shop.tcd.v2.data.inventory.InventoryResult
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.ui.adapters.InventoryAdapter
 import kotlinx.coroutines.Job
@@ -192,7 +192,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             return
         }
         progressDialog.show()
-        val payload = Payload(
+        val inventoryResult = InventoryResult(
             result = "success",
             message = "",
             operation = "revision",
@@ -201,7 +201,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             prefix = Common.selectedShopModel.prefix,
             document = list
         )
-        viewModel.postInventory(payload)
+        viewModel.postInventory(inventoryResult)
     }
 
     private fun addNomenclatureItem() {

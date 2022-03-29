@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
-import com.shop.tcd.v2.domain.database.InvDao
+import com.shop.tcd.v2.domain.database.InventoryDao
 import com.shop.tcd.v2.domain.database.NomenclatureDao
 
 @Database(
@@ -17,7 +17,7 @@ import com.shop.tcd.v2.domain.database.NomenclatureDao
 )
 abstract class TCDRoomDatabase : RoomDatabase() {
     abstract fun nomDao(): NomenclatureDao
-    abstract fun invDao(): InvDao
+    abstract fun invDao(): InventoryDao
 
     companion object {
         @Volatile

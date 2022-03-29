@@ -14,7 +14,6 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
@@ -144,7 +143,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private fun showVPNUsage() {
         when {
-            vpnActive(requireContext().applicationContext) -> {
+            vpnActive() -> {
                 binding.txtVPNStatus.text = "VPN"
             }
             else -> {
@@ -153,10 +152,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
     }
 
-    private fun vpnActive(context: Context): Boolean {
+    private fun vpnActive(): Boolean {
         var vpnInUse = false
         val connectivityManager =
-            context.getSystemService(AppCompatActivity.CONNECTIVITY_SERVICE) as ConnectivityManager
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val activeNetwork: Network? = connectivityManager.activeNetwork
             val caps = connectivityManager.getNetworkCapabilities(activeNetwork)

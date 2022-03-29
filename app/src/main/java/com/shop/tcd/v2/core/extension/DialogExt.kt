@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 inline fun <reified T> Fragment.showSelectDialogExt(
     list: List<T>,
     @StringRes titleId: Int,
-    noinline listener: (di: DialogInterface, i: Int) -> Unit
+    noinline listener: (di: DialogInterface, i: Int) -> Unit,
 ): AlertDialog {
     val rcontext = requireContext()
     val dialog = AlertDialog.Builder(rcontext)

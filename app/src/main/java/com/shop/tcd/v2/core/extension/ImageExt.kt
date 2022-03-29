@@ -19,7 +19,7 @@ import com.bumptech.glide.request.target.Target
 fun ImageView.showExt(
     imageReference: String,
     onResourceReady: (() -> Unit)? = null,
-    onLoadFailed: (() -> Unit)? = null
+    onLoadFailed: (() -> Unit)? = null,
 ) {
     val circularProgressDrawable = CircularProgressDrawable(this.context)
     circularProgressDrawable.strokeWidth = 5f
@@ -41,7 +41,7 @@ fun ImageView.showExt(
             model: Any?,
             target: Target<Drawable>?,
             dataSource: DataSource?,
-            isFirstResource: Boolean
+            isFirstResource: Boolean,
         ): Boolean {
             onResourceReady?.invoke()
             return false
@@ -51,7 +51,7 @@ fun ImageView.showExt(
             e: GlideException?,
             model: Any?,
             target: Target<Drawable>?,
-            isFirstResource: Boolean
+            isFirstResource: Boolean,
         ): Boolean {
             onLoadFailed?.invoke()
             return false

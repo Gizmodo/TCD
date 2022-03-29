@@ -13,11 +13,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.shop.tcd.R
-import com.shop.tcd.adapters.InvAdapter
 import com.shop.tcd.databinding.ActivityListBinding
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.room.database.DatabaseHelperImpl
 import com.shop.tcd.room.database.TCDRoomDatabase
+import com.shop.tcd.v2.ui.adapters.InvAdapter
 import com.shop.tcd.viewmodel.InventoryListViewModel
 import com.shop.tcd.viewmodel.InventoryListViewModelFactory
 import timber.log.Timber
