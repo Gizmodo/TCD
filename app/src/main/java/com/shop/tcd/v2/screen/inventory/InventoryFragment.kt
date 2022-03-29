@@ -36,9 +36,7 @@ import timber.log.Timber
 
 class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     //    UI
-    private lateinit var tilBarcode: TextInputLayout
     private lateinit var edtBarcode: TextInputEditText
-    private lateinit var tilCount: TextInputLayout
     private lateinit var edtCount: TextInputEditText
     private lateinit var txtGood: TextView
     private lateinit var txtCode: TextView
@@ -61,8 +59,8 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     override fun onDestroyView() {
         super.onDestroyView()
         rvInventory.adapter = null
-        jobAuto.cancel()
-        jobManual.cancel()
+        jobAuto?.cancel()
+        jobManual?.cancel()
     }
 
     private fun onItemClick(inventoryItem: InvItem, position: Int) {
@@ -177,7 +175,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 //                 var list = mutableListOf<InvItem>()
 //                list = arrayListOf()
                 viewModel.fetchInventarisationItems()
-                viewModel.getInventarisationItems().observe(this@InventoryFragment) { items ->
+                viewModel.getInventarisationItems().observe(viewLifecycleOwner) { items ->
                     var list = items as ArrayList<InvItem>
                     sendInventory(list)
                 }
@@ -224,6 +222,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     quantity = edtCount.text.toString()
                 }
                 viewModel.insertInventory(inv)
+                adapterInventory.notifyDataSetChanged()
                 clearFieldsAfterInsert()
                 moveFocus(edtBarcode)
 //                adapterInventory.notifyDataSetChanged()
@@ -422,9 +421,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     private fun initUI() {
         rvInventory = binding.rvInventory
-        tilBarcode = binding.tilBarcode
         edtBarcode = binding.edtBarcode
-        tilCount = binding.tilCount
         edtCount = binding.edtCount
         txtGood = binding.txtZGood
         txtCode = binding.txtZCode
