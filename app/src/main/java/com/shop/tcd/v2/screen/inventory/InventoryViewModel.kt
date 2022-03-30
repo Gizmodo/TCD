@@ -161,15 +161,15 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    private fun loadInventoryList() {
-        _loading.value = true
-        job?.cancel()
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response: List<InvItem> = inventoryDao.loadInventoryGrouped()
-            _inventoryList.postValue(response)
-            _loading.value = false
-        }
-    }
+     fun loadInventoryList() {
+         _loading.value = true
+         job?.cancel()
+         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+             val response: List<InvItem> = inventoryDao.loadInventoryGrouped()
+             _inventoryList.postValue(response)
+             _loading.value = false
+         }
+     }
 
     private fun onError(message: String) {
         _errorMessage.postValue(message)
@@ -189,6 +189,8 @@ class InventoryViewModel : ViewModel() {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             inventoryDao.insert(inv)
+            val response: List<InvItem> = inventoryDao.loadInventoryGrouped()
+            _inventoryList.postValue(response)
             _loading.value = false
         }
     }

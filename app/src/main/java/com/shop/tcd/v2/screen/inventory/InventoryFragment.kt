@@ -221,10 +221,8 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     quantity = edtCount.text.toString()
                 }
                 viewModel.insertInventory(inv)
-                adapterInventory.notifyDataSetChanged()
                 clearFieldsAfterInsert()
                 moveFocus(edtBarcode)
-//                adapterInventory.notifyDataSetChanged()
             }
         }
     }
@@ -346,10 +344,10 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         }
     }
 
-    private fun onReceiveScannerData(data: String) {
+    private fun onReceiveScannerData(message: String) {
         clearFields()
         edtBarcode.apply {
-            setText(data)
+            setText(message)
             requestFocus()
         }
     }
