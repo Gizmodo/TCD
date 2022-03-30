@@ -44,8 +44,8 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private lateinit var txtPrice: TextView
     private lateinit var rvInventory: RecyclerView
     private lateinit var progressDialog: ProgressDialog
-    private lateinit var jobAuto: Job
-    private lateinit var jobManual: Job
+    private var jobAuto: Job? = null
+    private var jobManual: Job? = null
 
     private val binding by viewBindingWithBinder(FragmentInventoryBinding::bind)
     private val viewModel: InventoryViewModel by lazy { getViewModel { InventoryViewModel() } }
@@ -253,7 +253,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     Common.currentScanMode = Common.MODESCAN.AUTO
                     edtBarcode.setReadOnly(true)
                     it.isChecked = true
-                    jobManual.cancel()
+                    jobManual?.cancel()
                     jobAuto = createJobAuto()
                     true
                 }
@@ -261,7 +261,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     Common.currentScanMode = Common.MODESCAN.MANUAL
                     edtBarcode.setReadOnly(false)
                     it.isChecked = true
-                    jobAuto.cancel()
+                    jobAuto?.cancel()
                     jobManual = createJobManual()
                     true
                 }
