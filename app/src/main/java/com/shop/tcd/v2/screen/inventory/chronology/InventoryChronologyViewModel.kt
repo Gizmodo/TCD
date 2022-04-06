@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.v2.core.di.*
-import com.shop.tcd.v2.domain.database.InventoryDao
+import com.shop.tcd.v2.data.dao.InventoryDao
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -42,6 +42,13 @@ class InventoryChronologyViewModel : ViewModel() {
     @Inject
     lateinit var inventoryDao: InventoryDao
 
+    fun updateInventoryQuantity(uid: Int, newQuantity: String) {
+        CoroutineScope(Dispatchers.IO+exceptionHandler).launch {
+            inventoryDao.updateInventoryQuantity(uid, newQuantity)
+            loadIventoryList()
+            // TODO: Continue here
+        }
+    }
     private fun loadIventoryList() {
         _loading.value = true
         job?.cancel()

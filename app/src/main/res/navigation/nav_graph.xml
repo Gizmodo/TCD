@@ -80,5 +80,12 @@
         android:id="@+id/inventoryItemDetailFragment"
         android:name="com.shop.tcd.v2.screen.inventory.detail.InventoryItemDetailFragment"
         android:label="fragment_inventory_item_detail"
-        tools:layout="@layout/fragment_inventory_item_detail" />
+        tools:layout="@layout/fragment_inventory_item_detail">
+        <argument
+            android:name="code"
+            app:argType="string" />
+        <argument
+            android:name="barcode"
+            app:argType="string" />
+    </fragment>
 </navigation>

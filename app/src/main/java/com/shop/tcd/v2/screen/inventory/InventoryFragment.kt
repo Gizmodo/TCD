@@ -62,7 +62,19 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         jobManual?.cancel()
     }
 
+    // TODO: привязать к выбору элемента из списка
     private fun onItemClick(inventoryItem: InvItem, position: Int) {
+        navigateExt(InventoryFragmentDirections.actionInventoryFragmentToInventoryItemDetailFragment(
+            inventoryItem.code,
+            inventoryItem.barcode
+        ))
+        /*val bundle: Bundle = invItem.bundle(InvItem.serializer())
+        val intent = Intent(this@InventoryFragment, DetailActivity::class.java)
+            .apply {
+                putExtra("item", bundle)
+            }
+        startActivity(intent, bundle)*/
+
         Timber.d("Был клик по элемену $inventoryItem в позиции $position")
     }
 
@@ -431,16 +443,4 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             setMessage("Пожалуйста, ожидайте")
         }
     }
-
-    // TODO: привязать к выбору элемента из списка
-    /* private val onItemClick = object : InvAdapter.OnItemClickListener {
-         override fun onClick(invItem: InvItem, position: Int) {
-             val bundle: Bundle = invItem.bundle(InvItem.serializer())
-             val intent = Intent(this@InventoryFragment, DetailActivity::class.java)
-                 .apply {
-                     putExtra("item", bundle)
-                 }
-             startActivity(intent, bundle)
-         }
-     }*/
 }

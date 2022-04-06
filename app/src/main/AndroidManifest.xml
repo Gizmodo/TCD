@@ -23,12 +23,6 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.ListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.DetailActivity"
-            android:exported="false" />
-        <activity
             android:name="com.shop.tcd.v2.screen.MainActivity"
             android:exported="true">
             <intent-filter>

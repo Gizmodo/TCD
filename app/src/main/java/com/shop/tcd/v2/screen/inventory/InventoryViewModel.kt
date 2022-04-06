@@ -14,8 +14,8 @@ import com.shop.tcd.v2.core.utils.ReceiverLiveData
 import com.shop.tcd.v2.core.utils.SingleLiveEvent
 import com.shop.tcd.v2.data.inventory.InventoryResult
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
-import com.shop.tcd.v2.domain.database.InventoryDao
-import com.shop.tcd.v2.domain.database.NomenclatureDao
+import com.shop.tcd.v2.data.dao.InventoryDao
+import com.shop.tcd.v2.data.dao.NomenclatureDao
 import com.shop.tcd.v2.domain.rest.ShopApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -161,15 +161,15 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-     fun loadInventoryList() {
-         _loading.value = true
-         job?.cancel()
-         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-             val response: List<InvItem> = inventoryDao.loadInventoryGrouped()
-             _inventoryList.postValue(response)
-             _loading.value = false
-         }
-     }
+    fun loadInventoryList() {
+        _loading.value = true
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response: List<InvItem> = inventoryDao.loadInventoryGrouped()
+            _inventoryList.postValue(response)
+            _loading.value = false
+        }
+    }
 
     private fun onError(message: String) {
         _errorMessage.postValue(message)

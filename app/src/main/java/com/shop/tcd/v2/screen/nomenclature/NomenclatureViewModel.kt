@@ -8,7 +8,7 @@ import com.shop.tcd.App
 import com.shop.tcd.v2.core.di.*
 import com.shop.tcd.v2.data.group.GroupsList
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
-import com.shop.tcd.v2.domain.database.NomenclatureDao
+import com.shop.tcd.v2.data.dao.NomenclatureDao
 import kotlinx.coroutines.*
 import javax.inject.Inject
 

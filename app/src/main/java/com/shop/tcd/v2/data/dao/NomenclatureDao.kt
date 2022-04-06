@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.domain.database
+package com.shop.tcd.v2.data.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
@@ -35,4 +35,7 @@ interface NomenclatureDao {
 
     @Query("select * from nomenclature where code LIKE '%' || :search || '%' or barcode LIKE '%' || :search || '%' or name LIKE '%' || :search || '%'")
     suspend fun getNomenclatureBySearch(search: String): List<NomenclatureItem>
+
+    @Query("SELECT * from nomenclature where code = :code and barcode = :barcode limit 1")
+    suspend fun getItemForDetail(code: String, barcode: String): NomenclatureItem?
 }

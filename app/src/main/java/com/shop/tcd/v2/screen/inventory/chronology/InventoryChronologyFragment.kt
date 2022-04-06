@@ -1,8 +1,12 @@
 package com.shop.tcd.v2.screen.inventory.chronology
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -29,6 +33,32 @@ class InventoryChronologyFragment : Fragment(R.layout.fragment_inventory_chronol
 
     private fun onItemClick(inventoryItem: InvItem, position: Int) {
         Timber.d("Был клик по элемену $inventoryItem в позиции $position")
+        val dialog = Dialog(requireContext())
+        dialog.setCancelable(true)
+        dialog.setContentView(R.layout.dialog_inventory_quantity)
+
+        val edtQuantity = dialog.findViewById<EditText>(R.id.edtQuantity)
+        val btnUpdateQuantity = dialog.findViewById<Button>(R.id.btnUpdateQuantity)
+        val btnCancel = dialog.findViewById<Button>(R.id.btnCancel)
+        val txtName = dialog.findViewById<TextView>(R.id.txtName)
+
+        txtName.text = inventoryItem.name
+        edtQuantity.setText(inventoryItem.quantity)
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnUpdateQuantity.setOnClickListener {
+            val quantity = edtQuantity.text.toString().replace(',', '.')
+            Timber.d(quantity)
+            quantity.toFloatOrNull()?.let {
+                viewModel.updateInventoryQuantity(inventoryItem.uid!!, quantity)
+                adapterInventory.notifyDataSetChanged()
+            }
+            dialog.dismiss()
+        }
+        dialog.show()
     }
 
     private val viewModel: InventoryChronologyViewModel by lazy { getViewModel { InventoryChronologyViewModel() } }

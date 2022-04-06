@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
 import com.shop.tcd.v2.core.di.*
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
-import com.shop.tcd.v2.domain.database.NomenclatureDao
+import com.shop.tcd.v2.data.dao.NomenclatureDao
 import com.shop.tcd.v2.domain.rest.ShopApi
 import kotlinx.coroutines.*
 import timber.log.Timber

@@ -6,13 +6,13 @@ import android.text.TextWatcher
 import android.widget.EditText
 import androidx.annotation.CheckResult
 import com.shop.tcd.model.InvItem
-import com.shop.tcd.room.database.TCDRoomDatabase
+import com.shop.tcd.v2.data.AppDatabase
+import com.shop.tcd.v2.data.dao.InventoryDao
+import com.shop.tcd.v2.data.dao.NomenclatureDao
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.data.printer.Printer
 import com.shop.tcd.v2.data.shop.ShopModel
 import com.shop.tcd.v2.data.user.UserModel
-import com.shop.tcd.v2.domain.database.InventoryDao
-import com.shop.tcd.v2.domain.database.NomenclatureDao
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -83,7 +83,7 @@ object Common {
     @DelicateCoroutinesApi
     suspend fun saveNomenclatureList(list: List<NomenclatureItem>, context: Context) {
         val nomenclatureDao: NomenclatureDao
-        val databaseTCD: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)
+        val databaseTCD: AppDatabase = AppDatabase.getDatabase(context)
         nomenclatureDao = databaseTCD.nomDao()
         GlobalScope.launch {
             nomenclatureDao.deleteAll()
@@ -94,7 +94,7 @@ object Common {
     @DelicateCoroutinesApi
     suspend fun insertInv(item: InvItem, context: Context) {
         val inventoryDao: InventoryDao
-        val databaseTCD: TCDRoomDatabase = TCDRoomDatabase.getDatabase(context)
+        val databaseTCD: AppDatabase = AppDatabase.getDatabase(context)
         inventoryDao = databaseTCD.invDao()
         GlobalScope.launch {
             inventoryDao.insert(item)

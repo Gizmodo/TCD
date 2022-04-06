@@ -1,32 +1,51 @@
 package com.shop.tcd.v2.screen.inventory.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import com.shop.tcd.R
+import com.shop.tcd.databinding.FragmentInventoryItemDetailBinding
+import com.shop.tcd.v2.core.extension.getViewModel
+import com.shop.tcd.v2.core.extension.longFancy
+import com.shop.tcd.v2.core.extension.viewBindingWithBinder
+import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
+import timber.log.Timber
 
-class InventoryItemDetailFragment : Fragment() {
+class InventoryItemDetailFragment : Fragment(R.layout.fragment_inventory_item_detail) {
+    private val binding by viewBindingWithBinder(FragmentInventoryItemDetailBinding::bind)
+    private val viewModel: InventoryItemDetailViewModel by lazy {
+        getViewModel { InventoryItemDetailViewModel() }
+    }
+    private val args: InventoryItemDetailFragmentArgs by navArgs()
 
-    companion object {
-        fun newInstance() = InventoryItemDetailFragment()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initViewModelObservers()
+        viewModel.loadItem(args.code, args.barcode)
     }
 
-    private lateinit var viewModel: InventoryItemDetailViewModel
+    private fun initViewModelObservers() {
+        viewModel.nomenclatureLiveData.observe(viewLifecycleOwner) {
+            Timber.d(it.toString())
+            bindUI(it)
+        }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View? {
-        return inflater.inflate(R.layout.fragment_inventory_item_detail, container, false)
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            longFancy { it }
+        }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(InventoryItemDetailViewModel::class.java)
-        // TODO: Use the ViewModel
+    private fun bindUI(it: NomenclatureItem?) {
+        it?.let {
+            with(binding) {
+                txtDetailBarcode.text = it.barcode
+                txtDetailCode.text = it.code
+                txtDetailName.text = it.name
+                txtDetailPLU.text = it.plu
+                txtDetailPrice.text = it.price
+            }
+        }
     }
-
 }

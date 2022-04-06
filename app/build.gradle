@@ -5,7 +5,7 @@ plugins {
 //    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin"
     id 'io.gitlab.arturbosch.detekt'
     id 'androidx.navigation.safeargs'
-    id 'com.google.devtools.ksp' version '1.6.20-RC-1.0.4'
+    id 'com.google.devtools.ksp' version '1.6.20-1.0.4'
     id "org.jetbrains.kotlin.plugin.serialization"
     id "scabbard.gradle" version "0.5.0"
     id 'com.google.gms.google-services'
@@ -39,8 +39,7 @@ def generateVersionName() {
 }
 
 android {
-    compileSdk sdk
-
+    compileSdkPreview "Tiramisu"
     defaultConfig {
         applicationId "com.shop.tcd"
         minSdk 22
@@ -76,7 +75,7 @@ android {
         jvmTarget = '1.8'
         freeCompilerArgs = ['-Xjvm-default=all'] //enable or compatibility
     }
-    buildToolsVersion '32.1.0 rc1'
+    buildToolsVersion '33.0.0 rc2'
     ndkVersion '21.4.7075529'
 }
 detekt {

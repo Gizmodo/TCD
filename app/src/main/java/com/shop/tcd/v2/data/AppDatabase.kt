@@ -1,13 +1,13 @@
-package com.shop.tcd.room.database
+package com.shop.tcd.v2.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.shop.tcd.model.InvItem
+import com.shop.tcd.v2.data.dao.InventoryDao
+import com.shop.tcd.v2.data.dao.NomenclatureDao
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
-import com.shop.tcd.v2.domain.database.InventoryDao
-import com.shop.tcd.v2.domain.database.NomenclatureDao
 
 @Database(
     entities = [
@@ -15,20 +15,20 @@ import com.shop.tcd.v2.domain.database.NomenclatureDao
         InvItem::class
     ], version = 4, exportSchema = false
 )
-abstract class TCDRoomDatabase : RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
     abstract fun nomDao(): NomenclatureDao
     abstract fun invDao(): InventoryDao
 
     companion object {
         @Volatile
-        private var INSTANCE: TCDRoomDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): TCDRoomDatabase {
+        fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room
                     .databaseBuilder(
                         context.applicationContext,
-                        TCDRoomDatabase::class.java,
+                        AppDatabase::class.java,
                         "tcd_database.db"
                     )
                     .fallbackToDestructiveMigration()

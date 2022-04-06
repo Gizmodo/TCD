@@ -1,4 +1,4 @@
-package com.shop.tcd.v2.domain.database
+package com.shop.tcd.v2.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -21,5 +21,5 @@ interface InventoryDao {
     suspend fun loadInventoryGrouped(): List<InvItem>
 
     @Query("update inventory set quantity = :newQuantity where uid = :uid")
-    fun updateInventoryQuantity(uid: Int, newQuantity: String)
+    suspend fun updateInventoryQuantity(uid: Int, newQuantity: String)
 }
