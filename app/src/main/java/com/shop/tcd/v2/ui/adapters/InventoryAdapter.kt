@@ -9,7 +9,7 @@ import com.shop.tcd.model.InvItem
 
 class InventoryAdapter(
     private val inventoryList: MutableList<InvItem>,
-    private val onItemClick: (InvItem, Int) -> Unit,
+    private val onItemClick: (InvItem) -> Unit,
 ) : RecyclerView.Adapter<InventoryAdapter.InventoryViewHolder>() {
     override fun getItemCount() = inventoryList.size
 
@@ -37,7 +37,7 @@ class InventoryAdapter(
             txtInvCode.text = inventoryItem.code
             txtInvName.text = inventoryItem.name
             txtInvQuantity.text = inventoryItem.quantity
-            root.setOnClickListener { onItemClick(inventoryItem, position) }
+            root.setOnClickListener { onItemClick(inventoryItem) }
         }
     }
 }

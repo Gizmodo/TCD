@@ -73,36 +73,10 @@
         android:id="@+id/info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtZGood">
-
-
-        <TextView
-            android:id="@+id/textView7"
-            style="@style/customTextLabelAppearance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_marginStart="8dp"
-            android:text="@string/price"
-            app:layout_constraintBottom_toBottomOf="@id/txtZPrice"
-            app:layout_constraintEnd_toStartOf="@id/txtZPrice"
-            app:layout_constraintTop_toTopOf="@id/txtZPrice" />
-
-        <TextView
-            android:id="@+id/txtZPrice"
-            style="@style/customTextValueAppearance"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/txtZBarcode"
-            tools:text="15688" />
+        app:layout_constraintTop_toBottomOf="@id/txtZGood">
 
         <TextView
             android:id="@+id/textView11"
@@ -110,61 +84,64 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/code"
-            app:layout_constraintBottom_toBottomOf="@id/txtZCode"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/txtZCode" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txtZCode"
             style="@style/customTextValueAppearance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@id/txtZTotal"
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/textView11"
             app:layout_constraintStart_toEndOf="@id/textView11"
+            app:layout_constraintTop_toTopOf="@id/textView11"
             tools:text="84055" />
 
         <TextView
-            android:id="@+id/txtZBarcode"
+            android:id="@+id/textView7"
+            style="@style/customTextLabelAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/price"
+            app:layout_constraintBottom_toBottomOf="@id/txtZCode"
+            app:layout_constraintStart_toEndOf="@id/txtZCode"
+            app:layout_constraintTop_toTopOf="@id/txtZCode" />
+
+        <TextView
+            android:id="@+id/txtZPrice"
             style="@style/customTextValueAppearance"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@id/txtZPrice"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="2284055010421" />
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/textView7"
+            app:layout_constraintStart_toEndOf="@id/textView7"
+            app:layout_constraintTop_toTopOf="@id/textView7"
+            tools:text="15688" />
 
         <TextView
             android:id="@+id/textView13"
             style="@style/customTextLabelAppearance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_margin="8dp"
             android:text="@string/barcode"
-            app:layout_constraintBottom_toBottomOf="@id/txtZBarcode"
-            app:layout_constraintEnd_toStartOf="@id/txtZBarcode"
-            app:layout_constraintTop_toTopOf="@id/txtZBarcode" />
+            app:layout_constraintBottom_toBottomOf="@id/txtZPrice"
+            app:layout_constraintStart_toEndOf="@id/txtZPrice"
+            app:layout_constraintTop_toTopOf="@id/txtZPrice" />
 
         <TextView
-            android:id="@+id/textView15"
-            style="@style/customTextLabelAppearance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/OverallCount"
-            app:layout_constraintBottom_toBottomOf="@id/txtZTotal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/txtZTotal" />
-
-        <TextView
-            android:id="@+id/txtZTotal"
+            android:id="@+id/txtZBarcode"
             style="@style/customTextValueAppearance"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textView15"
-            tools:text="1.042" />
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/textView13"
+            app:layout_constraintStart_toEndOf="@id/textView13"
+            app:layout_constraintTop_toTopOf="@id/textView13"
+            tools:text="2284055010421" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -175,7 +152,7 @@
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
         android:background="@drawable/border"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+        app:layout_constraintBottom_toTopOf="@id/nav_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/info"

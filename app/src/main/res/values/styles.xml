@@ -30,4 +30,30 @@
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/roboto</item>
     </style>
+
+    <style name="InventoryItemDetailHeader" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="InventoryItemDetailTitle" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="InventoryItemDetailTitleValue" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:layout_marginEnd">8dp</item>
+    </style>
 </resources>

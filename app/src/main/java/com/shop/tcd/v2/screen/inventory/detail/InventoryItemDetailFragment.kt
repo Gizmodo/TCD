@@ -22,6 +22,8 @@ class InventoryItemDetailFragment : Fragment(R.layout.fragment_inventory_item_de
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModelObservers()
+        Timber.d("code ${args.code}")
+        Timber.d("barcode ${args.barcode}")
         viewModel.loadItem(args.code, args.barcode)
     }
 

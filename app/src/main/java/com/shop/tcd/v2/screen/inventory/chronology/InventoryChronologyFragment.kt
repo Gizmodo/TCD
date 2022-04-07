@@ -7,11 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentInventoryChronologyBinding
@@ -25,14 +23,10 @@ import timber.log.Timber
 class InventoryChronologyFragment : Fragment(R.layout.fragment_inventory_chronology) {
     private var data: List<InvItem> = mutableListOf()
     private val binding by viewBindingWithBinder(FragmentInventoryChronologyBinding::bind)
-    private lateinit var rvInventoryChronology: RecyclerView
-    private lateinit var shimmer: ConstraintLayout
-    private var adapterInventory = InventoryAdapter(mutableListOf()) { inventoryItem, position ->
-        onItemClick(inventoryItem, position)
-    }
+    private val viewModel: InventoryChronologyViewModel by lazy { getViewModel { InventoryChronologyViewModel() } }
+    private var adapterInventory = InventoryAdapter(mutableListOf()) { onItemClick(it) }
 
-    private fun onItemClick(inventoryItem: InvItem, position: Int) {
-        Timber.d("Был клик по элемену $inventoryItem в позиции $position")
+    private fun onItemClick(inventoryItem: InvItem) {
         val dialog = Dialog(requireContext())
         dialog.setCancelable(true)
         dialog.setContentView(R.layout.dialog_inventory_quantity)
@@ -61,16 +55,13 @@ class InventoryChronologyFragment : Fragment(R.layout.fragment_inventory_chronol
         dialog.show()
     }
 
-    private val viewModel: InventoryChronologyViewModel by lazy { getViewModel { InventoryChronologyViewModel() } }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        rvInventoryChronology.adapter = null
+        binding.rvInventoryChronology.adapter = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUI()
         initRecyclerView()
         initViewModelObservers()
     }
@@ -85,17 +76,10 @@ class InventoryChronologyFragment : Fragment(R.layout.fragment_inventory_chronol
             Timber.e(it)
             longFancy { it }
         }
-
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when {
-                it -> showShimmer()
-                else -> hideShimmer()
-            }
-        }
     }
 
     private fun initRecyclerView() {
-        with(rvInventoryChronology) {
+        with(binding.rvInventoryChronology) {
             val animator = itemAnimator
             if (animator is SimpleItemAnimator) {
                 animator.supportsChangeAnimations = false
@@ -110,18 +94,5 @@ class InventoryChronologyFragment : Fragment(R.layout.fragment_inventory_chronol
             )
             adapter = adapterInventory
         }
-    }
-
-    private fun initUI() {
-        rvInventoryChronology = binding.rvInventoryChronology
-        shimmer = binding.shimmer
-    }
-
-    private fun showShimmer() {
-        shimmer.visibility = View.VISIBLE
-    }
-
-    private fun hideShimmer() {
-        shimmer.visibility = View.GONE
     }
 }

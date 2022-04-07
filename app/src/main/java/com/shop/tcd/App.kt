@@ -18,6 +18,8 @@ class App : Application() {
         instance = this
     }
 
+    // TODO: 1. Сохранять выбранный режим ввода штрихкода - сейчас при смене экрана состояние сбрасывается на автомат
+    // TODO: 2. Очистил список. Добавил по коду 90785 товар. Нажал на него. Информация пустая. 
     companion object {
         private var instance: App? = null
         fun applicationContext(): Context {

@@ -40,7 +40,7 @@ class PrintViewModel : ViewModel() {
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onError("Exception handled: ${throwable.localizedMessage}")
+        onError("Возникло исключение: ${throwable.localizedMessage}")
     }
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
@@ -53,6 +53,7 @@ class PrintViewModel : ViewModel() {
 
     init {
         injector.inject(this)
+        loadPrinters()
     }
 
     @Inject
@@ -61,7 +62,7 @@ class PrintViewModel : ViewModel() {
     @Inject
     lateinit var shopApi: ShopApi
 
-    fun loadPrinters() {
+    private fun loadPrinters() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = settingsApi.getPrinters()
             withContext(Dispatchers.Main) {
@@ -115,17 +116,4 @@ class PrintViewModel : ViewModel() {
         _errorMessage.postValue(message)
         _loading.postValue(false)
     }
-
-    /* private fun test() {
-       homeApi.getUsers().observeOn(AndroidSchedulers.mainThread())
-           .subscribe({
-               _usersLiveData.value = it
-           }, {
-               val item: InvItem = InvItem("code", "name", "PLU", "2216017008221", "100500")
-               viewModelScope.launch {
-                   invDao.insert(item)
-               }
-               Timber.e(it)
-           })
-   }*/
 }

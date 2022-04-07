@@ -26,7 +26,6 @@
     <string name="plu">PLU</string>
     <string name="barcode">Штрихкод</string>
     <string name="barcode_or_code">Штрихкод/код</string>
-    <string name="good">Товар</string>
     <string name="price">Цена</string>
     <string name="entercode">Введите код</string>
     <string name="upload">Выгрузить</string>
@@ -47,7 +46,7 @@
     <string name="period_select">Укажите период</string>
     <string name="menu_clean">Очистить</string>
     <string name="menu_send">Завершить</string>
-    <string name="menu_chronology">История</string>
+    <string name="menu_chronology">Журнал</string>
     <string name="menu_insert">Добавить</string>
     <string name="menu_setting">Настройки</string>
     <string name="menu_find_barcode">Поиск по ШК</string>

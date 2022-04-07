@@ -11,7 +11,9 @@ import androidx.annotation.MenuRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,16 +33,14 @@ import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.ui.adapters.InventoryAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
-import timber.log.Timber
+import kotlinx.coroutines.launch
 
 class InventoryFragment : Fragment(R.layout.fragment_inventory) {
-    //    UI
     private lateinit var edtBarcode: TextInputEditText
     private lateinit var edtCount: TextInputEditText
     private lateinit var txtGood: TextView
     private lateinit var txtCode: TextView
     private lateinit var txtBarcode: TextView
-    private lateinit var txtTotal: TextView
     private lateinit var txtPrice: TextView
     private lateinit var rvInventory: RecyclerView
     private lateinit var progressDialog: ProgressDialog
@@ -51,9 +51,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private val viewModel: InventoryViewModel by lazy { getViewModel { InventoryViewModel() } }
 
     private var data: List<InvItem> = mutableListOf()
-    private var adapterInventory = InventoryAdapter(mutableListOf()) { inventoryItem, position ->
-        onItemClick(inventoryItem, position)
-    }
+    private var adapterInventory = InventoryAdapter(mutableListOf()) { onItemClick(it) }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -62,20 +60,11 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         jobManual?.cancel()
     }
 
-    // TODO: привязать к выбору элемента из списка
-    private fun onItemClick(inventoryItem: InvItem, position: Int) {
+    private fun onItemClick(inventoryItem: InvItem) {
         navigateExt(InventoryFragmentDirections.actionInventoryFragmentToInventoryItemDetailFragment(
             inventoryItem.code,
             inventoryItem.barcode
         ))
-        /*val bundle: Bundle = invItem.bundle(InvItem.serializer())
-        val intent = Intent(this@InventoryFragment, DetailActivity::class.java)
-            .apply {
-                putExtra("item", bundle)
-            }
-        startActivity(intent, bundle)*/
-
-        Timber.d("Был клик по элемену $inventoryItem в позиции $position")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -125,9 +114,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             txtGood.text = item.name
             txtCode.text = item.code
             txtBarcode.text = item.barcode
-            // TODO: Это поле заполняется из ответа
-            //  на запрос к БД с группировкой по штрихкоду
-            txtTotal.text = item.code // TODO: 1) Выводить общее кол-во!!!
             txtPrice.text = item.price
             val barcode = edtBarcode
                 .text
@@ -335,6 +321,11 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     }
 
     private fun initViewModelObservers() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loadInventoryList()
+            }
+        }
         viewModel.inventoryList.observe(viewLifecycleOwner) { items ->
             data = items
             adapterInventory.updateList(data)
@@ -371,7 +362,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             txtGood.text = it
             txtCode.text = it
             txtBarcode.text = it
-            txtTotal.text = it
             txtPrice.text = it
         }
     }
@@ -385,7 +375,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     txtGood.text = it
                     txtCode.text = it
                     txtBarcode.text = it
-                    txtTotal.text = it
                     txtPrice.text = it
                 }
             }
@@ -395,7 +384,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     txtGood.text = it
                     txtCode.text = it
                     txtBarcode.text = it
-                    txtTotal.text = it
                     txtPrice.text = it
                 }
             }
@@ -435,7 +423,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         txtGood = binding.txtZGood
         txtCode = binding.txtZCode
         txtBarcode = binding.txtZBarcode
-        txtTotal = binding.txtZTotal
         txtPrice = binding.txtZPrice
 
         progressDialog = ProgressDialog(requireContext()).apply {

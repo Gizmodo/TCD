@@ -15,9 +15,6 @@ class InventoryChronologyViewModel : ViewModel() {
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
-
     private var _inventoryLiveData = MutableLiveData<List<InvItem>>()
     val inventoryLiveData: LiveData<List<InvItem>> get() = _inventoryLiveData
 
@@ -43,29 +40,22 @@ class InventoryChronologyViewModel : ViewModel() {
     lateinit var inventoryDao: InventoryDao
 
     fun updateInventoryQuantity(uid: Int, newQuantity: String) {
-        CoroutineScope(Dispatchers.IO+exceptionHandler).launch {
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             inventoryDao.updateInventoryQuantity(uid, newQuantity)
-            loadIventoryList()
-            // TODO: Continue here
+            _inventoryLiveData.postValue(inventoryDao.selectAllSuspend())
         }
     }
+
     private fun loadIventoryList() {
-        _loading.value = true
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response: List<InvItem> = inventoryDao.selectAllSuspend()
+            val response = inventoryDao.selectAllSuspend()
             _inventoryLiveData.postValue(response)
-            _loading.postValue(false)
         }
     }
 
     private fun onError(message: String) {
         _errorMessage.postValue(message)
-        _loading.postValue(false)
-    }
-
-    private fun onSuccess(message: String) {
-        _loading.postValue(false)
     }
 
     override fun onCleared() {

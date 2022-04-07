@@ -12,10 +12,10 @@ import com.shop.tcd.v2.core.utils.Common.selectedShopModel
 import com.shop.tcd.v2.core.utils.Constants
 import com.shop.tcd.v2.core.utils.ReceiverLiveData
 import com.shop.tcd.v2.core.utils.SingleLiveEvent
-import com.shop.tcd.v2.data.inventory.InventoryResult
-import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.data.dao.InventoryDao
 import com.shop.tcd.v2.data.dao.NomenclatureDao
+import com.shop.tcd.v2.data.inventory.InventoryResult
+import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.domain.rest.ShopApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -85,6 +85,7 @@ class InventoryViewModel : ViewModel() {
     fun clearInventory() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             inventoryDao.deleteAll()
+            _inventoryList.postValue(inventoryDao.loadInventoryGrouped())
         }
     }
 

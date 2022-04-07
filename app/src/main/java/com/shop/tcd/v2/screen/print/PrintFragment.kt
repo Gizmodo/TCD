@@ -53,7 +53,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
         setStateUI(enabled = false)
         restoreSelectedPrinter()
         initViewModelObservers()
-        viewModel.loadPrinters()
     }
 
     private fun initRecyclerView() {
@@ -112,7 +111,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     }
 
     private fun initViewModelObservers() {
-// TODO: Двойной вызов!
         viewModel.printersLiveData.observe(viewLifecycleOwner) {
             printersList = it
             setupAutoComplete(binding.edtPrinter, it)

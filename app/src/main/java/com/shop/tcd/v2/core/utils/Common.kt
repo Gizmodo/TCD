@@ -1,26 +1,17 @@
 package com.shop.tcd.v2.core.utils
 
-import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import androidx.annotation.CheckResult
-import com.shop.tcd.model.InvItem
-import com.shop.tcd.v2.data.AppDatabase
-import com.shop.tcd.v2.data.dao.InventoryDao
-import com.shop.tcd.v2.data.dao.NomenclatureDao
-import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.data.printer.Printer
 import com.shop.tcd.v2.data.shop.ShopModel
 import com.shop.tcd.v2.data.user.UserModel
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 object Common {
@@ -34,14 +25,14 @@ object Common {
     const val ANIMATION_TO_DEGREE = 360f
     const val ANIMATION_PIVOT = 0.5f
 
-    enum class MODESCAN(val modeScan: Int = 0) {
-        AUTO(0),
-        MANUAL(1)
+    enum class MODESCAN {
+        AUTO,
+        MANUAL
     }
 
-    enum class SEARCHBY(val modeSearch: Int = 0) {
-        BARCODE(0),
-        CODE(1)
+    enum class SEARCHBY {
+        BARCODE,
+        CODE
     }
 
     var currentScanMode: MODESCAN = MODESCAN.AUTO
@@ -80,27 +71,6 @@ object Common {
     lateinit var selectedPrinter: Printer
     var selectedPrinterPosition: Int = -1
 
-    @DelicateCoroutinesApi
-    suspend fun saveNomenclatureList(list: List<NomenclatureItem>, context: Context) {
-        val nomenclatureDao: NomenclatureDao
-        val databaseTCD: AppDatabase = AppDatabase.getDatabase(context)
-        nomenclatureDao = databaseTCD.nomDao()
-        GlobalScope.launch {
-            nomenclatureDao.deleteAll()
-            nomenclatureDao.insertNomenclature(list)
-        }
-    }
-
-    @DelicateCoroutinesApi
-    suspend fun insertInv(item: InvItem, context: Context) {
-        val inventoryDao: InventoryDao
-        val databaseTCD: AppDatabase = AppDatabase.getDatabase(context)
-        inventoryDao = databaseTCD.invDao()
-        GlobalScope.launch {
-            inventoryDao.insert(item)
-        }
-    }
-
     fun isEAN13(barcode: String): Boolean {
         var ch = 0
         var nch = 0
@@ -118,8 +88,7 @@ object Common {
 
     fun parseBarcode(barcode: String): ResponseState<String> {
         return if (barcode.first().toString() == "2") {
-            val prefix = barcode.take(2)
-            when (prefix) {
+            when (barcode.take(2)) {
                 selectedShopModel.prefixSingle -> {
                     if (isEAN13(barcode)) {
                         val productCode = barcode.substring(2, 9)
