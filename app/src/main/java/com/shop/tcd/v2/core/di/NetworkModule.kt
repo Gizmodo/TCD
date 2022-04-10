@@ -3,7 +3,7 @@ package com.shop.tcd.v2.core.di
 import com.bugsnag.android.okhttp.BugsnagOkHttpPlugin
 import com.google.gson.GsonBuilder
 import com.shop.tcd.v2.core.utils.Common
-import com.shop.tcd.v2.core.utils.Common.OK_HTTP_TIMEOUT
+import com.shop.tcd.v2.core.utils.Constants.Network.OK_HTTP_TIMEOUT
 import com.shop.tcd.v2.domain.rest.SettingsApi
 import com.shop.tcd.v2.domain.rest.ShopApi
 import dagger.Module

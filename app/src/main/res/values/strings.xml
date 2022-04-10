@@ -51,4 +51,5 @@
     <string name="menu_setting">Настройки</string>
     <string name="menu_find_barcode">Поиск по ШК</string>
     <string name="menu_find_code">Поиск по коду</string>
+    <string name="totalCount">Общее кол-во</string>
 </resources>

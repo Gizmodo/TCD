@@ -20,11 +20,11 @@ import com.shop.tcd.R
 import com.shop.tcd.databinding.FragmentLoginBinding
 import com.shop.tcd.v2.core.extension.*
 import com.shop.tcd.v2.core.utils.Common
-import com.shop.tcd.v2.core.utils.Common.ANIMATION_FROM_DEGREE
-import com.shop.tcd.v2.core.utils.Common.ANIMATION_PIVOT
-import com.shop.tcd.v2.core.utils.Common.ANIMATION_TIMEOUT
-import com.shop.tcd.v2.core.utils.Common.ANIMATION_TO_DEGREE
 import com.shop.tcd.v2.core.utils.Common.setReadOnly
+import com.shop.tcd.v2.core.utils.Constants.Animation.ANIMATION_FROM_DEGREE
+import com.shop.tcd.v2.core.utils.Constants.Animation.ANIMATION_PIVOT
+import com.shop.tcd.v2.core.utils.Constants.Animation.ANIMATION_TIMEOUT
+import com.shop.tcd.v2.core.utils.Constants.Animation.ANIMATION_TO_DEGREE
 import com.shop.tcd.v2.data.user.UserModel
 import com.shop.tcd.v2.data.user.UsersList
 import timber.log.Timber

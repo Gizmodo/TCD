@@ -15,16 +15,6 @@ import kotlinx.coroutines.flow.onStart
 import timber.log.Timber
 
 object Common {
-    const val OK_HTTP_TIMEOUT = 15L
-    const val TCP_SERVICE_TCP_TIMEOUT_INT = 2000
-    const val TCP_SERVICE_PORT = 9100
-    const val TCP_SERVICE_DNS_TIMEOUT = 2000L
-    const val TCP_SERVICE_THREAD_TIMEOUT = 2000L
-    const val ANIMATION_TIMEOUT = 1000L
-    const val ANIMATION_FROM_DEGREE = 0f
-    const val ANIMATION_TO_DEGREE = 360f
-    const val ANIMATION_PIVOT = 0.5f
-
     enum class MODESCAN {
         AUTO,
         MANUAL

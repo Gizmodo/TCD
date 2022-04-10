@@ -11,10 +11,10 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.shop.tcd.R
-import com.shop.tcd.v2.core.utils.Common.TCP_SERVICE_DNS_TIMEOUT
-import com.shop.tcd.v2.core.utils.Common.TCP_SERVICE_PORT
-import com.shop.tcd.v2.core.utils.Common.TCP_SERVICE_TCP_TIMEOUT_INT
-import com.shop.tcd.v2.core.utils.Common.TCP_SERVICE_THREAD_TIMEOUT
+import com.shop.tcd.v2.core.utils.Constants.TCP.TCP_SERVICE_DNS_TIMEOUT
+import com.shop.tcd.v2.core.utils.Constants.TCP.TCP_SERVICE_PORT
+import com.shop.tcd.v2.core.utils.Constants.TCP.TCP_SERVICE_TCP_TIMEOUT_INT
+import com.shop.tcd.v2.core.utils.Constants.TCP.TCP_SERVICE_THREAD_TIMEOUT
 import timber.log.Timber
 import java.io.DataOutputStream
 import java.io.IOException

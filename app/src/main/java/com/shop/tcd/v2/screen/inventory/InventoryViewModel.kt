@@ -2,23 +2,25 @@ package com.shop.tcd.v2.screen.inventory
 
 import android.app.Application
 import android.content.IntentFilter
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.shop.tcd.App
 import com.shop.tcd.model.InvItem
 import com.shop.tcd.v2.core.di.*
-import com.shop.tcd.v2.core.utils.Common
-import com.shop.tcd.v2.core.utils.Common.currentSearchMode
-import com.shop.tcd.v2.core.utils.Common.selectedShopModel
-import com.shop.tcd.v2.core.utils.Constants
 import com.shop.tcd.v2.core.utils.ReceiverLiveData
 import com.shop.tcd.v2.core.utils.SingleLiveEvent
+import com.shop.tcd.v2.core.utils.StatefulData
 import com.shop.tcd.v2.data.dao.InventoryDao
 import com.shop.tcd.v2.data.dao.NomenclatureDao
+import com.shop.tcd.v2.data.inventory.InventoryPair
 import com.shop.tcd.v2.data.inventory.InventoryResult
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.domain.rest.ShopApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -111,22 +113,67 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    fun getProduct(data: String): Flow<NomenclatureItem> {
-        val prefix = data.take(2)
-        when (currentSearchMode) {
-            Common.SEARCHBY.BARCODE -> {
-                return if (prefix == selectedShopModel.prefixWeight) {
-                    val productCode = data.takeLast(11).take(5)
-                    nomenclatureDao.getByCode(productCode).asFlow()
-                } else {
-                    nomenclatureDao.getByBarcode(data).asFlow()
-                }
+    fun searchProduct(inputString: String): Flow<StatefulData<InventoryPair>> {
+        var previousItem: InvItem?
+        var currentItem: NomenclatureItem?
+
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            previousItem = inventoryDao.selectInventoryItemByCode(inputString)
+            currentItem = nomenclatureDao.selectNomenclatureItemByCode(inputString)
+        /*    val res = flow {
+                emit(StatefulData.Success(InventoryPair(currentItem, previousItem)))
+            }*/
+        }
+        runBlocking {
+            val job: Job = launch(context = Dispatchers.Default) {
+                println("[${Thread.currentThread().name}] Launched coroutine")
+                delay(100)
+                println("[${Thread.currentThread().name}] Finished coroutine")
             }
-            Common.SEARCHBY.CODE -> {
-                return nomenclatureDao.getByCode(data).asFlow()
+            println("[${Thread.currentThread().name}] Created coroutine")
+            job.join()
+            println("[${Thread.currentThread().name}] Finished coroutine")
+            10
+        }
+        job?.join()
+        return flow {
+            emit(StatefulData.Success(InventoryPair(
+                currentItem = currentItem,
+                previousItem = previousItem
+            )))
+        }
+//        val previousItem = inventoryDao.selectInventoryItemByCode(inputString)
+//        val currentItem = nomenclatureDao.selectNomenclatureItemByCode(inputString)
+
+//        return res
+    }
+    /* fun searchProduct(inputString: String): Flow<StatefulData<InventoryPair>> {
+         val len = inputString.length
+         when {
+             len <= CODE_LENGTH -> {
+                 // TODO: Добавить поиск по этому же коду среди таблицы Inventory
+                 val previousItem = inventoryDao.selectInventoryItemByCode(inputString)
+                 val currentItem = nomenclatureDao.selectNomenclatureItemByCode(inputString)
+                 return StatefulData.Success(InventoryPair(currentItem, previousItem))
+             }
+             else -> {
+                 *//*val barcode = inputString.padStart(BARCODE_LENGTH, '0')
+                val productCode =
+                    barcode.takeLast(BARCODE_LENGTH_WO_PREFIX).take(BARCODE_LENGTH_WEIGHT_SUFFIX)
+                return when (productCode == selectedShopModel.prefixWeight) {
+                    true -> {
+                        // TODO: Добавить поиск по этому же коду среди таблицы Inventory
+                        nomenclatureDao.getByCode(productCode).asFlow()
+                    }
+                    false -> {
+                        // TODO: Добавить поиск по этому же штрихкоду среди таблицы Inventory
+                        nomenclatureDao.getByBarcode(barcode).asFlow()
+                    }
+                }*//*
             }
         }
-    }
+    }*/
 
     private fun initDeviceObservables() {
         _urovoScanner = ReceiverLiveData<String>(
@@ -134,10 +181,7 @@ class InventoryViewModel : ViewModel() {
             IntentFilter("android.intent.ACTION_DECODE_DATA")
         ) { _, intent ->
             var data = ""
-            intent.extras?.let {
-                data = it["barcode_string"].toString()
-                data = "0000000000000$data".takeLast(Constants.Inventory.BARCODE_LENGTH)
-            }
+            intent.extras?.let { data = it["barcode_string"].toString() }
             return@ReceiverLiveData data
         }
 

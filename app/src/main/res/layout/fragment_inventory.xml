@@ -56,14 +56,8 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/txtZGood"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="@font/roboto"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+        android:id="@+id/txtValueName"
+        style="@style/InventoryHeader"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilBarcode"
@@ -73,74 +67,87 @@
         android:id="@+id/info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtZGood">
+        app:layout_constraintTop_toBottomOf="@id/txtValueName">
 
         <TextView
-            android:id="@+id/textView11"
-            style="@style/customTextLabelAppearance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/txtLabelCode"
+            style="@style/InventoryLabel"
             android:text="@string/code"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/txtZCode"
-            style="@style/customTextValueAppearance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="@id/textView11"
-            app:layout_constraintStart_toEndOf="@id/textView11"
-            app:layout_constraintTop_toTopOf="@id/textView11"
+            android:id="@+id/txtValueCode"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelCode"
+            app:layout_constraintStart_toEndOf="@id/txtLabelCode"
+            app:layout_constraintTop_toTopOf="@id/txtLabelCode"
             tools:text="84055" />
 
         <TextView
-            android:id="@+id/textView7"
-            style="@style/customTextLabelAppearance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/price"
-            app:layout_constraintBottom_toBottomOf="@id/txtZCode"
-            app:layout_constraintStart_toEndOf="@id/txtZCode"
-            app:layout_constraintTop_toTopOf="@id/txtZCode" />
+            android:id="@+id/txtLabelBarcode"
+            style="@style/InventoryLabel"
+            android:text="@string/barcode"
+            app:layout_constraintBottom_toBottomOf="@id/txtValueCode"
+            app:layout_constraintStart_toEndOf="@id/txtValueCode"
+            app:layout_constraintTop_toTopOf="@id/txtValueCode" />
 
         <TextView
-            android:id="@+id/txtZPrice"
-            style="@style/customTextValueAppearance"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="@id/textView7"
-            app:layout_constraintStart_toEndOf="@id/textView7"
-            app:layout_constraintTop_toTopOf="@id/textView7"
+            android:id="@+id/txtValueBarcode"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelBarcode"
+            app:layout_constraintStart_toEndOf="@id/txtLabelBarcode"
+            app:layout_constraintTop_toTopOf="@id/txtLabelBarcode"
+            tools:text="2284055010421" />
+
+        <TextView
+            android:id="@+id/txtLabelPLU"
+            style="@style/InventoryLabel"
+            android:text="@string/plu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtLabelCode" />
+
+        <TextView
+            android:id="@+id/txtValuePLU"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelPLU"
+            app:layout_constraintStart_toEndOf="@id/txtLabelPLU"
+            app:layout_constraintTop_toTopOf="@id/txtLabelPLU"
+            tools:text="15644" />
+
+        <TextView
+            android:id="@+id/txtLabelPrice"
+            style="@style/InventoryLabel"
+            android:text="@string/price"
+            app:layout_constraintBottom_toBottomOf="@id/txtValuePLU"
+            app:layout_constraintStart_toEndOf="@id/txtValuePLU"
+            app:layout_constraintTop_toTopOf="@id/txtValuePLU" />
+
+        <TextView
+            android:id="@+id/txtValuePrice"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelPrice"
+            app:layout_constraintStart_toEndOf="@id/txtLabelPrice"
+            app:layout_constraintTop_toTopOf="@id/txtLabelPrice"
             tools:text="15688" />
 
         <TextView
-            android:id="@+id/textView13"
-            style="@style/customTextLabelAppearance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/barcode"
-            app:layout_constraintBottom_toBottomOf="@id/txtZPrice"
-            app:layout_constraintStart_toEndOf="@id/txtZPrice"
-            app:layout_constraintTop_toTopOf="@id/txtZPrice" />
+            android:id="@+id/txtLabelTotalCount"
+            style="@style/InventoryLabel"
+            android:text="@string/totalCount"
+            app:layout_constraintBottom_toBottomOf="@id/txtValuePrice"
+            app:layout_constraintEnd_toStartOf="@id/txtValueTotalCount"
+            app:layout_constraintTop_toTopOf="@id/txtValuePrice" />
 
         <TextView
-            android:id="@+id/txtZBarcode"
-            style="@style/customTextValueAppearance"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:layout_constraintBottom_toBottomOf="@id/textView13"
-            app:layout_constraintStart_toEndOf="@id/textView13"
-            app:layout_constraintTop_toTopOf="@id/textView13"
-            tools:text="2284055010421" />
+            android:id="@+id/txtValueTotalCount"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelTotalCount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtLabelTotalCount"
+            tools:text="332" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

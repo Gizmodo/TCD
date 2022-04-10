@@ -20,17 +20,23 @@
     </style>
 
     <style name="customTextValueAppearance">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">8dp</item>
         <item name="android:textAppearance">@style/TextAppearance.Material3.TitleMedium</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/roboto</item>
     </style>
 
     <style name="customTextLabelAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">8dp</item>
         <item name="android:textAppearance">@style/TextAppearance.Material3.TitleSmall</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/roboto</item>
     </style>
-
+    <!--  Стиль для экрана отображения подробной информации по товару  -->
     <style name="InventoryItemDetailHeader" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="android:layout_width">0dp</item>
         <item name="android:textStyle">bold</item>
@@ -55,5 +61,31 @@
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:layout_marginEnd">8dp</item>
+    </style>
+
+    <!--  Стиль для экрана Инвентаризация  -->
+    <style name="InventoryHeader" parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InventoryLabel" parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="InventoryValue" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

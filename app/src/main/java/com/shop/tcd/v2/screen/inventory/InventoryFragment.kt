@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AlertDialog
@@ -28,20 +29,24 @@ import com.shop.tcd.v2.core.utils.Common.setReadOnly
 import com.shop.tcd.v2.core.utils.Common.textChanges
 import com.shop.tcd.v2.core.utils.Constants
 import com.shop.tcd.v2.core.utils.ResponseState
+import com.shop.tcd.v2.core.utils.StatefulData
 import com.shop.tcd.v2.data.inventory.InventoryResult
 import com.shop.tcd.v2.data.nomenclature.NomenclatureItem
 import com.shop.tcd.v2.ui.adapters.InventoryAdapter
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private lateinit var edtBarcode: TextInputEditText
     private lateinit var edtCount: TextInputEditText
-    private lateinit var txtGood: TextView
+    private lateinit var txtName: TextView
     private lateinit var txtCode: TextView
     private lateinit var txtBarcode: TextView
+    private lateinit var txtPLU: TextView
     private lateinit var txtPrice: TextView
+    private lateinit var txtTotalCount: TextView
     private lateinit var rvInventory: RecyclerView
     private lateinit var progressDialog: ProgressDialog
     private var jobAuto: Job? = null
@@ -70,8 +75,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
-        initUIListeners()
-        initRecyclerView()
+        initNavigationMenuListeners()
         initViewModelObservers()
         initBarcodeFieldListener()
         attachHideKeyboardListeners()
@@ -90,8 +94,23 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         // TODO: Remove as barcode can be empty
         .filterNot { it.isNullOrBlank() }
         .debounce(Constants.Inventory.DEBOUNCE_TIME)
-        .flatMapLatest { viewModel.getProduct(it.toString()) }
-        .onEach { displayFoundedItem(it) }
+        .flatMapLatest {
+            viewModel.searchProduct(it.toString())
+        }
+        .onEach { g ->
+            when (g) {
+                is StatefulData.Error -> {
+                    Timber.e(g.msg)
+                    fancyError { "Error" }
+                }
+                StatefulData.Loading -> TODO()
+                is StatefulData.Success -> {
+                    Timber.d(g.result.currentItem?.name)
+                    fancySuccess { "Success" }
+                }
+            }
+        }
+        //.onEach { displayFoundedItem(it) }
         .launchIn(lifecycleScope)
 
     private fun createJobManual() = edtBarcode
@@ -102,19 +121,22 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         }
         .debounce(Constants.Inventory.DEBOUNCE_TIME)
         .flatMapLatest {
-            viewModel.getProduct(it.toString())
+            viewModel.searchProduct(it.toString())
         }
-        .onEach {
-            displayFoundedItem(it)
-        }
+//        .onEach { displayFoundedItem(it) }
         .launchIn(lifecycleScope)
+
+    private fun showItem(item: NomenclatureItem?) {
+
+    }
 
     private fun displayFoundedItem(item: NomenclatureItem?) = when {
         item != null -> {
-            txtGood.text = item.name
+            txtName.text = item.name
             txtCode.text = item.code
             txtBarcode.text = item.barcode
             txtPrice.text = item.price
+            txtPLU.text = item.plu
             val barcode = edtBarcode
                 .text
                 .toString()
@@ -126,7 +148,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                     edtCount.setText(response.item)
                 }
                 is ResponseState.Error -> {
-                    longFancy { response.throwable.message.toString() }
+//                    longFancy { response.throwable.message.toString() }
                 }
             }
         }
@@ -135,7 +157,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         }
     }
 
-    private fun initUIListeners() {
+    private fun initNavigationMenuListeners() {
         binding.navView.setOnItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.menu_clean -> {
@@ -211,11 +233,10 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             else -> {
                 val inv = InvItem("", "", "", "", "")
                 with(inv) {
-                    barcode = edtBarcode.text.toString()
+                    barcode = txtBarcode.text.toString()
                     code = txtCode.text.toString()
-                    name = txtGood.text.toString()
-                    // TODO: PLU пустой, а должен быть заполнен
-                    plu = edtBarcode.text.toString()
+                    name = txtName.text.toString()
+                    plu = txtPLU.text.toString()
                     quantity = edtCount.text.toString()
                 }
                 viewModel.insertInventory(inv)
@@ -359,10 +380,11 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         "".also {
             edtBarcode.setText(it)
             edtCount.setText(it)
-            txtGood.text = it
+            txtName.text = it
             txtCode.text = it
             txtBarcode.text = it
             txtPrice.text = it
+            txtPLU.text = it
         }
     }
 
@@ -372,19 +394,21 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                 "".also {
                     edtBarcode.setText(it)
                     edtCount.setText(it)
-                    txtGood.text = it
+                    txtName.text = it
                     txtCode.text = it
                     txtBarcode.text = it
                     txtPrice.text = it
+                    txtPLU.text = it
                 }
             }
             Common.MODESCAN.MANUAL -> {
                 "".also {
                     edtCount.setText(it)
-                    txtGood.text = it
+                    txtName.text = it
                     txtCode.text = it
                     txtBarcode.text = it
                     txtPrice.text = it
+                    txtPLU.text = it
                 }
             }
         }
@@ -398,7 +422,21 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         longFancy { "Товар добавлен" }
     }
 
-    private fun initRecyclerView() {
+    private fun initUI() {
+        rvInventory = binding.rvInventory
+        edtBarcode = binding.edtBarcode
+        edtCount = binding.edtCount
+        txtName = binding.txtValueName
+        txtCode = binding.txtValueCode
+        txtBarcode = binding.txtValueBarcode
+        txtPLU = binding.txtValuePLU
+        txtPrice = binding.txtValuePrice
+        txtTotalCount = binding.txtValueTotalCount
+
+        progressDialog = ProgressDialog(requireContext()).apply {
+            setTitle("Загрузка...")
+            setMessage("Пожалуйста, ожидайте")
+        }
         with(rvInventory) {
             val animator = itemAnimator
             if (animator is SimpleItemAnimator) {
@@ -409,25 +447,10 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             addItemDecoration(
                 DividerItemDecoration(
                     requireContext(),
-                    android.widget.LinearLayout.VERTICAL
+                    LinearLayout.VERTICAL
                 )
             )
             adapter = adapterInventory
-        }
-    }
-
-    private fun initUI() {
-        rvInventory = binding.rvInventory
-        edtBarcode = binding.edtBarcode
-        edtCount = binding.edtCount
-        txtGood = binding.txtZGood
-        txtCode = binding.txtZCode
-        txtBarcode = binding.txtZBarcode
-        txtPrice = binding.txtZPrice
-
-        progressDialog = ProgressDialog(requireContext()).apply {
-            setTitle("Загрузка...")
-            setMessage("Пожалуйста, ожидайте")
         }
     }
 }

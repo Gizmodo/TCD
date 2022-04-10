@@ -6,6 +6,7 @@ buildscript {
         bugsnag = '5.22.0'
         bugsnag_gradle = "7.2.0"
         coil = "2.0.0-rc02"
+        composeVersion = '1.2.0-alpha07'
         constraintlayout = "2.1.3"
         core_ktx = "1.9.0-alpha02"
         coroutines = '1.6.1'
@@ -14,15 +15,15 @@ buildscript {
         datastore = "1.0.0"
         desugar = "1.1.5"
         fancy = "2.0.1"
-        fragment_ktx = '1.5.0-alpha04'
+        fragment_ktx = '1.5.0-alpha05'
         glide = "4.13.1"
         gson = "2.9.0"
         kotlin = "1.6.20"
         leakcanary = "2.8.1"
-        lifecycle = '2.5.0-alpha05'
+        lifecycle = '2.5.0-alpha06'
         lifecycle_extensions = "2.2.0"
         material = "1.6.0-beta01"
-        navigation = "2.5.0-alpha03"
+        navigation = "2.5.0-alpha04"
         okhttp = "5.0.0-alpha.6"
         page = "3.1.1"
         retrofit = "2.9.0"
@@ -41,7 +42,8 @@ buildscript {
     }
     dependencies {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation"
-        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.19.0"
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.20.0-RC2"
+        classpath "io.gitlab.arturbosch.detekt:detekt-formatting:1.20.0-RC2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin"
         classpath "com.bugsnag:bugsnag-android-gradle-plugin:$bugsnag_gradle"
         classpath 'com.google.gms:google-services:4.3.10'

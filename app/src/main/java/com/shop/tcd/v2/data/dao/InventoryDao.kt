@@ -22,4 +22,7 @@ interface InventoryDao {
 
     @Query("update inventory set quantity = :newQuantity where uid = :uid")
     suspend fun updateInventoryQuantity(uid: Int, newQuantity: String)
+
+    @Query("select * from inventory where code = :code limit 1")
+    fun selectInventoryItemByCode(code: String): InvItem?
 }

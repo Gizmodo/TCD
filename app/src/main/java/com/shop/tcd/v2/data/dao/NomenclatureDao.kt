@@ -27,7 +27,11 @@ interface NomenclatureDao {
 
     /* Поиск товара по коду */
     @Query("select * from nomenclature where code = :code limit 1")
-    fun getByCode(code: String): LiveData<NomenclatureItem>
+    fun getByCode(code: String): LiveData<NomenclatureItem> // TODO: Make nullable
+
+    /* Поиск товара по коду */
+    @Query("select * from nomenclature where code = :code limit 1")
+    fun selectNomenclatureItemByCode(code: String): NomenclatureItem? // TODO: Make nullable
 
     /* Поиск товара по PLU */
     @Query("select * from nomenclature where plu = :plu limit 1")

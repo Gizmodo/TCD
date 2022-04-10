@@ -36,7 +36,6 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initUI()
         initUIListeners()
         initRecyclerView()

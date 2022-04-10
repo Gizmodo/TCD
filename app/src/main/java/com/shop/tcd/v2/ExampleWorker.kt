@@ -4,7 +4,10 @@ import android.content.Context
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.shop.tcd.v2.core.utils.Common
+import com.shop.tcd.v2.core.utils.Constants.TCP.TCP_SERVICE_DNS_TIMEOUT
+import com.shop.tcd.v2.core.utils.Constants.TCP.TCP_SERVICE_PORT
+import com.shop.tcd.v2.core.utils.Constants.TCP.TCP_SERVICE_TCP_TIMEOUT_INT
+import com.shop.tcd.v2.core.utils.Constants.TCP.TCP_SERVICE_THREAD_TIMEOUT
 import com.shop.tcd.v2.core.utils.TimeSliceExecutor
 import timber.log.Timber
 import java.io.DataOutputStream
@@ -37,13 +40,13 @@ class ExampleWorker(appContext: Context, workerParams: WorkerParameters) :
     @Throws(IOException::class)
     private fun buildSocket(): Socket {
         val socket = Socket()
-        socket.soTimeout = Common.TCP_SERVICE_TCP_TIMEOUT_INT
+        socket.soTimeout = TCP_SERVICE_TCP_TIMEOUT_INT
         socket.connect(
             InetSocketAddress(
-                resolveHost(ip, Common.TCP_SERVICE_DNS_TIMEOUT),
-                Common.TCP_SERVICE_PORT
+                resolveHost(ip, TCP_SERVICE_DNS_TIMEOUT),
+                TCP_SERVICE_PORT
             ),
-            Common.TCP_SERVICE_TCP_TIMEOUT_INT
+            TCP_SERVICE_TCP_TIMEOUT_INT
         )
         return socket
     }
@@ -67,7 +70,7 @@ class ExampleWorker(appContext: Context, workerParams: WorkerParameters) :
             while (working.get()) {
                 try {
                     dataOutputStream!!.writeUTF(message)
-                    Thread.sleep(Common.TCP_SERVICE_THREAD_TIMEOUT)
+                    Thread.sleep(TCP_SERVICE_THREAD_TIMEOUT)
                     dataOutputStream!!.close()
                     working.set(false)
                     stopWorkManager(appContext)

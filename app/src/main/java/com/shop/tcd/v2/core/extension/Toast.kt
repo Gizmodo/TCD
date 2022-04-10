@@ -27,3 +27,15 @@ inline fun Fragment.longFancyConfusing(message: () -> String): Toast = FancyToas
     .apply {
         show()
     }
+
+inline fun Fragment.fancySuccess(message: () -> String): Toast = FancyToast
+    .makeText(this.context, message(), FancyToast.LENGTH_LONG, FancyToast.SUCCESS, false)
+    .apply {
+        show()
+    }
+
+inline fun Fragment.fancyError(message: () -> String): Toast = FancyToast
+    .makeText(this.context, message(), FancyToast.LENGTH_LONG, FancyToast.ERROR, false)
+    .apply {
+        show()
+    }
