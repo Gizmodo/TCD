@@ -46,10 +46,7 @@
     <string name="period_select">Укажите период</string>
     <string name="menu_clean">Очистить</string>
     <string name="menu_send">Завершить</string>
-    <string name="menu_chronology">Журнал</string>
+    <string name="menu_chronology">Хронология</string>
     <string name="menu_insert">Добавить</string>
-    <string name="menu_setting">Настройки</string>
-    <string name="menu_find_barcode">Поиск по ШК</string>
-    <string name="menu_find_code">Поиск по коду</string>
     <string name="totalCount">Общее кол-во</string>
 </resources>

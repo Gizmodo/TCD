@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.shop.tcd.v2.screen.login.LoginFragment"
+        android:name="com.shop.tcd.screen.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/catalogFragment"
-        android:name="com.shop.tcd.v2.screen.catalog.CatalogFragment"
+        android:name="com.shop.tcd.screen.catalog.CatalogFragment"
         android:label="fragment_catalog"
         tools:layout="@layout/fragment_catalog">
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
-        android:name="com.shop.tcd.v2.screen.inventory.InventoryFragment"
+        android:name="com.shop.tcd.screen.inventory.InventoryFragment"
         android:label="fragment_inventory"
         tools:layout="@layout/fragment_inventory">
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.shop.tcd.v2.screen.main.MainFragment"
+        android:name="com.shop.tcd.screen.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main">
         <action
@@ -58,27 +58,27 @@
     </fragment>
     <fragment
         android:id="@+id/nomenclatureFragment"
-        android:name="com.shop.tcd.v2.screen.nomenclature.NomenclatureFragment"
+        android:name="com.shop.tcd.screen.nomenclature.NomenclatureFragment"
         android:label="fragment_nomenclature"
         tools:layout="@layout/fragment_nomenclature" />
     <fragment
         android:id="@+id/printFragment"
-        android:name="com.shop.tcd.v2.screen.print.PrintFragment"
+        android:name="com.shop.tcd.screen.print.PrintFragment"
         android:label="fragment_print"
         tools:layout="@layout/fragment_print" />
     <fragment
         android:id="@+id/groupFragment"
-        android:name="com.shop.tcd.v2.screen.catalog.group.GroupFragment"
+        android:name="com.shop.tcd.screen.catalog.group.GroupFragment"
         android:label="fragment_group"
         tools:layout="@layout/fragment_group" />
     <fragment
         android:id="@+id/inventoryChronologyFragment"
-        android:name="com.shop.tcd.v2.screen.inventory.chronology.InventoryChronologyFragment"
+        android:name="com.shop.tcd.screen.inventory.chronology.InventoryChronologyFragment"
         android:label="fragment_inventory_chronology"
         tools:layout="@layout/fragment_inventory_chronology" />
     <fragment
         android:id="@+id/inventoryItemDetailFragment"
-        android:name="com.shop.tcd.v2.screen.inventory.detail.InventoryItemDetailFragment"
+        android:name="com.shop.tcd.screen.inventory.detail.InventoryItemDetailFragment"
         android:label="fragment_inventory_item_detail"
         tools:layout="@layout/fragment_inventory_item_detail">
         <argument

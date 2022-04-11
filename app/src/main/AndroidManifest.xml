@@ -18,22 +18,17 @@
             android:name="com.bugsnag.android.API_KEY"
             android:value="d13ea502d3889a6d99f955103ef7e09c" />
         <service
-            android:name=".v2.core.utils.TcpClientService"
+            android:name="com.shop.tcd.core.utils.TcpClientService"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name="com.shop.tcd.v2.screen.MainActivity"
+            android:name="com.shop.tcd.screen.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
     </application>
-
 </manifest>

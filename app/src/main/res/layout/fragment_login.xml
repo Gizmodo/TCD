@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:color="@drawable/ic_launcher_background"
-    tools:context=".v2.screen.login.LoginFragment">
+    tools:context=".screen.login.LoginFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilLogin"
