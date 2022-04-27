@@ -117,9 +117,8 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
             setupAutoComplete(binding.edtPrinter, it)
         }
 
-        viewModel.priceTagsLiveData.observe(viewLifecycleOwner) {
-            Timber.d("Ответ на POST запрос по ценникам:")
-            Timber.d(it.toString())
+        viewModel.printerPayloadLiveData.observe(viewLifecycleOwner) {
+            runService(it)
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
@@ -139,23 +138,18 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
         }
     }
 
-    private fun getRandomString(length: Int): String {
-        val charset = "ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz0123456789"
-        return (1..length)
-            .map { charset.random() }
-            .joinToString("")
-    }
-
-    private fun runService() {
-        Timber.d("Print button clicked")
-        val intent = Intent(requireContext(), TcpClientService::class.java)
-        intent.putExtra("payload", getRandomString(15))
-        intent.putExtra("ip", PrinterModel.ip)
-        requireContext().stopService(intent)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            requireContext().startForegroundService(intent)
-        } else {
-            requireContext().startService(intent)
+    private fun runService(list: List<String>) {
+        if (list.isNotEmpty()) {
+            val intent = Intent(requireContext(), TcpClientService::class.java)
+            val payload = list.joinToString(separator = "")
+            intent.putExtra("payload", payload)
+            intent.putExtra("ip", PrinterModel.ip)
+            requireContext().stopService(intent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                requireContext().startForegroundService(intent)
+            } else {
+                requireContext().startService(intent)
+            }
         }
     }
 

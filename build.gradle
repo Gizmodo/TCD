@@ -5,7 +5,7 @@ buildscript {
         broadcast_receiver = "1.0.6"
         bugsnag = '5.22.0'
         bugsnag_gradle = "7.2.0"
-        coil = "2.0.0-rc02"
+        coil = '2.0.0-rc03'
         composeVersion = '1.2.0-alpha07'
         constraintlayout = "2.1.3"
         core_ktx = "1.9.0-alpha02"
@@ -15,15 +15,15 @@ buildscript {
         datastore = "1.0.0"
         desugar = "1.1.5"
         fancy = "2.0.1"
-        fragment_ktx = '1.5.0-alpha05'
+        fragment_ktx = '1.5.0-beta01'
         glide = "4.13.1"
         gson = "2.9.0"
         kotlin = "1.6.20"
         leakcanary = "2.8.1"
-        lifecycle = '2.5.0-alpha06'
+        lifecycle = '2.5.0-beta01'
         lifecycle_extensions = "2.2.0"
-        material = "1.6.0-beta01"
-        navigation = "2.5.0-alpha04"
+        material = '1.7.0-alpha01'
+        navigation = '2.5.0-beta01'
         okhttp = "5.0.0-alpha.6"
         page = "3.1.1"
         retrofit = "2.9.0"
@@ -51,8 +51,8 @@ buildscript {
     }
 }
 plugins {
-    id 'com.android.application' version '7.3.0-alpha07' apply false
-    id 'com.android.library' version '7.3.0-alpha07' apply false
+    id 'com.android.application' version '7.3.0-alpha09' apply false
+    id 'com.android.library' version '7.3.0-alpha09' apply false
     id 'org.jetbrains.kotlin.android' version "$kotlin" apply false
     id 'org.jetbrains.kotlin.jvm' version "$kotlin" apply false
     id "org.jetbrains.kotlin.plugin.serialization" version "$kotlin"

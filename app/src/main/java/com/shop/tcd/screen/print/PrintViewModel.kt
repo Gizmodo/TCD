@@ -10,6 +10,7 @@ import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
 import com.shop.tcd.data.pricetag.BarcodeTag
 import com.shop.tcd.data.pricetag.PriceTag
 import com.shop.tcd.data.pricetag.response.PriceTagResponse
+import com.shop.tcd.data.pricetag.response.PriceTagResponseItem
 import com.shop.tcd.data.printer.PrintersList
 import com.shop.tcd.domain.rest.SettingsApi
 import com.shop.tcd.domain.rest.ShopApi
@@ -19,6 +20,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
 import retrofit2.Response
 import timber.log.Timber
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class PrintViewModel : ViewModel() {
@@ -34,9 +37,9 @@ class PrintViewModel : ViewModel() {
     val printersLiveData: LiveData<PrintersList>
         get() = _printersLiveData
 
-    private var _priceTagsLiveData = MutableLiveData<PriceTagResponse>()
-    val priceTagsLiveData: LiveData<PriceTagResponse>
-        get() = _priceTagsLiveData
+    private var _printerPayload = MutableLiveData<List<String>>()
+    val printerPayloadLiveData: LiveData<List<String>>
+        get() = _printerPayload
 
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -101,7 +104,7 @@ class PrintViewModel : ViewModel() {
                     .subscribe({
                         _loading.value = false
                         if (it.isSuccessful) {
-                            _priceTagsLiveData.postValue(it.body())
+                            _printerPayload.postValue(createTSPLRequest(it.body()))
                         } else {
                             Timber.d("Not successfully")
                         }
@@ -110,6 +113,120 @@ class PrintViewModel : ViewModel() {
                     })
             }
         }
+    }
+
+    private fun createTSPLRequest(body: PriceTagResponse?): List<String> {
+        val printerJob = mutableListOf<String>()
+        var task: String
+        body?.let {
+            printerJob.add(priceHeader())
+            for (tag in body) {
+                task = priceTagBody(tag.stock.equals(0f), tag)
+                printerJob.add(task)
+            }
+        }
+        return printerJob
+    }
+
+    private fun priceHeader(): String {
+        return "SIZE 41.5 mm, 66.1 mm\n" +
+                "DIRECTION 0,0\n" +
+                "REFERENCE 0,0\n" +
+                "OFFSET 0 mm\n" +
+                "SET PEEL OFF\n" +
+                "SET CUTTER OFF\n" +
+                "SET TEAR ON\n"
+    }
+
+    private fun priceTagBody(discount: Boolean, tag: PriceTagResponseItem): String {
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val formatted = current.format(formatter)
+
+        val response: String
+        val price = "%.2f".format(tag.price).split(".")
+        val stock = "%.2f".format(tag.stock).split(".")
+
+        val string1: String = if (tag.string1.isNotEmpty()) {
+            "TEXT 296,162,\"ROBOTOR.TTF\",90,12,12,\"${tag.string1}\"\n"
+        } else {
+            ""
+        }
+        val string2: String = if (tag.string2.isNotEmpty()) {
+            "TEXT 258,213,\"ROBOTOR.TTF\",90,10,10,\"${tag.string2}\"\n"
+        } else {
+            ""
+        }
+        val string3: String = if (tag.string3.isNotEmpty()) {
+            "TEXT 228,180,\"ROBOTOR.TTF\",90,10,10,\"${tag.string3}\"\n"
+        } else {
+            ""
+        }
+        val string4: String = if (tag.string4.isNotEmpty()) {
+            "TEXT 197,213,\"ROBOTOR.TTF\",90,10,10,\"${tag.string4}\"\n"
+        } else {
+            ""
+        }
+        val plu: String = if (tag.plu != 0) {
+            " (${tag.plu})"
+        } else {
+            ""
+        }
+        val nodiscount: String = if (tag.nodiscount) {
+            "TEXT 321,265,\"ROBOTOR.TTF\",90,6,6,\"Скидка не распространяется\"\n"
+        } else {
+            ""
+        }
+        if (discount) {
+            response = "CLS\n" +
+                    "UTF-8\n" +
+                    string1 +
+                    string2 +
+                    string3 +
+                    "TEXT 162,24,\"ROBOTOR.TTF\",90,6,6,\"${tag.manufacturer}\"\n" +
+                    "TEXT 49,25,\"ROBOTOR.TTF\",90,6,6,\"${tag.barcode}\"\n" +
+                    "TEXT 49,273,\"ROBOTOR.TTF\",90,6,6,\"${tag.code}" + plu + "\"\n" +
+                    "TEXT 49,430,\"ROBOTOR.TTF\",90,6,6,\"${formatted}\"\n" +
+                    "TEXT 127,258,\"ROBOTOB.TTF\",90,30,30,\"${stock[0]}\"\n" +
+                    "TEXT 127,456,\"ROBOTOR.TTF\",90,13,12,\"${stock[1]}\"\n" +
+                    "BAR 99,456, 2, 42\n" +
+                    "BAR 324,6, 3, 507\n" +
+                    "BAR 23,510, 300, 3\n" +
+                    "BAR 21,6, 3, 507\n" +
+                    "BAR 23,6, 300, 3\n" +
+                    "BAR 141,8, 3, 504\n" +
+                    "BAR 300,8, 3, 503\n" +
+                    "DIAGONAL 67,29,125,245,1\n" +
+                    string4 +
+                    "TEXT 108,52,\"ROBOTOR.TTF\",90,18,18,\"${price[0]}\"\n" +
+                    "TEXT 121,173,\"ROBOTOR.TTF\",90,10,10,\"${price[1]}\"\n" +
+                    "BAR 98,173, 1, 32\n" +
+                    nodiscount +
+                    "PRINT 1,1\n"
+        } else {
+            response = "CLS\n" +
+                    "UTF-8\n" +
+                    string1 +
+                    string2 +
+                    string3 +
+                    "TEXT 162,24,\"ROBOTOR.TTF\",90,6,6,\"${tag.manufacturer}\"\n" +
+                    "TEXT 49,25,\"ROBOTOR.TTF\",90,6,6,\"${tag.barcode}\"\n" +
+                    "TEXT 49,273,\"ROBOTOR.TTF\",90,6,6,\"${tag.code}" + plu + "\"\n" +
+                    "TEXT 49,430,\"ROBOTOR.TTF\",90,6,6,\"${formatted}\"\n" +
+                    "TEXT 127,138,\"ROBOTOB.TTF\",90,30,30,\"${price[0]}\"\n" +
+                    "TEXT 127,344,\"ROBOTOR.TTF\",90,13,12,\"${price[1]}\"\n" +
+                    "BAR 99,344, 2, 42\n" +
+                    "BAR 324,6, 3, 507\n" +
+                    "BAR 23,510, 300, 3\n" +
+                    "BAR 21,6, 3, 507\n" +
+                    "BAR 23,6, 300, 3\n" +
+                    "BAR 141,8, 3, 504\n" +
+                    "BAR 300,8, 3, 503\n" +
+                    string4 +
+                    nodiscount +
+                    "PRINT 1,1\n"
+        }
+        return response
     }
 
     private fun onError(message: String) {
