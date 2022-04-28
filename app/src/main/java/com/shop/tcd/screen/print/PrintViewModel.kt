@@ -121,7 +121,7 @@ class PrintViewModel : ViewModel() {
         body?.let {
             printerJob.add(priceHeader())
             for (tag in body) {
-                task = priceTagBody(tag.stock.equals(0f), tag)
+                task = priceTagBody(!tag.stock.equals(0f), tag)
                 printerJob.add(task)
             }
         }
@@ -138,6 +138,76 @@ class PrintViewModel : ViewModel() {
                 "SET TEAR ON\n"
     }
 
+    private fun getWidth(fontSize: Int, string: String): Int {
+        // %./(-\)*,+!'=`№&°:?[]
+        var position = 0
+        val basePointFont12 = 250
+        val basePointFont10 = 252
+        when (fontSize) {
+            12 -> {
+                string.forEach {
+                    if (it.isLetterOrDigit() || it == '+' || it == '=') {
+                        position += 10
+                    } else if (it.isWhitespace() || it == '.' || it == '-' || it == '!' || it == ':' || it == '[' || it == ']'
+                    ) {
+                        position += 5
+                    } else if (it == '%') {
+                        position += 13
+                    } else if (it == '/' || it == '\\' || it == '*') {
+                        position += 8
+                    } else if (it == '(' || it == ')' || it == '`') {
+                        position += 6
+                    } else if (it == ',') {
+                        position += 4
+                    } else if (it == '\'') {
+                        position += 3
+                    } else if (it == '№') {
+                        position += 18
+                    } else if (it == '&') {
+                        position += 11
+                    } else if (it == '°') {
+                        position += 7
+                    } else if (it == '?') {
+                        position += 9
+                    }
+                }
+                return basePointFont12 - position
+            }
+            10 -> {
+                string.forEach {
+                    if (it.isLetterOrDigit() || it == '+' || it == '=') {
+                        position += 8
+                    } else if (it.isWhitespace() || it == '.' || it == '-' || it == '!' || it == ':' || it == '[' || it == ']'
+                    ) {
+                        position += 4
+                    } else if (it == '%') {
+                        position += 11
+                    } else if (it == '/' || it == '\\' || it == '*') {
+                        position += 6
+                    } else if (it == '(' || it == ')' || it == '`') {
+                        position += 5
+                    } else if (it == ',') {
+                        position += 3
+                    } else if (it == '\'') {
+                        position += 3
+                    } else if (it == '№') {
+                        position += 15
+                    } else if (it == '&') {
+                        position += 9
+                    } else if (it == '°') {
+                        position += 5
+                    } else if (it == '?') {
+                        position += 7
+                    }
+                }
+                return basePointFont10 - position
+            }
+            else -> {
+                return basePointFont12
+            }
+        }
+    }
+
     private fun priceTagBody(discount: Boolean, tag: PriceTagResponseItem): String {
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
@@ -148,22 +218,27 @@ class PrintViewModel : ViewModel() {
         val stock = "%.2f".format(tag.stock).split(".")
 
         val string1: String = if (tag.string1.isNotEmpty()) {
-            "TEXT 296,162,\"ROBOTOR.TTF\",90,12,12,\"${tag.string1}\"\n"
+
+            "TEXT 296," + getWidth(12,
+                tag.string1).toString() + ",\"ROBOTOR.TTF\",90,12,12,\"${tag.string1}\"\n"
         } else {
             ""
         }
         val string2: String = if (tag.string2.isNotEmpty()) {
-            "TEXT 258,213,\"ROBOTOR.TTF\",90,10,10,\"${tag.string2}\"\n"
+            "TEXT 258," + getWidth(10,
+                tag.string2).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string2}\"\n"
         } else {
             ""
         }
         val string3: String = if (tag.string3.isNotEmpty()) {
-            "TEXT 228,180,\"ROBOTOR.TTF\",90,10,10,\"${tag.string3}\"\n"
+            "TEXT 228," + getWidth(10,
+                tag.string3).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string3}\"\n"
         } else {
             ""
         }
         val string4: String = if (tag.string4.isNotEmpty()) {
-            "TEXT 197,213,\"ROBOTOR.TTF\",90,10,10,\"${tag.string4}\"\n"
+            "TEXT 197," + getWidth(10,
+                tag.string4).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string4}\"\n"
         } else {
             ""
         }
@@ -178,8 +253,10 @@ class PrintViewModel : ViewModel() {
             ""
         }
         if (discount) {
+            val oldPricePosition = (125 - (price[0].length - 1) * 29).toString()
+            val newPricePosition = (405 - (stock[0].length - 1) * 49).toString()
             response = "CLS\n" +
-                    "UTF-8\n" +
+                    "CODEPAGE UTF-8\n" +
                     string1 +
                     string2 +
                     string3 +
@@ -187,7 +264,7 @@ class PrintViewModel : ViewModel() {
                     "TEXT 49,25,\"ROBOTOR.TTF\",90,6,6,\"${tag.barcode}\"\n" +
                     "TEXT 49,273,\"ROBOTOR.TTF\",90,6,6,\"${tag.code}" + plu + "\"\n" +
                     "TEXT 49,430,\"ROBOTOR.TTF\",90,6,6,\"${formatted}\"\n" +
-                    "TEXT 127,258,\"ROBOTOB.TTF\",90,30,30,\"${stock[0]}\"\n" +
+                    "TEXT 127," + newPricePosition + ",\"ROBOTOB.TTF\",90,30,30,\"${stock[0]}\"\n" +
                     "TEXT 127,456,\"ROBOTOR.TTF\",90,13,12,\"${stock[1]}\"\n" +
                     "BAR 99,456, 2, 42\n" +
                     "BAR 324,6, 3, 507\n" +
@@ -196,16 +273,17 @@ class PrintViewModel : ViewModel() {
                     "BAR 23,6, 300, 3\n" +
                     "BAR 141,8, 3, 504\n" +
                     "BAR 300,8, 3, 503\n" +
-                    "DIAGONAL 67,29,125,245,1\n" +
+                    "DIAGONAL 67,29,125,245,2\n" +
                     string4 +
-                    "TEXT 108,52,\"ROBOTOR.TTF\",90,18,18,\"${price[0]}\"\n" +
-                    "TEXT 121,173,\"ROBOTOR.TTF\",90,10,10,\"${price[1]}\"\n" +
+                    "TEXT 108," + oldPricePosition + ",\"ROBOTOR.TTF\",90,18,18,\"${price[0]}\"\n" +
+                    "TEXT 121,160,\"ROBOTOR.TTF\",90,10,10,\"${price[1]}\"\n" +
                     "BAR 98,173, 1, 32\n" +
                     nodiscount +
                     "PRINT 1,1\n"
         } else {
+            val pricePosition = (286 - (price[0].length - 1) * 50).toString()
             response = "CLS\n" +
-                    "UTF-8\n" +
+                    "CODEPAGE UTF-8\n" +
                     string1 +
                     string2 +
                     string3 +
@@ -213,7 +291,7 @@ class PrintViewModel : ViewModel() {
                     "TEXT 49,25,\"ROBOTOR.TTF\",90,6,6,\"${tag.barcode}\"\n" +
                     "TEXT 49,273,\"ROBOTOR.TTF\",90,6,6,\"${tag.code}" + plu + "\"\n" +
                     "TEXT 49,430,\"ROBOTOR.TTF\",90,6,6,\"${formatted}\"\n" +
-                    "TEXT 127,138,\"ROBOTOB.TTF\",90,30,30,\"${price[0]}\"\n" +
+                    "TEXT 127," + pricePosition + ",\"ROBOTOB.TTF\",90,30,30,\"${price[0]}\"\n" +
                     "TEXT 127,344,\"ROBOTOR.TTF\",90,13,12,\"${price[1]}\"\n" +
                     "BAR 99,344, 2, 42\n" +
                     "BAR 324,6, 3, 507\n" +
