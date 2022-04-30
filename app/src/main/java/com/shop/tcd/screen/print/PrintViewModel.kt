@@ -266,7 +266,7 @@ class PrintViewModel : ViewModel() {
                     "TEXT 49,430,\"ROBOTOR.TTF\",90,6,6,\"${formatted}\"\n" +
                     "TEXT 127," + newPricePosition + ",\"ROBOTOB.TTF\",90,30,30,\"${stock[0]}\"\n" +
                     "TEXT 127,456,\"ROBOTOR.TTF\",90,13,12,\"${stock[1]}\"\n" +
-                    "BAR 99,456, 2, 42\n" +
+                    "BAR 90,456, 2, 42\n" +
                     "BAR 324,6, 3, 507\n" +
                     "BAR 23,510, 300, 3\n" +
                     "BAR 21,6, 3, 507\n" +
@@ -277,7 +277,7 @@ class PrintViewModel : ViewModel() {
                     string4 +
                     "TEXT 108," + oldPricePosition + ",\"ROBOTOR.TTF\",90,18,18,\"${price[0]}\"\n" +
                     "TEXT 121,160,\"ROBOTOR.TTF\",90,10,10,\"${price[1]}\"\n" +
-                    "BAR 98,173, 1, 32\n" +
+                    "BAR 90,160, 1, 32\n" +
                     nodiscount +
                     "PRINT 1,1\n"
         } else {
@@ -293,7 +293,7 @@ class PrintViewModel : ViewModel() {
                     "TEXT 49,430,\"ROBOTOR.TTF\",90,6,6,\"${formatted}\"\n" +
                     "TEXT 127," + pricePosition + ",\"ROBOTOB.TTF\",90,30,30,\"${price[0]}\"\n" +
                     "TEXT 127,344,\"ROBOTOR.TTF\",90,13,12,\"${price[1]}\"\n" +
-                    "BAR 99,344, 2, 42\n" +
+                    "BAR 90,344, 2, 42\n" +
                     "BAR 324,6, 3, 507\n" +
                     "BAR 23,510, 300, 3\n" +
                     "BAR 21,6, 3, 507\n" +
