@@ -74,11 +74,11 @@ android {
         jvmTarget = '1.8'
         freeCompilerArgs = ['-Xjvm-default=all'] //enable or compatibility
     }
-    buildToolsVersion '33.0.0 rc2'
-    ndkVersion '21.4.7075529'
+    buildToolsVersion '33.0.0 rc3'
+    ndkVersion '25.0.8355429 rc3'
 }
 detekt {
-    toolVersion = "1.20.0-RC2"
+    toolVersion = "1.20.0"
     buildUponDefaultConfig = false
     allRules = false
 //    config = files("$rootDir/detekt/detekt.yml")
