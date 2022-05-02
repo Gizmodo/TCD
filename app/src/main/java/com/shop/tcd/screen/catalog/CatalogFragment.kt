@@ -9,10 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.getViewModel
-import com.shop.tcd.core.extension.longFancy
-import com.shop.tcd.core.extension.navigateExt
-import com.shop.tcd.core.extension.viewBindingWithBinder
+import com.shop.tcd.core.extension.*
 import com.shop.tcd.databinding.FragmentCatalogBinding
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -50,6 +47,11 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             longFancy { it }
             Timber.e(it)
+        }
+
+        viewModel.successMessage.observe(viewLifecycleOwner) {
+            fancySuccess { it }
+            Timber.i(it)
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {
@@ -146,10 +148,8 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
 
         edtBegin.setOnClickListener {
             val currentTimeInMillis = Calendar.getInstance().timeInMillis
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Начальная дата")
-                .setSelection(currentTimeInMillis)
-                .build()
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Начальная дата")
+                .setSelection(currentTimeInMillis).build()
 
             datePicker.addOnPositiveButtonClickListener {
                 val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
@@ -164,10 +164,8 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
 
         edtEnd.setOnClickListener {
             val currentTimeInMillis = Calendar.getInstance().timeInMillis
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Конечная дата")
-                .setSelection(currentTimeInMillis)
-                .build()
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText("Конечная дата")
+                .setSelection(currentTimeInMillis).build()
 
             datePicker.addOnPositiveButtonClickListener {
                 val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))

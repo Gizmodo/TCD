@@ -24,6 +24,10 @@ interface NomenclatureDao {
     @Query("select * from nomenclature where code = :code limit 1")
     fun selectNomenclatureItemByCode(code: String): NomenclatureItem?
 
+    /* Поиск товара по PLU */
+    @Query("select * from nomenclature where plu = :plu limit 1")
+    fun selectNomenclatureItemByPLUCode(plu: String): NomenclatureItem?
+
     /* Поиск товара по ШК */
     @Query("select * from nomenclature where barcode = :barcode limit 1")
     fun selectNomenclatureItemByBarcode(barcode: String): NomenclatureItem?

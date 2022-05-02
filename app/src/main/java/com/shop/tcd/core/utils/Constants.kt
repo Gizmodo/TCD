@@ -3,6 +3,7 @@ package com.shop.tcd.core.utils
 import com.shop.tcd.data.printer.Printer
 import com.shop.tcd.data.shop.ShopModel
 import com.shop.tcd.data.user.UserModel
+import com.shop.tcd.domain.SearchType
 
 class Constants {
     object Inventory {
@@ -44,6 +45,12 @@ class Constants {
 
     object SelectedObjects {
         /**
+         * Хранение префикса и
+         * позиция поиска веса и кода
+         */
+        lateinit var shopTemplate: ShopTemplate
+
+        /**
          * Хранение выбранного магазина
          */
         lateinit var ShopModel: ShopModel
@@ -61,4 +68,16 @@ class Constants {
         lateinit var PrinterModel: Printer
         var PrinterModelPosition: Int = -1
     }
+
+    data class ShopTemplate(
+        /*
+            П - PLU
+            Т - Код
+            М - Вес
+        */
+        val prefix: String,
+        val weightPosition: Pair<Int, Int>,
+        val infoPosition: Pair<Int, Int>,
+        val searchType: SearchType = SearchType.Empty,
+    )
 }

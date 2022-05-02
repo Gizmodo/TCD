@@ -19,7 +19,7 @@ buildscript {
         glide = "4.13.1"
         gson = "2.9.0"
         kotlin = "1.6.20"
-        leakcanary = "2.8.1"
+        leakcanary = "2.9.1"
         lifecycle = '2.5.0-beta01'
         lifecycle_extensions = "2.2.0"
         material = '1.7.0-alpha01'

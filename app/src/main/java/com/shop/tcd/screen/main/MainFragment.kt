@@ -12,12 +12,19 @@ import com.shop.tcd.core.extension.getViewModel
 import com.shop.tcd.core.extension.longFancy
 import com.shop.tcd.core.extension.navigateExt
 import com.shop.tcd.core.extension.viewBindingWithBinder
+import com.shop.tcd.core.utils.Constants
+import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH
+import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_CRC
 import com.shop.tcd.core.utils.Constants.Network.BASE_SHOP_URL
 import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
 import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModelPosition
+import com.shop.tcd.core.utils.Constants.SelectedObjects.shopTemplate
+import com.shop.tcd.data.shop.ShopModel
 import com.shop.tcd.data.shop.ShopsList
 import com.shop.tcd.databinding.FragmentMainBinding
+import com.shop.tcd.domain.SearchType
 import timber.log.Timber
+
 
 class MainFragment : Fragment(R.layout.fragment_main) {
     private val binding by viewBindingWithBinder(FragmentMainBinding::bind)
@@ -96,6 +103,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
         view.setOnItemClickListener { _, _, position, _ ->
             ShopModel = items[position]
+            setShopTemplate(ShopModel)
             ShopModelPosition = position
             BASE_SHOP_URL =
                 "http://" + items[position].address + "/" + items[position].service + "/hs/TSD/"
@@ -103,6 +111,46 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
         if (ShopModelPosition != -1) {
             view.setText(adapter.getItem(ShopModelPosition), false)
+        }
+    }
+
+    private fun setShopTemplate(shopModel: ShopModel) {
+        val template = shopModel.templates.firstOrNull()
+        template?.let {
+            when (it.length) {
+                BARCODE_LENGTH -> {
+                    val prefix = it.take(2)
+                    var weightPosition: Pair<Int, Int> = Pair(0, 0)
+                    var infoPosition: Pair<Int, Int> = Pair(0, 0)
+                    var searchType: SearchType = SearchType.Empty
+
+                    val matchTM = it.matches("^\\d{2}Т{5}М{5}К{1}".toRegex())
+                    val matchPM = it.matches("^\\d{2}П{5}М{5}К{1}".toRegex())
+                    val matchMT = it.matches("^\\d{2}М{5}Т{5}К{1}".toRegex())
+                    val matchMP = it.matches("^\\d{2}М{5}П{5}К{1}".toRegex())
+
+                    if (matchPM || matchMP) {
+                        searchType = SearchType.SearchByPLU
+                    }
+                    if (matchMT || matchTM) {
+                        searchType = SearchType.SearchByCode
+                    }
+                    if (matchTM || matchPM) {
+                        infoPosition = Pair(2, 7)
+                        weightPosition = Pair(7, BARCODE_LENGTH_WO_CRC)
+                    }
+                    if (matchMT || matchMP) {
+                        weightPosition = Pair(2, 7)
+                        infoPosition = Pair(7, BARCODE_LENGTH_WO_CRC)
+                    }
+                    shopTemplate = Constants.ShopTemplate(
+                        prefix = prefix,
+                        weightPosition = weightPosition,
+                        infoPosition = infoPosition,
+                        searchType = searchType
+                    )
+                }
+            }
         }
     }
 

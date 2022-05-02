@@ -10,11 +10,9 @@ import com.shop.tcd.App
 import com.shop.tcd.core.di.*
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_PREFIX
-import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WEIGHT_SUFFIX
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_CRC
-import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_PREFIX
 import com.shop.tcd.core.utils.Constants.Inventory.CODE_LENGTH
-import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
+import com.shop.tcd.core.utils.Constants.SelectedObjects.shopTemplate
 import com.shop.tcd.core.utils.ReceiverLiveData
 import com.shop.tcd.core.utils.SingleLiveEvent
 import com.shop.tcd.core.utils.StatefulData
@@ -24,6 +22,7 @@ import com.shop.tcd.data.inventory.InvItem
 import com.shop.tcd.data.inventory.InventoryPair
 import com.shop.tcd.data.inventory.InventoryResult
 import com.shop.tcd.data.nomenclature.NomenclatureItem
+import com.shop.tcd.domain.SearchType
 import com.shop.tcd.domain.rest.ShopApi
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -109,8 +108,8 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    suspend fun searchProduct(inputString: String): Flow<StatefulData<InventoryPair>> {
-        val len = inputString.length
+    suspend fun searchProduct(productString: String): Flow<StatefulData<InventoryPair>> {
+        val len = productString.length
         var previousItem: InvItem? = InvItem("", "", "", "", "")
         var currentItem: NomenclatureItem? = NomenclatureItem("", "", "", "", "")
 
@@ -118,28 +117,61 @@ class InventoryViewModel : ViewModel() {
             len <= CODE_LENGTH -> {
                 job?.cancel()
                 job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                    previousItem = inventoryDao.selectInventoryItemByCode(inputString)
-                    currentItem = nomenclatureDao.selectNomenclatureItemByCode(inputString)
+                    previousItem = inventoryDao.selectInventoryItemByCode(productString)
+                    currentItem = nomenclatureDao.selectNomenclatureItemByCode(productString)
                 }
                 job?.join()
                 return searchResult(currentItem, previousItem)
             }
             else -> {
-                val productCode =
-                    inputString.takeLast(BARCODE_LENGTH_WO_PREFIX)
-                        .take(BARCODE_LENGTH_WEIGHT_SUFFIX)
-                when (productCode == ShopModel.prefixWeight) {
+                var searchString =
+                    productString
+                        .padStart(BARCODE_LENGTH, '0')
+                        .takeLast(BARCODE_LENGTH)
+                val productCode = searchString.take(BARCODE_LENGTH_PREFIX)
+
+                searchString = searchString.substring(
+                    shopTemplate.infoPosition.first,
+                    shopTemplate.infoPosition.second,
+                )
+
+                when (productCode == shopTemplate.prefix) {
                     true -> {
-                        job?.cancel()
-                        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-                            previousItem = inventoryDao.selectInventoryItemByCode(productCode)
-                            currentItem = nomenclatureDao.selectNomenclatureItemByCode(productCode)
+                        Timber.d("Поиск по шаблону")
+                        when (shopTemplate.searchType) {
+                            SearchType.SearchByCode -> {
+                                Timber.d("Поиск по коду $searchString")
+                                job?.cancel()
+                                job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+                                    previousItem =
+                                        inventoryDao.selectInventoryItemByCode(searchString)
+                                    currentItem =
+                                        nomenclatureDao.selectNomenclatureItemByCode(searchString)
+                                }
+                                job?.join()
+                                return searchResult(currentItem, previousItem)
+                            }
+                            SearchType.SearchByPLU -> {
+                                Timber.d("Поиск по PLU $searchString")
+                                job?.cancel()
+                                job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+                                    previousItem =
+                                        inventoryDao.selectInventoryItemByPLUCode(searchString)
+                                    currentItem =
+                                        nomenclatureDao.selectNomenclatureItemByPLUCode(searchString)
+                                }
+                                job?.join()
+                                return searchResult(currentItem, previousItem)
+                            }
+                            else -> {
+                                Timber.e("Не должно попадать сюда")
+                                return searchResult(currentItem, previousItem)
+                            }
                         }
-                        job?.join()
-                        return searchResult(currentItem, previousItem)
                     }
                     false -> {
-                        val barcode = inputString
+                        Timber.d("Поиск по штрихкоду")
+                        val barcode = productString
                             .padStart(BARCODE_LENGTH, '0')
                             .takeLast(BARCODE_LENGTH)
                         job?.cancel()
@@ -187,43 +219,20 @@ class InventoryViewModel : ViewModel() {
     }
 
     private fun getWeight(barcode: String): String {
-        val productWeight = barcode.takeLast(6).take(5)
+        val productWeight = barcode.substring(
+            shopTemplate.weightPosition.first,
+            shopTemplate.weightPosition.second
+        )
         val kg = productWeight.take(2).toInt()
         val gr = productWeight.takeLast(3).toInt()
         return "$kg.$gr".toFloat().toString().replace('.', ',')
     }
 
     fun parseBarcode(barcode: String): StatefulData<String> {
+        Timber.d("parseBarcode $barcode")
         return when (isEAN13(barcode)) {
-            false -> StatefulData.Error("ШК не в формате EAN13")
-            true -> when (barcode.take(BARCODE_LENGTH_PREFIX)) {
-                ShopModel.prefixSingle -> {
-                    when {
-                        barcode.substring(2, 9).toIntOrNull() == null -> {
-                            StatefulData.Error("Ошибка кода продукта")
-                        }
-                        else -> {
-                            StatefulData.Success(barcode.substring(2, 9))
-                        }
-                    }
-                }
-                ShopModel.prefixWeight -> {
-                    StatefulData.Success(getWeight(barcode))
-                }
-                ShopModel.prefixPLU -> {
-                    when {
-                        barcode.takeLast(11).take(5).toIntOrNull() == null -> {
-                            StatefulData.Error("Ошибка кода продукта")
-                        }
-                        else -> {
-                            StatefulData.Success(getWeight(barcode))
-                        }
-                    }
-                }
-                else -> {
-                    StatefulData.Success("0")
-                }
-            }
+            false -> StatefulData.Error("ШК не верный")
+            true -> StatefulData.Success(getWeight(barcode))
         }
     }
 

@@ -31,9 +31,9 @@ class App : Application() {
         val config = Configuration.load(this)
         config.addPlugin(bugsnagOkHttpPlugin)
         Bugsnag.start(this, config)
-        /* LeakCanary.config = LeakCanary.config.copy(
-             onHeapAnalyzedListener = BugsnagLeakUploader(applicationContext = this)
-         )*/
+        /*  LeakCanary.config = LeakCanary.config.copy(
+              onHeapAnalyzedListener = BugsnagLeakUploader(applicationContext = this)
+          )*/
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
         if (BuildConfig.DEBUG) {
             FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
@@ -46,10 +46,10 @@ class App : Application() {
     inner class LineNumberDebugTree : Timber.DebugTree() {
 
         override fun createStackElementTag(element: StackTraceElement) =
-            "(${element.fileName}:${element.lineNumber})#${element.methodName}"
+            "${element.fileName}:${element.lineNumber}"
 
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-            super.log(priority, "telega_$tag", message, t)
+            super.log(priority, "$tag", message, t)
         }
     }
 }

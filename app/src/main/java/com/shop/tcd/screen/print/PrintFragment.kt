@@ -87,8 +87,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     private fun initUIListeners() {
         btnPrint.setOnClickListener {
             viewModel.loadPriceTagsObservable(list)
-// TODO: Преобразовать ответ в модель для принтера и отправить ему для печати
-            //runService()
         }
         btnInsertItem.setOnClickListener {
             val inputString = edtBarcode.text.toString()

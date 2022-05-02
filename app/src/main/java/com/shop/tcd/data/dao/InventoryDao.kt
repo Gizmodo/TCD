@@ -28,4 +28,7 @@ interface InventoryDao {
 
     @Query("select * from inventory where barcode = :barcode limit 1")
     fun selectInventoryItemByBarcode(barcode: String): InvItem?
+
+    @Query("select * from inventory where plu = :plu limit 1")
+    fun selectInventoryItemByPLUCode(plu: String): InvItem?
 }

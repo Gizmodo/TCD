@@ -47,6 +47,7 @@ class CatalogViewModel : ViewModel() {
 
     fun loadNomenclatureFull() {
         Timber.d("Загрузка полного списка")
+        _loading.value=true
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopAPI.getNomenclatureFull()
@@ -55,6 +56,9 @@ class CatalogViewModel : ViewModel() {
                     if (response.body()?.result.equals("success", false)) {
                         val nomenclatureList =
                             response.body()?.nomenclature as ArrayList<NomenclatureItem>
+                        nomenclatureList.forEach { item ->
+                            item.plu = item.plu.replace(("[^\\d.]").toRegex(), "")
+                        }
                         onSuccess("Загружено объектов ${nomenclatureList.size}")
                         nomenclatureDao.deleteAll()
                         nomenclatureDao.insertNomenclature(nomenclatureList)
@@ -71,6 +75,7 @@ class CatalogViewModel : ViewModel() {
 
     fun loadNomenclatureRemainders() {
         Timber.d("Загрузка остатков")
+        _loading.value=true
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopAPI.getNomenclatureRemainders()
@@ -95,6 +100,7 @@ class CatalogViewModel : ViewModel() {
 
     fun loadNomenclatureByPeriod(period: String) {
         Timber.d("Загрузка за период")
+        _loading.value=true
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopAPI.getNomenclatureByPeriod(period)

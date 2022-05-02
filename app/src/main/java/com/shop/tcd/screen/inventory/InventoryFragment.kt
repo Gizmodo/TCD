@@ -351,6 +351,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     private fun doInsert() {
         longFancy { "Товар добавлен" }
+        // TODO: Удрать заглушку 
     }
 
     private fun initUI() {

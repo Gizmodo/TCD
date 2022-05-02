@@ -13,10 +13,4 @@ data class ShopModel(
     val service: String,
     @SerializedName("Шаблоны")
     val templates: List<String>,
-    @SerializedName("ПрефиксВесовой")
-    val prefixWeight: String,
-    @SerializedName("ПрефиксШтучный")
-    val prefixSingle: String,
-    @SerializedName("ПрефиксPLU")
-    val prefixPLU: String,
 )
