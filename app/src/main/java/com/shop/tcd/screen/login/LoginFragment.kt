@@ -15,7 +15,6 @@ import android.view.animation.RotateAnimation
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
-import com.shashank.sony.fancytoastlib.FancyToast
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.*
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_FROM_DEGREE
@@ -78,15 +77,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             setupLogins(binding.edtLogin, it)
         }
 
+        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            fancyException { it }
+        }
+
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
-            FancyToast.makeText(
-                activity?.applicationContext,
-                it,
-                FancyToast.LENGTH_SHORT,
-                FancyToast.ERROR,
-                false
-            ).show()
+            fancyError { it }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {
