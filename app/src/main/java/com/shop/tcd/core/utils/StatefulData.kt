@@ -8,12 +8,14 @@ import kotlinx.coroutines.flow.transform
 sealed class StatefulData<out T : Any> {
     data class Success<T : Any>(val result: T) : StatefulData<T>()
     data class Error(val msg: String) : StatefulData<Nothing>()
+    data class Notify(val msg: String) : StatefulData<Nothing>()
     object Loading : StatefulData<Nothing>()
 
     inline fun <R : Any> map(transform: (T) -> R): StatefulData<R> {
         return when (this) {
             is Loading -> Loading
             is Error -> Error(this.msg)
+            is Notify -> Notify(this.msg)
             is Success -> Success(transform(this.result))
         }
     }
@@ -22,6 +24,7 @@ sealed class StatefulData<out T : Any> {
         return when (this) {
             is Loading -> Loading
             is Error -> Error(this.msg)
+            is Notify -> Notify(this.msg)
             is Success -> Success(transform(this.result))
         }
     }
@@ -48,4 +51,9 @@ inline fun <T : Any> Flow<StatefulData<T>>.onSuccessState(crossinline action: su
 inline fun <T : Any> Flow<StatefulData<T>>.onErrorState(crossinline action: suspend (error: String) -> Unit): Flow<StatefulData<T>> =
     onEach {
         if (it is StatefulData.Error) action(it.msg)
+    }
+
+inline fun <T : Any> Flow<StatefulData<T>>.onNotifyState(crossinline action: suspend (notify: String) -> Unit): Flow<StatefulData<T>> =
+    onEach {
+        if (it is StatefulData.Notify) action(it.msg)
     }

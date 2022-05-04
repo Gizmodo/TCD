@@ -25,7 +25,8 @@ class CatalogViewModel : ViewModel() {
 
     private var job: Job = Job()
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onError("Возникло исключение: ${throwable.localizedMessage}")
+        onError("${throwable.localizedMessage}")
+//        onError("Возникло исключение: ${throwable.localizedMessage}")
     }
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
@@ -45,9 +46,11 @@ class CatalogViewModel : ViewModel() {
     @Inject
     lateinit var shopAPI: ShopApi
 
+    // TODO: Обернуть сетевой вызов в sealed class
+    // https://proandroiddev.com/modeling-retrofit-responses-with-sealed-classes-and-coroutines-9d6302077dfe
     fun loadNomenclatureFull() {
         Timber.d("Загрузка полного списка")
-        _loading.value=true
+        _loading.value = true
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopAPI.getNomenclatureFull()
@@ -65,17 +68,17 @@ class CatalogViewModel : ViewModel() {
                     } else {
                         onError("Данные не получены: ${response.body()?.message}")
                     }
-                    _loading.value = false
                 } else {
                     onError("Ошибка выполенения запроса : ${response.message()} ")
                 }
+                _loading.value = false
             }
         }
     }
 
     fun loadNomenclatureRemainders() {
         Timber.d("Загрузка остатков")
-        _loading.value=true
+        _loading.value = true
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopAPI.getNomenclatureRemainders()
@@ -100,7 +103,7 @@ class CatalogViewModel : ViewModel() {
 
     fun loadNomenclatureByPeriod(period: String) {
         Timber.d("Загрузка за период")
-        _loading.value=true
+        _loading.value = true
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = shopAPI.getNomenclatureByPeriod(period)

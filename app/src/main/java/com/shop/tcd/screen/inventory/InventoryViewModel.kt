@@ -5,16 +5,16 @@ import android.content.IntentFilter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.shop.tcd.App
 import com.shop.tcd.core.di.*
+import com.shop.tcd.core.extension.notNull
+import com.shop.tcd.core.utils.Constants
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_PREFIX
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_CRC
 import com.shop.tcd.core.utils.Constants.Inventory.CODE_LENGTH
 import com.shop.tcd.core.utils.Constants.SelectedObjects.shopTemplate
 import com.shop.tcd.core.utils.ReceiverLiveData
-import com.shop.tcd.core.utils.SingleLiveEvent
 import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dao.InventoryDao
 import com.shop.tcd.data.dao.NomenclatureDao
@@ -49,28 +49,24 @@ class InventoryViewModel : ViewModel() {
     private var _inventoryList = MutableLiveData<List<InvItem>>()
     val inventoryList: LiveData<List<InvItem>> get() = _inventoryList
 
+    private var _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> get() = _loading
+
     private var job: Job? = null
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onError("Возникло исключение: ${throwable.localizedMessage}")
     }
     private val context = App.applicationContext() as Application
 
-    private val injector: ViewModelInjector = DaggerViewModelInjector
-        .builder()
-        .app(AppModule(context))
-        .dbm(DataBaseModule(context))
-        .nm(NetworkModule)
-        .datastore(DataStoreModule)
-        .build()
+    private val injector: ViewModelInjector =
+        DaggerViewModelInjector.builder().app(AppModule(context)).dbm(DataBaseModule(context))
+            .nm(NetworkModule).datastore(DataStoreModule).build()
 
     init {
         injector.inject(this)
         loadInventoryList()
         initDeviceObservables()
     }
-
-    private var _items = SingleLiveEvent<List<InvItem>>()
-    fun getInventarisationItems(): SingleLiveEvent<List<InvItem>> = _items
 
     @Inject
     lateinit var inventoryDao: InventoryDao
@@ -88,23 +84,36 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    fun fetchInventarisationItems() {
-        viewModelScope.launch {
+    fun sendResults() {
+        _loading.value = true
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             try {
-                _items.postValue(inventoryDao.selectAllSuspend())
+                val list = inventoryDao.selectAllSuspend()
+                if (list.isNotEmpty()) {
+                    val inventoryResult = InventoryResult(result = "success",
+                        message = "",
+                        operation = "revision",
+                        autor = Constants.SelectedObjects.UserModel.name,
+                        shop = Constants.SelectedObjects.ShopModel.name,
+                        prefix = Constants.SelectedObjects.ShopModel.prefix,
+                        document = list)
+                    val response = shopAPI.postInventory("", inventoryResult)
+                    withContext(Dispatchers.Main) {
+                        Timber.d(response.toString())
+                        if (response.isSuccessful) {
+                            Timber.d("Данные успешно отправлены")
+                            inventoryDao.deleteAll()
+                        } else {
+                            onError("Данные не отправлены: ${response.message()}")
+                        }
+                        _loading.postValue(false)
+                    }
+                }
             } catch (e: Exception) {
                 Timber.e(e)
             }
-        }
-    }
-
-    fun postInventory(inventoryResult: InventoryResult) {
-        job?.cancel()
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = shopAPI.postInventory("", inventoryResult)
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) inventoryDao.deleteAll() else onError("Данные не отправлены")
-            }
+            _loading.value = false
         }
     }
 
@@ -125,9 +134,7 @@ class InventoryViewModel : ViewModel() {
             }
             else -> {
                 var searchString =
-                    productString
-                        .padStart(BARCODE_LENGTH, '0')
-                        .takeLast(BARCODE_LENGTH)
+                    productString.padStart(BARCODE_LENGTH, '0').takeLast(BARCODE_LENGTH)
                 val productCode = searchString.take(BARCODE_LENGTH_PREFIX)
 
                 searchString = searchString.substring(
@@ -171,14 +178,12 @@ class InventoryViewModel : ViewModel() {
                     }
                     false -> {
                         Timber.d("Поиск по штрихкоду")
-                        val barcode = productString
-                            .padStart(BARCODE_LENGTH, '0')
-                            .takeLast(BARCODE_LENGTH)
+                        val barcode =
+                            productString.padStart(BARCODE_LENGTH, '0').takeLast(BARCODE_LENGTH)
                         job?.cancel()
                         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                             previousItem = inventoryDao.selectInventoryItemByBarcode(barcode)
-                            currentItem =
-                                nomenclatureDao.selectNomenclatureItemByBarcode(barcode)
+                            currentItem = nomenclatureDao.selectNomenclatureItemByBarcode(barcode)
                         }
                         job?.join()
                         return searchResult(currentItem, previousItem)
@@ -195,72 +200,89 @@ class InventoryViewModel : ViewModel() {
         if (currentItem == null && previousItem == null) {
             emit(StatefulData.Error("Товар отсутствует в номенклатуре"))
         } else {
-            emit(StatefulData.Success(InventoryPair(
-                currentItem = currentItem,
-                previousItem = previousItem
-            )))
+            emit(StatefulData.Success(InventoryPair(currentItem = currentItem,
+                previousItem = previousItem)))
         }
     }
 
     private fun isEAN13(barcode: String): Boolean {
-        var ch = 0
-        var nch = 0
+        var odd = 0
+        var even = 0
         val radix = 10
         val barcode12 = barcode.take(BARCODE_LENGTH_WO_CRC)
         barcode12.forEachIndexed { index, c ->
             when {
-                index % 2 == 0 -> ch += Character.digit(c, radix)
-                else -> nch += Character.digit(c, radix)
+                index % 2 == 0 -> odd += Character.digit(c, radix)
+                else -> even += Character.digit(c, radix)
             }
         }
-        val checksumDigit = ((10 - (ch + 3 * nch) % 10) % 10)
+        val checksumDigit = ((10 - ((odd + 3 * even) % 10)) % 10)
         return (((barcode.length == BARCODE_LENGTH) && (checksumDigit.toString() == barcode.last()
             .toString())))
     }
 
-    private fun getWeight(barcode: String): String {
-        val productWeight = barcode.substring(
-            shopTemplate.weightPosition.first,
-            shopTemplate.weightPosition.second
-        )
+    private fun getWeight(item: NomenclatureItem): String {
+        val productWeight = item.barcode.substring(shopTemplate.weightPosition.first,
+            shopTemplate.weightPosition.second)
         val kg = productWeight.take(2).toInt()
         val gr = productWeight.takeLast(3).toInt()
         return "$kg.$gr".toFloat().toString().replace('.', ',')
     }
 
-    fun parseBarcode(barcode: String): StatefulData<String> {
-        Timber.d("parseBarcode $barcode")
-        return when (isEAN13(barcode)) {
-            false -> StatefulData.Error("ШК не верный")
-            true -> StatefulData.Success(getWeight(barcode))
+    private fun isWeightProduct(item: NomenclatureItem): Boolean {
+        val barcode = item.barcode
+        when {
+            barcode.length.equals(BARCODE_LENGTH) && shopTemplate.prefix.equals(barcode.take(2)) && item.code.equals(
+                barcode.substring(shopTemplate.infoPosition.first,
+                    shopTemplate.infoPosition.second)) -> {
+                return true
+            }
+            else -> {
+                return false
+            }
         }
     }
 
+    fun parseBarcode(item: NomenclatureItem?): StatefulData<String> {
+        var result: StatefulData<String> = StatefulData.Error("")
+        item.notNull {
+            val barcode = it.barcode
+            Timber.d("parseBarcode $barcode")
+            when {
+                isEAN13(barcode) -> {
+                    if (isWeightProduct(it)) {
+                        result = StatefulData.Success(getWeight(it))
+                    } else {
+                        result = StatefulData.Notify("Невесовой товар")
+                    }
+                }
+                else -> {
+                    result = StatefulData.Error("ШК не верный")
+                }
+            }
+        }
+        return result
+    }
+
     private fun initDeviceObservables() {
-        _urovoScanner = ReceiverLiveData(
-            context,
-            IntentFilter("android.intent.ACTION_DECODE_DATA")
-        ) { _, intent ->
+        _urovoScanner = ReceiverLiveData(context,
+            IntentFilter("android.intent.ACTION_DECODE_DATA")) { _, intent ->
             var data = ""
             intent.extras?.let { data = it["barcode_string"].toString() }
             data
         }
 
-        _urovoKeyboard = ReceiverLiveData(
-            context,
-            IntentFilter("android.intent.action_keyboard")
-        ) { _, intent ->
-            var data = false
-            intent.extras?.let {
-                data = it["kbrd_enter"].toString() == "enter"
+        _urovoKeyboard =
+            ReceiverLiveData(context, IntentFilter("android.intent.action_keyboard")) { _, intent ->
+                var data = false
+                intent.extras?.let {
+                    data = it["kbrd_enter"].toString() == "enter"
+                }
+                data
             }
-            data
-        }
 
-        _idataScanner = ReceiverLiveData(
-            context,
-            IntentFilter("android.intent.action.SCANRESULT")
-        ) { _, intent ->
+        _idataScanner = ReceiverLiveData(context,
+            IntentFilter("android.intent.action.SCANRESULT")) { _, intent ->
             var data = ""
             intent.extras?.let { data = it["value"].toString() }
             data
@@ -277,6 +299,7 @@ class InventoryViewModel : ViewModel() {
 
     private fun onError(message: String) {
         _errorMessage.postValue(message)
+        _loading.postValue(false)
     }
 
     override fun onCleared() {

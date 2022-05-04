@@ -2,9 +2,11 @@ package com.shop.tcd.core.di
 
 import com.bugsnag.android.okhttp.BugsnagOkHttpPlugin
 import com.google.gson.GsonBuilder
+import com.shop.tcd.core.utils.BasicAuthInterceptor
 import com.shop.tcd.core.utils.Constants.Network.BASE_SHOP_URL
 import com.shop.tcd.core.utils.Constants.Network.BASE_URL
 import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_TIMEOUT
+import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_TIMEOUT_SHOP
 import com.shop.tcd.domain.rest.SettingsApi
 import com.shop.tcd.domain.rest.ShopApi
 import dagger.Module
@@ -36,13 +38,14 @@ object NetworkModule {
     }
 
     @Provides
-    @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    @Named("Settings")
+    fun provideOkHttpClientSettings(): OkHttpClient {
         val logging = HttpLoggingInterceptor { message -> Timber.i(message) }
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(BasicAuthInterceptor("tsd", "tsd159753"))
             .eventListener(BugsnagOkHttpPlugin())
             .connectTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
@@ -51,8 +54,23 @@ object NetworkModule {
     }
 
     @Provides
+    @Named("Shop")
+    fun provideOkHttpClientShop(): OkHttpClient {
+        val logging = HttpLoggingInterceptor { message -> Timber.i(message) }
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
+
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .eventListener(BugsnagOkHttpPlugin())
+            .connectTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.SECONDS)
+            .readTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.SECONDS)
+            .writeTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.SECONDS)
+            .build()
+    }
+
+    @Provides
     @Named("Settings")
-    fun provideRetrofitInterface(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofitInterface(@Named("Settings") okHttpClient: OkHttpClient): Retrofit {
         val gson = GsonBuilder().setLenient().create()
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -65,7 +83,7 @@ object NetworkModule {
 
     @Provides
     @Named("Shop")
-    fun provideRetrofitForShop(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofitForShop(@Named("Shop") okHttpClient: OkHttpClient): Retrofit {
         val gson = GsonBuilder().setLenient().create()
         return Retrofit.Builder()
             .baseUrl(BASE_SHOP_URL)

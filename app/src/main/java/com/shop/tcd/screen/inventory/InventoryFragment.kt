@@ -22,13 +22,10 @@ import com.shop.tcd.R
 import com.shop.tcd.adapters.InventoryAdapter
 import com.shop.tcd.core.extension.*
 import com.shop.tcd.core.utils.Constants
-import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
-import com.shop.tcd.core.utils.Constants.SelectedObjects.UserModel
 import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.core.utils.StatefulData.Error
 import com.shop.tcd.data.inventory.InvItem
 import com.shop.tcd.data.inventory.InventoryPair
-import com.shop.tcd.data.inventory.InventoryResult
 import com.shop.tcd.data.nomenclature.NomenclatureItem
 import com.shop.tcd.databinding.FragmentInventoryBinding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -125,7 +122,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                 txtPrice.text = price
                 txtPLU.text = plu
             }
-            when (val response = viewModel.parseBarcode(item.barcode)) {
+            when (val response = viewModel.parseBarcode(item)) {
                 is Error -> {
                     fancyErrorShort { response.msg }
                     edtCount.setText("")
@@ -133,9 +130,13 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                 is StatefulData.Success -> {
                     edtCount.setText(response.result)
                 }
-                else -> {
+                is StatefulData.Notify -> {
+                    fancyInfoShort { response.msg }
                     edtCount.setText("")
+                }
+                else -> {
                     fancyError { "Not implemented" }
+                    edtCount.setText("")
                 }
             }
         }
@@ -182,34 +183,11 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             setTitle("Внимание")
             setMessage("Выгрузить документы в 1С?")
             setPositiveButton("Да") { _: DialogInterface, _: Int ->
-//                 var list = mutableListOf<InvItem>()
-//                list = arrayListOf()
-                viewModel.fetchInventarisationItems()
-                viewModel.getInventarisationItems().observe(viewLifecycleOwner) { items ->
-                    val list = items as ArrayList<InvItem>
-                    sendInventory(list)
-                }
+                viewModel.sendResults()
             }
             setNegativeButton("Нет") { _, _ -> fancyInfo { "Выгрузка отменена" } }
             show()
         }
-    }
-
-    private fun sendInventory(list: ArrayList<InvItem>) {
-        if (list.isEmpty()) {
-            return
-        }
-        progressDialog.show()
-        val inventoryResult = InventoryResult(
-            result = "success",
-            message = "",
-            operation = "revision",
-            autor = UserModel.name,
-            shop = ShopModel.name,
-            prefix = ShopModel.prefix,
-            document = list
-        )
-        viewModel.postInventory(inventoryResult)
     }
 
     private fun addNomenclatureItem() {
@@ -309,7 +287,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         viewModel.urovoKeyboard.observe(viewLifecycleOwner) {
             if (edtCount.isFocused) {
                 edtCount.setSelection(0)
-                doInsert()
+                addNomenclatureItem()
             } else if (edtBarcode.isFocused) {
                 moveFocus(edtCount)
             }
@@ -319,6 +297,17 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         }
         viewModel.idataScanner.observe(viewLifecycleOwner) {
             onReceiveScannerData(it)
+        }
+
+        viewModel.loading.observe(viewLifecycleOwner) {
+            when {
+                it -> {
+                    progressDialog.show()
+                }
+                else -> {
+                    progressDialog.dismiss()
+                }
+            }
         }
     }
 
@@ -347,11 +336,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     private fun moveFocus(view: EditText) {
         view.requestFocus()
-    }
-
-    private fun doInsert() {
-        longFancy { "Товар добавлен" }
-        // TODO: Удрать заглушку 
     }
 
     private fun initUI() {

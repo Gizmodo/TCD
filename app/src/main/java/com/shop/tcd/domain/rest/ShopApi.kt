@@ -31,7 +31,7 @@ interface ShopApi {
 
     @POST("receiveddocument")
     @Headers("Content-Type:application/json")
-    fun postInventory(
+    suspend fun postInventory(
         @Query("filter") filter: String = "",
         @Body document: InventoryResult,
     ): Response<String>

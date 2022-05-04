@@ -54,7 +54,7 @@ class LoginViewModel : ViewModel() {
                     _usersLiveData.postValue(response.body())
                     _loading.value = false
                 } else {
-                    onError("Error : ${response.message()} ")
+                    onError("Ошибка : ${response.message()} ")
                 }
             }
         }
