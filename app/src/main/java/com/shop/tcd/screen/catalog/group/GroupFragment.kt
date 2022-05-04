@@ -12,9 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.shop.tcd.R
 import com.shop.tcd.adapters.GroupsAdapter
-import com.shop.tcd.core.extension.getViewModel
-import com.shop.tcd.core.extension.longFancy
-import com.shop.tcd.core.extension.viewBindingWithBinder
+import com.shop.tcd.core.extension.*
 import com.shop.tcd.data.group.Group
 import com.shop.tcd.databinding.FragmentGroupBinding
 import timber.log.Timber
@@ -51,9 +49,14 @@ class GroupFragment : Fragment(R.layout.fragment_group) {
             setStateUI(true)
         }
 
+        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            fancyException { it }
+        }
+
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
-            longFancy { it }
+            fancyError { it }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {

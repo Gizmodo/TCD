@@ -44,24 +44,20 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
     }
 
     private fun initViewModelObservers() {
-        viewModel.errorMessage.observe(viewLifecycleOwner) {
-            longFancy { it }
+        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
+            fancyException { it }
         }
 
-        viewModel.successMessage.observe(viewLifecycleOwner) {
-            fancySuccess { it }
-            Timber.i(it)
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            fancyError { it }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {
             when {
-                it -> {
-                    showShimmer()
-                }
-                else -> {
-                    hideShimmer()
-                }
+                it -> showShimmer()
+                else -> hideShimmer()
             }
         }
     }
