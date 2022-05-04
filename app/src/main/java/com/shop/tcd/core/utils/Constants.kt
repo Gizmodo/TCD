@@ -9,9 +9,7 @@ class Constants {
     object Inventory {
         const val DEBOUNCE_TIME = 100L
         const val BARCODE_LENGTH = 13
-        const val BARCODE_LENGTH_WO_PREFIX = 11
         const val BARCODE_LENGTH_WO_CRC = 12
-        const val BARCODE_LENGTH_WEIGHT_SUFFIX = 5
         const val BARCODE_LENGTH_PREFIX = 2
         const val CODE_LENGTH = 5
     }

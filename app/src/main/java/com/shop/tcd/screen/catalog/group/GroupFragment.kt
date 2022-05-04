@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.shop.tcd.R
 import com.shop.tcd.adapters.GroupsAdapter
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.data.group.Group
 import com.shop.tcd.databinding.FragmentGroupBinding
 import timber.log.Timber
