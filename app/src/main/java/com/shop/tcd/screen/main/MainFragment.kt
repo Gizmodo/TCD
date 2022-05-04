@@ -8,10 +8,7 @@ import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.getViewModel
-import com.shop.tcd.core.extension.longFancy
-import com.shop.tcd.core.extension.navigateExt
-import com.shop.tcd.core.extension.viewBindingWithBinder
+import com.shop.tcd.core.extension.*
 import com.shop.tcd.core.utils.Constants
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_CRC
@@ -24,7 +21,6 @@ import com.shop.tcd.data.shop.ShopsList
 import com.shop.tcd.databinding.FragmentMainBinding
 import com.shop.tcd.domain.SearchType
 import timber.log.Timber
-
 
 class MainFragment : Fragment(R.layout.fragment_main) {
     private val binding by viewBindingWithBinder(FragmentMainBinding::bind)
@@ -71,14 +67,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun initViewModelObservers() {
         viewModel.shopsLiveData.observe(viewLifecycleOwner) {
-            Timber.d(it.toString())
             shopsList = it
             setupShops(binding.edtShop, it)
         }
 
+        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            fancyException { it }
+        }
+
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
-            longFancy { it }
+            fancyError { it }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {

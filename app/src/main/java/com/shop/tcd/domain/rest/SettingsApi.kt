@@ -13,9 +13,6 @@ interface SettingsApi {
     @GET("Tech/hs/tsd/shops/get")
     suspend fun getShopsSuspend(): Response<ShopsList>
 
-    /**
-     * Запрос списка принтеров
-     */
     @GET("Tech/hs/tsd/printers/get")
     suspend fun getPrinters(): Response<PrintersList>
 }
