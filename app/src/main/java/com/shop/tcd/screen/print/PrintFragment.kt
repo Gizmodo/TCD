@@ -18,8 +18,9 @@ import com.google.android.material.textfield.TextInputEditText
 import com.shop.tcd.ExampleWorker
 import com.shop.tcd.R
 import com.shop.tcd.adapters.PriceTagAdapter
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
 import com.shop.tcd.core.extension.getViewModel
-import com.shop.tcd.core.extension.longFancy
 import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.Constants.SelectedObjects.PrinterModel
 import com.shop.tcd.core.utils.Constants.SelectedObjects.PrinterModelPosition
@@ -86,8 +87,9 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
 
     private fun initUIListeners() {
         btnPrint.setOnClickListener {
-            viewModel.loadPriceTagsObservable(list)
+            viewModel.loadPrintInfoByBarcodes(list)
         }
+
         btnInsertItem.setOnClickListener {
             val inputString = edtBarcode.text.toString()
             if (inputString.isNotEmpty()) {
@@ -119,19 +121,20 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
             runService(it)
         }
 
+        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            fancyException { it }
+        }
+
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
-            longFancy { it }
+            fancyError { it }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {
             when {
-                it -> {
-                    showShimmer()
-                }
-                else -> {
-                    hideShimmer()
-                }
+                it -> showShimmer()
+                else -> hideShimmer()
             }
         }
     }

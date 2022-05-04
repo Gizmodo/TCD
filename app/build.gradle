@@ -129,6 +129,7 @@ dependencies {
     implementation "com.bugsnag:bugsnag-plugin-android-okhttp:$bugsnag"
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.karczews:rx2-broadcast-receiver:$broadcast_receiver"
+    implementation "com.github.skydoves:sandwich:1.2.4"
     implementation "com.google.android.material:material:$material"
     implementation "com.google.code.gson:gson:$gson"
     implementation "com.google.dagger:dagger-android-support:$dagger"

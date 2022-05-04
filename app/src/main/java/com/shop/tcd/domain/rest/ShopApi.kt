@@ -5,7 +5,6 @@ import com.shop.tcd.data.inventory.InventoryResult
 import com.shop.tcd.data.nomenclature.NomenclatureList
 import com.shop.tcd.data.pricetag.PriceTag
 import com.shop.tcd.data.pricetag.response.PriceTagResponse
-import io.reactivex.rxjava3.core.Observable
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -19,9 +18,12 @@ interface ShopApi {
     @GET("getturnoverfortheperiod")
     suspend fun getNomenclatureByPeriod(@Query("filter") filter: String): Response<NomenclatureList>
 
+    /**
+     * Запрос информации для печати ценников на основе списка ШК/кодов
+     */
     @POST("pricetag/POST")
     @Headers("Content-Type:application/json")
-    fun postPriceTag(@Body priceTag: PriceTag): Observable<Response<PriceTagResponse>>
+    suspend fun getPriceTag(@Body priceTag: PriceTag): Response<PriceTagResponse>
 
     @GET("getgrouplist")
     suspend fun getGroupsList(): Response<GroupsList>

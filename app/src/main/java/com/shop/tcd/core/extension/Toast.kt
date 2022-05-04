@@ -40,8 +40,14 @@ inline fun Fragment.fancySuccessShort(message: () -> String): Toast = FancyToast
         show()
     }
 
-inline fun Fragment.fancyError(message: () -> String): Toast = FancyToast
+inline fun Fragment.fancyException(message: () -> String): Toast = FancyToast
     .makeText(this.context, message(), FancyToast.LENGTH_LONG, FancyToast.ERROR, false)
+    .apply {
+        show()
+    }
+
+inline fun Fragment.fancyError(message: () -> String): Toast = FancyToast
+    .makeText(this.context, message(), FancyToast.LENGTH_LONG, FancyToast.WARNING, false)
     .apply {
         show()
     }

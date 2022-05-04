@@ -6,32 +6,37 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
 import com.shop.tcd.core.di.*
+import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
 import com.shop.tcd.data.pricetag.BarcodeTag
 import com.shop.tcd.data.pricetag.PriceTag
 import com.shop.tcd.data.pricetag.response.PriceTagResponse
 import com.shop.tcd.data.pricetag.response.PriceTagResponseItem
 import com.shop.tcd.data.printer.PrintersList
-import com.shop.tcd.domain.rest.SettingsApi
-import com.shop.tcd.domain.rest.ShopApi
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import com.shop.tcd.data.repository.SettingsRepository
+import com.shop.tcd.data.repository.ShopRepository
 import kotlinx.coroutines.*
-import retrofit2.Response
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class PrintViewModel : ViewModel() {
+    /**
+     * Сотояния для UI
+     **/
     private var _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String>
-        get() = _errorMessage
+    val errorMessage: LiveData<String> get() = _errorMessage
+
+    private var _exceptionMessage = MutableLiveData<String>()
+    val exceptionMessage: LiveData<String> get() = _exceptionMessage
 
     private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean>
-        get() = _loading
+    val loading: LiveData<Boolean> get() = _loading
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        onException("${throwable.localizedMessage}")
+    }
 
     private var _printersLiveData = MutableLiveData<PrintersList>()
     val printersLiveData: LiveData<PrintersList>
@@ -42,9 +47,6 @@ class PrintViewModel : ViewModel() {
         get() = _printerPayload
 
     private var job: Job? = null
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        onError("Возникло исключение: ${throwable.localizedMessage}")
-    }
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
@@ -60,67 +62,61 @@ class PrintViewModel : ViewModel() {
     }
 
     @Inject
-    lateinit var settingsApi: SettingsApi
+    lateinit var settingsRepository: SettingsRepository
 
     @Inject
-    lateinit var shopApi: ShopApi
+    lateinit var shopRepository: ShopRepository
+
+    fun loadPrintInfoByBarcodes(list: MutableList<String>) {
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            _loading.postValue(true)
+            when (val response: NetworkResult<PriceTagResponse> =
+                shopRepository.getPrintInfoByBarcodes(converterToPriceTag(list))) {
+                is NetworkResult.Error -> {
+                    onError("${response.code} ${response.message}")
+                }
+                is NetworkResult.Exception -> {
+                    onException("${response.e.message}")
+                }
+                is NetworkResult.Success -> {
+                    val payload: PriceTagResponse = response.data
+                    _printerPayload.postValue(createTSPLRequest(payload))
+                }
+            }
+            _loading.postValue(false)
+        }
+    }
 
     private fun loadPrinters() {
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = settingsApi.getPrinters()
-            withContext(Dispatchers.Main) {
-                if (response.isSuccessful) {
-                    _printersLiveData.postValue(response.body())
-                } else {
-                    onError("Error : ${response.message()} ")
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            _loading.postValue(true)
+            when (val response = settingsRepository.printers()) {
+                is NetworkResult.Error -> {
+                    onError("${response.code} ${response.message}")
                 }
-                _loading.value = false
+                is NetworkResult.Exception -> {
+                    onException("${response.e.message}")
+                }
+                is NetworkResult.Success -> {
+                    _printersLiveData.postValue(response.data)
+                }
             }
+            _loading.postValue(false)
         }
     }
 
     private fun converterToPriceTag(list: MutableList<String>): PriceTag {
         val barcodeList: MutableList<BarcodeTag> = mutableListOf()
         list.mapTo(barcodeList) { BarcodeTag(it) }
-        return PriceTag(
-            ShopModel.prefix,
-            barcodesList = barcodeList
-        )
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        job?.cancel()
-    }
-
-    fun loadPriceTagsObservable(list: MutableList<String>) {
-        job?.cancel()
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val priceTag = converterToPriceTag(list)
-            val response: Observable<Response<PriceTagResponse>> = shopApi.postPriceTag(priceTag)
-            withContext(Dispatchers.Main) {
-                response.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        _loading.value = false
-                        if (it.isSuccessful) {
-                            _printerPayload.postValue(createTSPLRequest(it.body()))
-                        } else {
-                            Timber.d("Not successfully")
-                        }
-                    }, {
-                        onError("Error : $it")
-                    })
-            }
-        }
+        return PriceTag(ShopModel.prefix, barcodeList)
     }
 
     private fun createTSPLRequest(body: PriceTagResponse?): List<String> {
         val printerJob = mutableListOf<String>()
         var task: String
         body?.let {
-            printerJob.add(priceHeader())
-            for (tag in body) {
+            printerJob.add(priceTagHeader())
+            for (tag in body.filter { it.found == true }) {
                 task = priceTagBody(!tag.stock.equals(0f), tag)
                 printerJob.add(task)
             }
@@ -128,7 +124,7 @@ class PrintViewModel : ViewModel() {
         return printerJob
     }
 
-    private fun priceHeader(): String {
+    private fun priceTagHeader(): String {
         return "SIZE 41.5 mm, 66.1 mm\n" +
                 "DIRECTION 0,0\n" +
                 "REFERENCE 0,0\n" +
@@ -214,11 +210,10 @@ class PrintViewModel : ViewModel() {
         val formatted = current.format(formatter)
 
         val response: String
-        val price = "%.2f".format(tag.price).split(".")
-        val stock = "%.2f".format(tag.stock).split(".")
+        val price = "%.2f".format(tag.price).replace(',', '.').split(".")
+        val stock = "%.2f".format(tag.stock).replace(',', '.').split(".")
 
         val string1: String = if (tag.string1.isNotEmpty()) {
-
             "TEXT 296," + getWidth(12,
                 tag.string1).toString() + ",\"ROBOTOR.TTF\",90,12,12,\"${tag.string1}\"\n"
         } else {
@@ -308,7 +303,19 @@ class PrintViewModel : ViewModel() {
     }
 
     private fun onError(message: String) {
+        Timber.e(message)
         _errorMessage.postValue(message)
         _loading.postValue(false)
+    }
+
+    private fun onException(message: String) {
+        Timber.e(message)
+        _exceptionMessage.postValue(message)
+        _loading.postValue(false)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        job?.cancel()
     }
 }
