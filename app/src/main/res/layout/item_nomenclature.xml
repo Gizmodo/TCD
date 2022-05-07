@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/txtTitle"
+        style="@style/TextAppearance.Material3.TitleMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:fontFamily="@font/roboto"
+        android:singleLine="true"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtCodeLabel"
+        style="@style/TextAppearance.Material3.LabelLarge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/roboto"
+        android:text="@string/code"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle" />
+
+    <TextView
+        android:id="@+id/txtCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:fontFamily="@font/roboto"
+        android:singleLine="true"
+        app:layout_constraintBottom_toBottomOf="@id/txtCodeLabel"
+        app:layout_constraintStart_toEndOf="@id/txtCodeLabel"
+        app:layout_constraintTop_toTopOf="@id/txtCodeLabel" />
+
+    <TextView
+        android:id="@+id/txtBarcodeLabel"
+        style="@style/TextAppearance.Material3.LabelLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/roboto"
+        android:text="@string/barcode"
+        app:layout_constraintBottom_toBottomOf="@id/txtCode"
+        app:layout_constraintStart_toEndOf="@id/txtCode"
+        app:layout_constraintTop_toTopOf="@id/txtCode" />
+
+    <TextView
+        android:id="@+id/txtBarcode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:fontFamily="@font/roboto"
+        android:singleLine="true"
+        app:layout_constraintBottom_toBottomOf="@id/txtBarcodeLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/txtBarcodeLabel"
+        app:layout_constraintTop_toTopOf="@id/txtBarcodeLabel" />
+</androidx.constraintlayout.widget.ConstraintLayout>
