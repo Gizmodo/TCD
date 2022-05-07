@@ -1,9 +1,9 @@
 package com.shop.tcd.core.di
 
 import android.content.Context
-import com.shop.tcd.data.AppDatabase
-import com.shop.tcd.data.dao.InventoryDao
-import com.shop.tcd.data.dao.NomenclatureDao
+import com.shop.tcd.data.local.AppDatabase
+import com.shop.tcd.data.local.InventoryDao
+import com.shop.tcd.data.local.NomenclatureDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Inject

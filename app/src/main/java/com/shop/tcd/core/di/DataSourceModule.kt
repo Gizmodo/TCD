@@ -1,6 +1,7 @@
 package com.shop.tcd.core.di
 
-import com.shop.tcd.domain.database.DatabaseHelper
+import com.shop.tcd.data.repository.IRepository
+import com.shop.tcd.data.repository.Repository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -9,5 +10,5 @@ import javax.inject.Singleton
 object DataSourceModule {
     @Provides
     @Singleton
-    fun provideDataStoreRepository(ds: DatabaseHelperImpl): DatabaseHelper = ds
+    fun provideDatabaseHelper(repository: Repository): IRepository = repository
 }

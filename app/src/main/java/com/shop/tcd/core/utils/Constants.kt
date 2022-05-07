@@ -1,9 +1,8 @@
 package com.shop.tcd.core.utils
 
-import com.shop.tcd.data.printer.Printer
-import com.shop.tcd.data.shop.ShopModel
-import com.shop.tcd.data.user.UserModel
-import com.shop.tcd.domain.SearchType
+import com.shop.tcd.data.dto.printer.Printer
+import com.shop.tcd.data.dto.shop.ShopModel
+import com.shop.tcd.data.dto.user.UserModel
 
 class Constants {
     object Inventory {
@@ -15,7 +14,7 @@ class Constants {
     }
 
     object Network {
-        const val BASE_URL = "http://192.168.0.154/"
+        const val BASE_URL = "http://192.168.88.87:3000/"
         var TEST_SERVER_1 = "http://10.254.1.230:3000/"
         var TEST_SERVER_2 = "http://192.168.88.87:3000/"
         var PROD_SERVER_1 = "http://192.168.0.154/"
@@ -25,7 +24,7 @@ class Constants {
          */
         var BASE_SHOP_URL = ""
         const val OK_HTTP_TIMEOUT = 15L
-        const val OK_HTTP_TIMEOUT_SHOP = 120L
+        const val OK_HTTP_TIMEOUT_SHOP = 10L
     }
 
     object TCP {

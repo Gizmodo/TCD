@@ -33,8 +33,6 @@ fun EditText.textChanges(): Flow<CharSequence?> {
                 count: Int,
                 after: Int,
             ) {
-                // TODO: Move method as a parameter
-//                    hideKeyboard()
             }
 
             override fun onTextChanged(

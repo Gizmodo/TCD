@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.shop.tcd.screen.login.LoginFragment"
+        android:name="com.shop.tcd.ui.login.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/catalogFragment"
-        android:name="com.shop.tcd.screen.catalog.CatalogFragment"
+        android:name="com.shop.tcd.ui.catalog.CatalogFragment"
         android:label="fragment_catalog"
         tools:layout="@layout/fragment_catalog">
         <action
@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
-        android:name="com.shop.tcd.screen.inventory.InventoryFragment"
+        android:name="com.shop.tcd.ui.inventory.InventoryFragment"
         android:label="fragment_inventory"
         tools:layout="@layout/fragment_inventory">
         <action
@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.shop.tcd.screen.main.MainFragment"
+        android:name="com.shop.tcd.ui.main.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main">
         <action
@@ -55,30 +55,33 @@
         <action
             android:id="@+id/action_mainFragment_to_printFragment"
             app:destination="@id/printFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_overestimationFragment"
+            app:destination="@id/overestimationFragment" />
     </fragment>
     <fragment
         android:id="@+id/nomenclatureFragment"
-        android:name="com.shop.tcd.screen.nomenclature.NomenclatureFragment"
+        android:name="com.shop.tcd.ui.nomenclature.NomenclatureFragment"
         android:label="fragment_nomenclature"
         tools:layout="@layout/fragment_nomenclature" />
     <fragment
         android:id="@+id/printFragment"
-        android:name="com.shop.tcd.screen.print.PrintFragment"
+        android:name="com.shop.tcd.ui.print.PrintFragment"
         android:label="fragment_print"
         tools:layout="@layout/fragment_print" />
     <fragment
         android:id="@+id/groupFragment"
-        android:name="com.shop.tcd.screen.catalog.group.GroupFragment"
+        android:name="com.shop.tcd.ui.catalog.group.GroupFragment"
         android:label="fragment_group"
         tools:layout="@layout/fragment_group" />
     <fragment
         android:id="@+id/inventoryChronologyFragment"
-        android:name="com.shop.tcd.screen.inventory.chronology.InventoryChronologyFragment"
+        android:name="com.shop.tcd.ui.inventory.chronology.InventoryChronologyFragment"
         android:label="fragment_inventory_chronology"
         tools:layout="@layout/fragment_inventory_chronology" />
     <fragment
         android:id="@+id/inventoryItemDetailFragment"
-        android:name="com.shop.tcd.screen.inventory.detail.InventoryItemDetailFragment"
+        android:name="com.shop.tcd.ui.inventory.detail.InventoryItemDetailFragment"
         android:label="fragment_inventory_item_detail"
         tools:layout="@layout/fragment_inventory_item_detail">
         <argument
@@ -88,4 +91,9 @@
             android:name="barcode"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/overestimationFragment"
+        android:name="com.shop.tcd.ui.overestimation.OverEstimationFragment"
+        android:label="fragment_overestimation"
+        tools:layout="@layout/fragment_overestimation" />
 </navigation>

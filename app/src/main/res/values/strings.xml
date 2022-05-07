@@ -9,6 +9,7 @@
     <string name="loadcatalog">Каталог товаров</string>
     <string name="createdocument">Создать документ</string>
     <string name="recalcgoods">Инвентаризация</string>
+    <string name="overestimate">Переоценка</string>
     <string name="printlabels">Печать ценников</string>
     <string name="nomenсlatura">Номенклатура</string>
     <string name="loadfulllist">Загрузить весь список товаров</string>

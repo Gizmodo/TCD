@@ -1,14 +1,15 @@
 package com.shop.tcd.core.di
 
-import com.shop.tcd.screen.catalog.CatalogViewModel
-import com.shop.tcd.screen.catalog.group.GroupsViewModel
-import com.shop.tcd.screen.inventory.InventoryViewModel
-import com.shop.tcd.screen.inventory.chronology.InventoryChronologyViewModel
-import com.shop.tcd.screen.inventory.detail.InventoryItemDetailViewModel
-import com.shop.tcd.screen.login.LoginViewModel
-import com.shop.tcd.screen.main.MainViewModel
-import com.shop.tcd.screen.nomenclature.NomenclatureViewModel
-import com.shop.tcd.screen.print.PrintViewModel
+import com.shop.tcd.ui.catalog.CatalogViewModel
+import com.shop.tcd.ui.catalog.group.GroupsViewModel
+import com.shop.tcd.ui.inventory.InventoryViewModel
+import com.shop.tcd.ui.inventory.chronology.InventoryChronologyViewModel
+import com.shop.tcd.ui.inventory.detail.InventoryItemDetailViewModel
+import com.shop.tcd.ui.login.LoginViewModel
+import com.shop.tcd.ui.main.MainViewModel
+import com.shop.tcd.ui.nomenclature.NomenclatureViewModel
+import com.shop.tcd.ui.overestimation.OverEstimationViewModel
+import com.shop.tcd.ui.print.PrintViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -32,6 +33,7 @@ interface ViewModelInjector {
     fun inject(viewmodel: InventoryViewModel)
     fun inject(viewmodel: InventoryItemDetailViewModel)
     fun inject(viewmodel: InventoryChronologyViewModel)
+    fun inject(viewmodel: OverEstimationViewModel)
 
     @Component.Builder
     interface Builder {

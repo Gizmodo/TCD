@@ -7,8 +7,8 @@ import com.shop.tcd.core.utils.Constants.Network.BASE_SHOP_URL
 import com.shop.tcd.core.utils.Constants.Network.BASE_URL
 import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_TIMEOUT
 import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_TIMEOUT_SHOP
-import com.shop.tcd.domain.rest.SettingsApi
-import com.shop.tcd.domain.rest.ShopApi
+import com.shop.tcd.data.remote.SettingsApi
+import com.shop.tcd.data.remote.ShopApi
 import dagger.Module
 import dagger.Provides
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -47,9 +47,9 @@ object NetworkModule {
             .addInterceptor(logging)
             .addInterceptor(BasicAuthInterceptor("tsd", "tsd159753"))
             .eventListener(BugsnagOkHttpPlugin())
-            .connectTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
-            .writeTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
+            .connectTimeout(OK_HTTP_TIMEOUT, TimeUnit.MINUTES)
+            .readTimeout(OK_HTTP_TIMEOUT, TimeUnit.MINUTES)
+            .writeTimeout(OK_HTTP_TIMEOUT, TimeUnit.MINUTES)
             .build()
     }
 
@@ -62,9 +62,9 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .eventListener(BugsnagOkHttpPlugin())
-            .connectTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.SECONDS)
-            .readTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.SECONDS)
-            .writeTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.SECONDS)
+            .connectTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
+            .readTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
+            .writeTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
             .build()
     }
 

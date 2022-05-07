@@ -23,7 +23,7 @@
             android:exported="false" />
 
         <activity
-            android:name="com.shop.tcd.screen.MainActivity"
+            android:name="com.shop.tcd.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
