@@ -14,46 +14,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TCD"
         android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="d13ea502d3889a6d99f955103ef7e09c" />
+        <service
+            android:name="com.shop.tcd.core.utils.TcpClientService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
-            android:name=".ui.LoginActivity"
+            android:name="com.shop.tcd.ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.ListActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.InventarisationActivity" />
-        <activity
-            android:name=".ui.DetailActivity"
-            android:exported="false"
-            android:parentActivityName=".ui.InventarisationActivity" />
-        <activity
-            android:name=".ui.InventarisationActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.MainActivity" />
-        <activity
-            android:name=".ui.NomenclatureActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.MainActivity" />
-        <activity
-            android:name=".ui.CatalogueGroupActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.CatalogueActivity" />
-        <activity
-            android:name=".ui.CatalogueActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.MainActivity" />
-        <activity
-            android:name=".ui.MainActivity"
-            android:exported="true"
-            android:parentActivityName=".ui.LoginActivity" />
-
-        <meta-data
-            android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
     </application>
-
 </manifest>

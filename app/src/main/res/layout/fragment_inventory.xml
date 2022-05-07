@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.inventory.InventoryFragment">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilBarcode"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/barcode"
+        app:layout_constraintBottom_toBottomOf="@id/tilCount"
+        app:layout_constraintEnd_toStartOf="@id/tilCount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tilCount">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtBarcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:maxLength="13"
+            android:maxLines="1"
+            android:minHeight="48dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColorHint="#757575"
+            tools:ignore="DuplicateSpeakableTextCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilCount"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:hint="@string/count"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto"
+            android:maxLength="7"
+            android:maxLines="1"
+            android:minHeight="48dp"
+            android:singleLine="true"
+            android:textColorHint="#757575" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/txtValueName"
+        style="@style/InventoryHeader"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilBarcode"
+        tools:text="Крупа Рис Индия пропаренный 1кг вес" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtValueName">
+
+        <TextView
+            android:id="@+id/txtLabelCode"
+            style="@style/InventoryLabel"
+            android:text="@string/code"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtValueCode"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelCode"
+            app:layout_constraintStart_toEndOf="@id/txtLabelCode"
+            app:layout_constraintTop_toTopOf="@id/txtLabelCode"
+            tools:text="84055" />
+
+        <TextView
+            android:id="@+id/txtLabelBarcode"
+            style="@style/InventoryLabel"
+            android:text="@string/barcode"
+            app:layout_constraintBottom_toBottomOf="@id/txtValueCode"
+            app:layout_constraintStart_toEndOf="@id/txtValueCode"
+            app:layout_constraintTop_toTopOf="@id/txtValueCode" />
+
+        <TextView
+            android:id="@+id/txtValueBarcode"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelBarcode"
+            app:layout_constraintStart_toEndOf="@id/txtLabelBarcode"
+            app:layout_constraintTop_toTopOf="@id/txtLabelBarcode"
+            tools:text="2284055010421" />
+
+        <TextView
+            android:id="@+id/txtLabelPLU"
+            style="@style/InventoryLabel"
+            android:text="@string/plu"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtLabelCode" />
+
+        <TextView
+            android:id="@+id/txtValuePLU"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelPLU"
+            app:layout_constraintStart_toEndOf="@id/txtLabelPLU"
+            app:layout_constraintTop_toTopOf="@id/txtLabelPLU"
+            tools:text="15644" />
+
+        <TextView
+            android:id="@+id/txtLabelPrice"
+            style="@style/InventoryLabel"
+            android:text="@string/price"
+            app:layout_constraintBottom_toBottomOf="@id/txtValuePLU"
+            app:layout_constraintStart_toEndOf="@id/txtValuePLU"
+            app:layout_constraintTop_toTopOf="@id/txtValuePLU" />
+
+        <TextView
+            android:id="@+id/txtValuePrice"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelPrice"
+            app:layout_constraintStart_toEndOf="@id/txtLabelPrice"
+            app:layout_constraintTop_toTopOf="@id/txtLabelPrice"
+            tools:text="15688" />
+
+        <TextView
+            android:id="@+id/txtLabelTotalCount"
+            style="@style/InventoryLabel"
+            android:text="@string/totalCount"
+            app:layout_constraintBottom_toBottomOf="@id/txtValuePrice"
+            app:layout_constraintEnd_toStartOf="@id/txtValueTotalCount"
+            app:layout_constraintTop_toTopOf="@id/txtValuePrice" />
+
+        <TextView
+            android:id="@+id/txtValueTotalCount"
+            style="@style/InventoryValue"
+            app:layout_constraintBottom_toBottomOf="@id/txtLabelTotalCount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtLabelTotalCount"
+            tools:text="332" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvInventory"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/border"
+        app:layout_constraintBottom_toTopOf="@id/nav_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/info"
+
+        tools:itemCount="15"
+        tools:listitem="@layout/item_row_inventory_rv" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/menu_inventory_bottom_navigation" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
