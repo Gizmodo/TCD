@@ -47,11 +47,11 @@ interface IRepository {
     suspend fun insertNomenclature(nomenclatureList: List<NomenclatureItem>)
     suspend fun deleteAllInventory()
     suspend fun loadInventoryGrouped(): List<InvItem>
-    fun selectInventoryItemByCode(code: String): InvItem?
+    fun selectInventoryItemByCode(code: String): String?
     fun selectNomenclatureItemByCode(code: String): NomenclatureItem?
-    fun selectInventoryItemByPLUCode(plu: String): InvItem?
+    fun selectInventoryItemByPLUCode(plu: String): String?
     fun selectNomenclatureItemByPLUCode(plu: String): NomenclatureItem?
-    fun selectInventoryItemByBarcode(barcode: String): InvItem?
+    fun selectInventoryItemByBarcode(barcode: String): String?
     fun selectNomenclatureItemByBarcode(barcode: String): NomenclatureItem?
     suspend fun insertInventory(invItem: InvItem)
     suspend fun getItemForDetail(code: String, barcode: String): NomenclatureItem?

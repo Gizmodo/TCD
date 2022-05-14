@@ -6,7 +6,7 @@ import com.shop.tcd.data.dto.user.UserModel
 
 class Constants {
     object Inventory {
-        const val DEBOUNCE_TIME = 100L
+        const val DEBOUNCE_TIME = 300L
         const val BARCODE_LENGTH = 13
         const val BARCODE_LENGTH_WO_CRC = 12
         const val BARCODE_LENGTH_PREFIX = 2

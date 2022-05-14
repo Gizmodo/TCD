@@ -85,7 +85,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun barcodeListener() = edtBarcode
         .textChanges()
-        .distinctUntilChanged()
         .filterNot { it.isNullOrBlank() }
         .debounce(Constants.Inventory.DEBOUNCE_TIME)
         .flatMapLatest {
@@ -101,11 +100,11 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             is Error -> {
                 Timber.e(state.msg)
                 clearFields(allFields = false)
-//                fancyErrorShort { state.msg }
             }
             is StatefulData.Success -> {
                 showPrevCount(state.result.previousItem)
                 showProduct(state.result.currentItem)
+                moveFocus(edtCount)
             }
             else -> {
                 fancyError { "Not implemented" }
@@ -122,13 +121,14 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                 txtPrice.text = price
                 txtPLU.text = plu
             }
-            when (val response = viewModel.parseBarcode(item)) {
+            when (val response = viewModel.parseBarcode(item,edtBarcode.text.toString())) {
                 is Error -> {
                     fancyErrorShort { response.msg }
                     edtCount.setText("")
                 }
                 is StatefulData.Success -> {
                     edtCount.setText(response.result)
+                    moveFocus(edtCount)
                 }
                 is StatefulData.Notify -> {
                     fancyInfoShort { response.msg }
@@ -142,10 +142,10 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         }
     }
 
-    private fun showPrevCount(item: InvItem?) {
+    private fun showPrevCount(item: String?) {
         when {
             item != null -> {
-                txtTotalCount.text = item.quantity
+                txtTotalCount.text = item
             }
             else -> {
                 txtTotalCount.text = "0"
@@ -265,12 +265,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
     private fun hideKeyboard() {
         this.hideSoftKeyboardExt()
-        /* val view = this.currentFocus
-         if (view != null) {
-             val hideMe = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-             hideMe.hideSoftInputFromWindow(view.windowToken, 0)
-         }
-         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)*/
     }
 
     private fun initViewModelObservers() {
@@ -288,7 +282,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
         viewModel.urovoKeyboard.observe(viewLifecycleOwner) {
             if (edtCount.isFocused) {
-                edtCount.setSelection(0)
+                moveFocus(edtCount)
                 addNomenclatureItem()
             } else if (edtBarcode.isFocused) {
                 moveFocus(edtCount)
@@ -330,7 +324,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         clearFields()
         edtBarcode.apply {
             setText(message)
-            requestFocus()
+            moveFocus(this)
         }
     }
 
@@ -350,7 +344,8 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     }
 
     private fun moveFocus(view: EditText) {
-        view.requestFocus()
+        view.requestFocus();
+        view.setSelection(view.text.length, 0);
     }
 
     private fun initUI() {

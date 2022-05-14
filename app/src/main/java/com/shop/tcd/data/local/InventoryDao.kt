@@ -23,12 +23,12 @@ interface InventoryDao {
     @Query("update inventory set quantity = :newQuantity where uid = :uid")
     suspend fun updateInventoryQuantity(uid: Int, newQuantity: String)
 
-    @Query("select * from inventory where code = :code limit 1")
-    fun selectInventoryItemByCode(code: String): InvItem?
+    @Query("select sum(cast(replace(quantity,',','.') as float)) as cnt from inventory where code = :code group by code, barcode limit 1")
+    fun selectInventoryItemByCode(code: String): String?
 
-    @Query("select * from inventory where barcode = :barcode limit 1")
-    fun selectInventoryItemByBarcode(barcode: String): InvItem?
+    @Query("select sum(cast(replace(quantity,',','.') as float)) as cnt from inventory where barcode = :barcode group by code, barcode limit 1")
+    fun selectInventoryItemByBarcode(barcode: String): String?
 
-    @Query("select * from inventory where plu = :plu limit 1")
-    fun selectInventoryItemByPLUCode(plu: String): InvItem?
+    @Query("select sum(cast(replace(quantity,',','.') as float)) as cnt from inventory where plu = :plu group by code, barcode limit 1")
+    fun selectInventoryItemByPLUCode(plu: String): String?
 }
