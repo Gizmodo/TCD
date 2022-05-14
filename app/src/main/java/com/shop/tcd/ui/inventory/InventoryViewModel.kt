@@ -94,13 +94,15 @@ class InventoryViewModel : ViewModel() {
             _loading.postValue(true)
             val list = repository.selectAllSuspend()
             if (list.isNotEmpty()) {
-                val inventoryResult = InventoryResult(result = "success",
+                val inventoryResult = InventoryResult(
+                    result = "success",
                     message = "",
                     operation = "revision",
                     autor = Constants.SelectedObjects.UserModel.name,
                     shop = Constants.SelectedObjects.ShopModel.name,
                     prefix = Constants.SelectedObjects.ShopModel.prefix,
-                    document = list)
+                    document = list
+                )
                 when (val response = repository.postInventory(inventoryResult)) {
                     is NetworkResult.Error -> {
                         onError("${response.code} ${response.message}")
@@ -122,7 +124,7 @@ class InventoryViewModel : ViewModel() {
 
     suspend fun searchProduct(productString: String): Flow<StatefulData<InventoryPair>> {
         val len = productString.length
-        var previousItem: InvItem? = InvItem("", "", "", "", "")
+        var previousItem: String? = ""
         var currentItem: NomenclatureItem? = NomenclatureItem("", "", "", "", "")
 
         when {
@@ -157,7 +159,8 @@ class InventoryViewModel : ViewModel() {
                                         repository.selectInventoryItemByCode(searchString)
                                     currentItem =
                                         repository.selectNomenclatureItemByCode(
-                                            searchString)
+                                            searchString
+                                        )
                                 }
                                 job?.join()
                                 return searchResult(currentItem, previousItem)
@@ -170,7 +173,8 @@ class InventoryViewModel : ViewModel() {
                                         repository.selectInventoryItemByPLUCode(searchString)
                                     currentItem =
                                         repository.selectNomenclatureItemByPLUCode(
-                                            searchString)
+                                            searchString
+                                        )
                                 }
                                 job?.join()
                                 return searchResult(currentItem, previousItem)
@@ -201,13 +205,19 @@ class InventoryViewModel : ViewModel() {
 
     private fun searchResult(
         currentItem: NomenclatureItem?,
-        previousItem: InvItem?,
+        previousItem: String?,
     ) = flow {
         if (currentItem == null && previousItem == null) {
             emit(StatefulData.Error("Товар отсутствует в номенклатуре"))
         } else {
-            emit(StatefulData.Success(InventoryPair(currentItem = currentItem,
-                previousItem = previousItem)))
+            emit(
+                StatefulData.Success(
+                    InventoryPair(
+                        currentItem = currentItem,
+                        previousItem = previousItem
+                    )
+                )
+            )
         }
     }
 
@@ -227,20 +237,24 @@ class InventoryViewModel : ViewModel() {
             .toString())))
     }
 
-    private fun getWeight(item: NomenclatureItem): String {
-        val productWeight = item.barcode.substring(shopTemplate.weightPosition.first,
-            shopTemplate.weightPosition.second)
+    private fun getWeight(barcode: String): String {
+        val productWeight = barcode.substring(
+            shopTemplate.weightPosition.first,
+            shopTemplate.weightPosition.second
+        )
         val kg = productWeight.take(2).toInt()
         val gr = productWeight.takeLast(3).toInt()
         return "$kg.$gr".toFloat().toString().replace('.', ',')
     }
 
-    private fun isWeightProduct(item: NomenclatureItem): Boolean {
-        val barcode = item.barcode
+    private fun isWeightProduct(barcode: String, code: String?): Boolean {
         when {
-            barcode.length.equals(BARCODE_LENGTH) && shopTemplate.prefix.equals(barcode.take(2)) && item.code.equals(
-                barcode.substring(shopTemplate.infoPosition.first,
-                    shopTemplate.infoPosition.second)) -> {
+            barcode.length.equals(BARCODE_LENGTH) && shopTemplate.prefix.equals(barcode.take(2)) && code.equals(
+                barcode.substring(
+                    shopTemplate.infoPosition.first,
+                    shopTemplate.infoPosition.second
+                )
+            ) -> {
                 return true
             }
             else -> {
@@ -249,15 +263,20 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    fun parseBarcode(item: NomenclatureItem?): StatefulData<String> {
+    fun parseBarcode(item: NomenclatureItem?, manualBarcode: String): StatefulData<String> {
         var result: StatefulData<String> = StatefulData.Error("")
         item.notNull {
-            val barcode = it.barcode
+            var barcode: String = ""
+            if (it.barcode.length == 0) {
+                barcode = manualBarcode
+            } else {
+                barcode = it.barcode
+            }
             Timber.d("parseBarcode $barcode")
             when {
                 isEAN13(barcode) -> {
-                    if (isWeightProduct(it)) {
-                        result = StatefulData.Success(getWeight(it))
+                    if (isWeightProduct(barcode, item?.code)) {
+                        result = StatefulData.Success(getWeight(barcode))
                     } else {
                         result = StatefulData.Notify("Невесовой товар")
                     }
@@ -271,16 +290,20 @@ class InventoryViewModel : ViewModel() {
     }
 
     private fun initDeviceObservables() {
-        _urovoScanner = ReceiverLiveData(context,
-            IntentFilter("android.intent.ACTION_DECODE_DATA")) { _, intent ->
+        _urovoScanner = ReceiverLiveData(
+            context,
+            IntentFilter("android.intent.ACTION_DECODE_DATA")
+        ) { _, intent ->
             var data = ""
             intent.extras?.let { data = it["barcode_string"].toString() }
             data
         }
 
         _urovoKeyboard =
-            ReceiverLiveData(context,
-                IntentFilter("android.intent.action_keyboard")) { _, intent ->
+            ReceiverLiveData(
+                context,
+                IntentFilter("android.intent.action_keyboard")
+            ) { _, intent ->
                 var data = false
                 intent.extras?.let {
                     data = it["kbrd_enter"].toString() == "enter"
@@ -288,8 +311,10 @@ class InventoryViewModel : ViewModel() {
                 data
             }
 
-        _idataScanner = ReceiverLiveData(context,
-            IntentFilter("android.intent.action.SCANRESULT")) { _, intent ->
+        _idataScanner = ReceiverLiveData(
+            context,
+            IntentFilter("android.intent.action.SCANRESULT")
+        ) { _, intent ->
             var data = ""
             intent.extras?.let { data = it["value"].toString() }
             data

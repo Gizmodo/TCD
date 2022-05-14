@@ -4,9 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.kapt'
     id 'io.gitlab.arturbosch.detekt'
     id 'androidx.navigation.safeargs'
-    id 'com.google.devtools.ksp' version '1.6.20-1.0.4'
     id "org.jetbrains.kotlin.plugin.serialization"
-    id "scabbard.gradle" version "0.5.0"
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 }
@@ -157,14 +155,7 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide"
     kapt "com.google.dagger:dagger-android-processor:$dagger"
     kapt "com.google.dagger:dagger-compiler:$dagger"
-    ksp "androidx.room:room-compiler:$room"
-}
-scabbard {
-    enabled false
-    failOnError true
-    fullBindingGraphValidation true
-    qualifiedNames false
-    outputFormat "svg"
+    kapt "androidx.room:room-compiler:$room"
 }
 kotlin {
     sourceSets {
