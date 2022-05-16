@@ -14,7 +14,7 @@ class Constants {
     }
 
     object Network {
-        const val BASE_URL = "http://192.168.88.87:3000/"
+        const val BASE_URL = "http://192.168.0.154/"
         var TEST_SERVER_1 = "http://10.254.1.230:3000/"
         var TEST_SERVER_2 = "http://192.168.88.87:3000/"
         var PROD_SERVER_1 = "http://192.168.0.154/"

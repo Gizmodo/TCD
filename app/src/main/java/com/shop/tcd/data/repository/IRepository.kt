@@ -13,9 +13,9 @@ import com.shop.tcd.data.dto.shop.ShopsList
 import com.shop.tcd.data.dto.user.UsersList
 
 interface IRepository {
-    suspend operator fun invoke(): NetworkResult<PrintersList>
+    suspend operator fun invoke(prefix: String): NetworkResult<PrintersList>
 
-    suspend fun printers(): NetworkResult<PrintersList>
+    suspend fun printers(prefix: String): NetworkResult<PrintersList>
 
     suspend fun shops(): NetworkResult<ShopsList>
 

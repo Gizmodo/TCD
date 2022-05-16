@@ -174,18 +174,18 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     private fun setupAutoComplete(view: AutoCompleteTextView, items: PrintersList) {
         val printersIP: AbstractList<String?> = object : AbstractList<String?>() {
             override fun get(index: Int): String {
-                return items.printers[index].ip
+                return items[index].name
             }
 
             override val size: Int
-                get() = items.printers.size
+                get() = items.size
         }
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, printersIP)
         view.setAdapter(adapter)
 
         view.setOnItemClickListener { _, _, position, _ ->
-            PrinterModel = items.printers[position]
+            PrinterModel = items[position]
             PrinterModelPosition = position
             setStateUI(enabled = true)
         }

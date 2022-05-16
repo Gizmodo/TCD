@@ -24,11 +24,11 @@ class Repository @Inject constructor(
     private val shopApi: ShopApi,
     private val settingsApi: SettingsApi,
 ) : IRepository {
-    override suspend fun invoke(): NetworkResult<PrintersList> =
-        handleApi { settingsApi.getPrinters() }
+    override suspend fun invoke(prefix: String): NetworkResult<PrintersList> =
+        handleApi { settingsApi.getPrinters(prefix) }
 
-    override suspend fun printers(): NetworkResult<PrintersList> =
-        handleApi { settingsApi.getPrinters() }
+    override suspend fun printers(prefix: String): NetworkResult<PrintersList> =
+        handleApi { settingsApi.getPrinters(prefix) }
 
     override suspend fun shops(): NetworkResult<ShopsList> =
         handleApi { settingsApi.getShopsSuspend() }

@@ -10,11 +10,11 @@ import javax.inject.Inject
 class SettingsRepository @Inject constructor(
     private val apiService: SettingsApi,
 ) {
-    suspend operator fun invoke(): NetworkResult<PrintersList> =
-        handleApi { apiService.getPrinters() }
+    suspend operator fun invoke(prefix: String): NetworkResult<PrintersList> =
+        handleApi { apiService.getPrinters(prefix) }
 
-    suspend fun printers(): NetworkResult<PrintersList> =
-        handleApi { apiService.getPrinters() }
+    suspend fun printers(prefix: String): NetworkResult<PrintersList> =
+        handleApi { apiService.getPrinters(prefix) }
 
     suspend fun shops(): NetworkResult<ShopsList> =
         handleApi { apiService.getShopsSuspend() }

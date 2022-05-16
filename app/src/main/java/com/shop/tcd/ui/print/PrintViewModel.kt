@@ -87,7 +87,7 @@ class PrintViewModel : ViewModel() {
     private fun loadPrinters() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response = repository.printers()) {
+            when (val response = repository.printers(ShopModel.prefix)) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }
