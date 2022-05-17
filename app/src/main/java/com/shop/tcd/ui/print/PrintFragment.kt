@@ -4,10 +4,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.Button
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -87,7 +84,7 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
 
     private fun initUIListeners() {
         btnPrint.setOnClickListener {
-            viewModel.loadPrintInfoByBarcodes(list)
+            addBarcode()
         }
 
         btnInsertItem.setOnClickListener {
@@ -97,6 +94,10 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
                 adapter.notifyItemInserted(0)
             }
         }
+    }
+
+    private fun addBarcode() {
+        viewModel.loadPrintInfoByBarcodes(list)
     }
 
     private fun showShimmer() {
@@ -137,6 +138,39 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
                 else -> hideShimmer()
             }
         }
+        viewModel.urovoKeyboard.observe(viewLifecycleOwner) {
+            if (edtBarcode.isFocused) {
+                moveFocus(edtBarcode)
+                addBarcode()
+            }
+        }
+
+        viewModel.urovoScanner.observe(viewLifecycleOwner) {
+            onReceiveScannerData(it)
+        }
+
+        viewModel.idataScanner.observe(viewLifecycleOwner) {
+            onReceiveScannerData(it)
+        }
+    }
+
+    private fun moveFocus(view: EditText) {
+        view.requestFocus();
+        view.setSelection(view.text.length, 0);
+    }
+
+    private fun clearFields() {
+        edtBarcode.setText("")
+    }
+
+    private fun onReceiveScannerData(message: String) {
+        Timber.d(message)
+        clearFields()
+        edtBarcode.apply {
+            setText(message)
+            moveFocus(this)
+        }
+        addBarcode()
     }
 
     private fun runService(list: List<String>) {

@@ -1,6 +1,7 @@
 package com.shop.tcd.ui.print
 
 import android.app.Application
+import android.content.IntentFilter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.shop.tcd.App
 import com.shop.tcd.core.di.*
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
+import com.shop.tcd.core.utils.ReceiverLiveData
 import com.shop.tcd.data.dto.pricetag.BarcodeTag
 import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
@@ -37,6 +39,17 @@ class PrintViewModel : ViewModel() {
         onException(throwable)
     }
 
+    /**
+     * Наблюдатели для терминалов
+     */
+    private var _urovoScanner = MutableLiveData<String>()
+    val urovoScanner: LiveData<String> get() = _urovoScanner
+
+    private var _idataScanner = MutableLiveData<String>()
+    val idataScanner: LiveData<String> get() = _idataScanner
+
+    private var _urovoKeyboard = MutableLiveData<Boolean>()
+    val urovoKeyboard: LiveData<Boolean> get() = _urovoKeyboard
 
     private var _printersLiveData = MutableLiveData<PrintersList>()
     val printersLiveData: LiveData<PrintersList>
@@ -59,10 +72,43 @@ class PrintViewModel : ViewModel() {
     init {
         injector.inject(this)
         loadPrinters()
+        initDeviceObservables()
     }
 
     @Inject
     lateinit var repository: Repository
+    private fun initDeviceObservables() {
+        _urovoScanner = ReceiverLiveData(
+            context,
+            IntentFilter("android.intent.ACTION_DECODE_DATA")
+        ) { _, intent ->
+            var data = ""
+            intent.extras?.let { data = it["barcode_string"].toString() }
+            data
+            // TODO: На iData прилетает пустой action!!!
+        }
+
+        _urovoKeyboard =
+            ReceiverLiveData(
+                context,
+                IntentFilter("android.intent.action_keyboard")
+            ) { _, intent ->
+                var data = false
+                intent.extras?.let {
+                    data = it["kbrd_enter"].toString() == "enter"
+                }
+                data
+            }
+
+        _idataScanner = ReceiverLiveData(
+            context,
+            IntentFilter("android.intent.action.SCANRESULT")
+        ) { _, intent ->
+            var data = ""
+            intent.extras?.let { data = it["value"].toString() }
+            data
+        }
+    }
 
     fun loadPrintInfoByBarcodes(list: MutableList<String>) {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -211,26 +257,34 @@ class PrintViewModel : ViewModel() {
         val stock = "%.2f".format(tag.stock).replace(',', '.').split(".")
 
         val string1: String = if (tag.string1.isNotEmpty()) {
-            "TEXT 296," + getWidth(12,
-                tag.string1).toString() + ",\"ROBOTOR.TTF\",90,12,12,\"${tag.string1}\"\n"
+            "TEXT 296," + getWidth(
+                12,
+                tag.string1
+            ).toString() + ",\"ROBOTOR.TTF\",90,12,12,\"${tag.string1}\"\n"
         } else {
             ""
         }
         val string2: String = if (tag.string2.isNotEmpty()) {
-            "TEXT 258," + getWidth(10,
-                tag.string2).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string2}\"\n"
+            "TEXT 258," + getWidth(
+                10,
+                tag.string2
+            ).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string2}\"\n"
         } else {
             ""
         }
         val string3: String = if (tag.string3.isNotEmpty()) {
-            "TEXT 228," + getWidth(10,
-                tag.string3).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string3}\"\n"
+            "TEXT 228," + getWidth(
+                10,
+                tag.string3
+            ).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string3}\"\n"
         } else {
             ""
         }
         val string4: String = if (tag.string4.isNotEmpty()) {
-            "TEXT 197," + getWidth(10,
-                tag.string4).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string4}\"\n"
+            "TEXT 197," + getWidth(
+                10,
+                tag.string4
+            ).toString() + ",\"ROBOTOR.TTF\",90,10,10,\"${tag.string4}\"\n"
         } else {
             ""
         }
