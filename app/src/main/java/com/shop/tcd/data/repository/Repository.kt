@@ -10,6 +10,8 @@ import com.shop.tcd.data.dto.nomenclature.NomenclatureList
 import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
 import com.shop.tcd.data.dto.printer.PrintersList
+import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
+import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import com.shop.tcd.data.dto.shop.ShopsList
 import com.shop.tcd.data.dto.user.UsersList
 import com.shop.tcd.data.local.InventoryDao
@@ -39,6 +41,9 @@ class Repository @Inject constructor(
     //*************************************************************************************************
     override suspend fun getPrintInfoByBarcodes(barcodesList: PriceTag): NetworkResult<PriceTagResponse> =
         handleApi { shopApi.getPriceTag(barcodesList) }
+
+    override suspend fun getRemains(barcodesList: RemainsRequestBody): NetworkResult<RemainsResponse> =
+        handleApi { shopApi.getRemains(barcodesList) }
 
     override suspend fun getNomenclatureFull(): NetworkResult<NomenclatureList> =
         handleApi { shopApi.getNomenclatureFull() }

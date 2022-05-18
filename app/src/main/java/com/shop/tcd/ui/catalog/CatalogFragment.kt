@@ -23,6 +23,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
     private lateinit var btnLoadRemainders: Button
     private lateinit var btnLoadByGroups: Button
     private lateinit var btnLoadByPeriod: Button
+    private lateinit var btnRemains: Button
     private lateinit var shimmer: ConstraintLayout
     private val viewModel: CatalogViewModel by lazy { getViewModel { CatalogViewModel() } }
     private lateinit var dateBegin: String
@@ -66,6 +67,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         btnLoadRemainders = binding.btnLoadRemainders
         btnLoadByGroups = binding.btnLoadByGroups
         btnLoadByPeriod = binding.btnLoadByPeriod
+        btnRemains = binding.btnRemains
         shimmer = binding.shimmer
 
         btnLoadByGroups.setOnClickListener {
@@ -79,6 +81,9 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         }
         btnLoadByPeriod.setOnClickListener {
             showPeriodDialog()
+        }
+        btnRemains.setOnClickListener {
+            navigateExt(CatalogFragmentDirections.actionCatalogFragmentToRemainsFragment())
         }
     }
 

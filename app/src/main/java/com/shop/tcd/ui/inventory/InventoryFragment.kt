@@ -121,7 +121,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                 txtPrice.text = price
                 txtPLU.text = plu
             }
-            when (val response = viewModel.parseBarcode(item,edtBarcode.text.toString())) {
+            when (val response = viewModel.parseBarcode(item, edtBarcode.text.toString())) {
                 is Error -> {
                     fancyErrorShort { response.msg }
                     edtCount.setText("")

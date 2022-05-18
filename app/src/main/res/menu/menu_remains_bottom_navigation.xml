@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_clean"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="@string/menu_clean" />
+    <item
+        android:id="@+id/menu_request_remains"
+        android:icon="@drawable/ic_send_black_24dp"
+        android:title="@string/remains_request" />
+</menu>

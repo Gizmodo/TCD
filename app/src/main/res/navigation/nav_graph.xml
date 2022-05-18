@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_catalogFragment_to_groupFragment"
             app:destination="@id/groupFragment" />
+        <action
+            android:id="@+id/action_catalogFragment_to_remainsFragment"
+            app:destination="@id/remainsFragment" />
     </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
@@ -96,4 +99,9 @@
         android:name="com.shop.tcd.ui.overestimation.OverEstimationFragment"
         android:label="fragment_overestimation"
         tools:layout="@layout/fragment_overestimation" />
+    <fragment
+        android:id="@+id/remainsFragment"
+        android:name="com.shop.tcd.ui.remains.RemainsFragment"
+        android:label="fragment_remains"
+        tools:layout="@layout/fragment_remains" />
 </navigation>

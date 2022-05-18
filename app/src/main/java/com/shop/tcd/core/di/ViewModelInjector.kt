@@ -10,6 +10,7 @@ import com.shop.tcd.ui.main.MainViewModel
 import com.shop.tcd.ui.nomenclature.NomenclatureViewModel
 import com.shop.tcd.ui.overestimation.OverEstimationViewModel
 import com.shop.tcd.ui.print.PrintViewModel
+import com.shop.tcd.ui.remains.RemainsViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -34,6 +35,7 @@ interface ViewModelInjector {
     fun inject(viewmodel: InventoryItemDetailViewModel)
     fun inject(viewmodel: InventoryChronologyViewModel)
     fun inject(viewmodel: OverEstimationViewModel)
+    fun inject(viewmodel: RemainsViewModel)
 
     @Component.Builder
     interface Builder {

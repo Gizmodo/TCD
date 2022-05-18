@@ -7,6 +7,8 @@ import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureList
 import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
+import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
+import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import javax.inject.Inject
 
 class ShopRepository @Inject constructor(
@@ -14,6 +16,9 @@ class ShopRepository @Inject constructor(
 ) {
     suspend fun getPrintInfoByBarcodes(barcodesList: PriceTag): NetworkResult<PriceTagResponse> =
         handleApi { apiService.getPriceTag(barcodesList) }
+
+    suspend fun getRemainsByBarcodes(barcodesList: RemainsRequestBody): NetworkResult<RemainsResponse> =
+        handleApi { apiService.getRemains(barcodesList) }
 
     suspend fun getNomenclatureFull(): NetworkResult<NomenclatureList> =
         handleApi { apiService.getNomenclatureFull() }

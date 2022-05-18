@@ -58,7 +58,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginTop">0dp</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:layout_marginEnd">8dp</item>
     </style>
@@ -87,5 +87,15 @@
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+    <!--  Стиль для экрана отображения подробной информации по остаткам  -->
+    <style name="RemainsTitleValue" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:layout_marginEnd">8dp</item>
     </style>
 </resources>

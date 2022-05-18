@@ -65,6 +65,7 @@ class Constants {
          */
         lateinit var PrinterModel: Printer
         var PrinterModelPosition: Int = -1
+        fun isPrinterSelected(): Boolean = this::PrinterModel.isInitialized
     }
 
     data class ShopTemplate(

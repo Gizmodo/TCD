@@ -52,11 +52,23 @@
         android:layout_margin="8dp"
         android:maxLines="2"
         android:text="@string/loadturnover"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnRemains"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnLoadByGroups"
         tools:ignore="UsingOnClickInXml" />
+
+    <Button
+        android:id="@+id/btnRemains"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:maxLines="1"
+        android:text="@string/remains"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnLoadByPeriod" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/shimmer"

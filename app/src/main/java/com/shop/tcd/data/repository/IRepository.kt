@@ -9,6 +9,8 @@ import com.shop.tcd.data.dto.nomenclature.NomenclatureList
 import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
 import com.shop.tcd.data.dto.printer.PrintersList
+import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
+import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import com.shop.tcd.data.dto.shop.ShopsList
 import com.shop.tcd.data.dto.user.UsersList
 
@@ -23,6 +25,8 @@ interface IRepository {
 
     //*************************************************************************************************
     suspend fun getPrintInfoByBarcodes(barcodesList: PriceTag): NetworkResult<PriceTagResponse>
+
+    suspend fun getRemains(barcodesList: RemainsRequestBody): NetworkResult<RemainsResponse>
 
     suspend fun getNomenclatureFull(): NetworkResult<NomenclatureList>
 
