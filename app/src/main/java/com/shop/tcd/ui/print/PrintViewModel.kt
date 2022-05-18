@@ -85,7 +85,6 @@ class PrintViewModel : ViewModel() {
             var data = ""
             intent.extras?.let { data = it["barcode_string"].toString() }
             data
-            // TODO: На iData прилетает пустой action!!!
         }
 
         _urovoKeyboard =
