@@ -152,6 +152,7 @@ class InventoryViewModel : ViewModel() {
                         Timber.d("Поиск по шаблону")
                         when (shopTemplate.searchType) {
                             SearchType.SearchByCode -> {
+                                searchString = searchString.toInt().toString()
                                 Timber.d("Поиск по коду $searchString")
                                 job?.cancel()
                                 job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
