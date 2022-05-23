@@ -264,15 +264,9 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    fun parseBarcode(item: NomenclatureItem?, manualBarcode: String): StatefulData<String> {
+    fun parseBarcode(item: NomenclatureItem?, barcode: String): StatefulData<String> {
         var result: StatefulData<String> = StatefulData.Error("")
         item.notNull {
-            var barcode: String = ""
-            if (it.barcode.length == 0) {
-                barcode = manualBarcode
-            } else {
-                barcode = it.barcode
-            }
             Timber.d("parseBarcode $barcode")
             when {
                 isEAN13(barcode) -> {
