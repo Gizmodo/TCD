@@ -242,8 +242,8 @@ class InventoryViewModel : ViewModel() {
             shopTemplate.weightPosition.first,
             shopTemplate.weightPosition.second
         )
-        val kg = productWeight.take(2).toInt()
-        val gr = productWeight.takeLast(3).toInt()
+        val kg = productWeight.take(2)
+        val gr = productWeight.takeLast(3)
         return "$kg.$gr".toFloat().toString().replace('.', ',')
     }
 
