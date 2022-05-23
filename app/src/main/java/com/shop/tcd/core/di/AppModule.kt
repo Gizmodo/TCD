@@ -8,6 +8,17 @@ import javax.inject.Singleton
 
 @Module
 object AppModule {
+    var mApplication: Application? = null
+
+    fun AppModule(application: Application?) {
+        mApplication = application
+    }
+
+    @Provides
+    @Singleton
+    fun providesApplication(): Application? {
+        return mApplication
+    }
 
     @Provides
     @Singleton

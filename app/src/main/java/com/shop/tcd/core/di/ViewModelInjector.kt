@@ -21,7 +21,8 @@ import javax.inject.Singleton
         NetworkModule::class,
         DataBaseModule::class,
         DataSourceModule::class,
-        DataStoreModule::class
+        DataStoreModule::class,
+        newdatabasemodule::class
     ]
 )
 interface ViewModelInjector {
@@ -45,5 +46,6 @@ interface ViewModelInjector {
         fun dbm(dataBaseModule: DataBaseModule): Builder
         fun dbh(databaseHelper: DataSourceModule): Builder
         fun datastore(datastore: DataStoreModule): Builder
+        fun newdb(db:newdatabasemodule):Builder
     }
 }

@@ -36,12 +36,11 @@ class LoginViewModel : ViewModel() {
 
     var job: Job? = null
 
-    private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
         .app(AppModule)
         .nm(NetworkModule)
-        .dbm(DataBaseModule(context))
+        .dbm(DataBaseModule(Application()))
         .datastore(DataStoreModule)
         .build()
 
