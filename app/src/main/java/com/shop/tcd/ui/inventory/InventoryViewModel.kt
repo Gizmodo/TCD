@@ -58,9 +58,6 @@ class InventoryViewModel : ViewModel() {
     private var _idataScanner = MutableLiveData<String>()
     val idataScanner: LiveData<String> get() = _idataScanner
 
-    private var _urovoKeyboard = MutableLiveData<Boolean>()
-    val urovoKeyboard: LiveData<Boolean> get() = _urovoKeyboard
-
     private var _inventoryList = MutableLiveData<List<InvItem>>()
     val inventoryList: LiveData<List<InvItem>> get() = _inventoryList
 
@@ -293,18 +290,6 @@ class InventoryViewModel : ViewModel() {
             intent.extras?.let { data = it["barcode_string"].toString() }
             data
         }
-
-        _urovoKeyboard =
-            ReceiverLiveData(
-                context,
-                IntentFilter("android.intent.action_keyboard")
-            ) { _, intent ->
-                var data = false
-                intent.extras?.let {
-                    data = it["kbrd_enter"].toString() == "enter"
-                }
-                data
-            }
 
         _idataScanner = ReceiverLiveData(
             context,
