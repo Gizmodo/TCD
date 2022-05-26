@@ -9,3 +9,5 @@
 .cxx
 local.properties
 app/version.properties
+
+app/debug/

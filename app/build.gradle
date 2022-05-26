@@ -5,9 +5,9 @@ plugins {
     id 'io.gitlab.arturbosch.detekt'
     id 'androidx.navigation.safeargs'
     id "org.jetbrains.kotlin.plugin.serialization"
-    id 'com.google.gms.google-services'
-    id 'com.google.firebase.crashlytics'
+    id 'com.huawei.agconnect'
 }
+
 ext.versionMajor = 1
 ext.versionMinor = 2
 ext.versionPatch = 0
@@ -35,9 +35,14 @@ def generateVersionName() {
     return "${versionName}.BN-${buildNumber}"
 }
 
+agcp {
+    mappingUpload = true
+    debug = true
+    appVersion = generateVersionName()
+}
 android {
     compileSdkPreview "Tiramisu"
-    buildToolsVersion '33.0.0 rc3'
+    buildToolsVersion '33.0.0 rc4'
     defaultConfig {
         applicationId "com.shop.tcd"
         minSdk 22
@@ -89,6 +94,15 @@ detekt {
     parallel = true
 }
 dependencies {
+    implementation 'com.huawei.agconnect:agconnect-apms:1.5.2.309'
+    implementation "com.huawei.agconnect:agconnect-applinking:$huawei"
+    implementation "com.huawei.agconnect:agconnect-appmessaging:$huawei"
+    implementation 'com.huawei.agconnect:agconnect-cloud-database:1.5.2.300'
+    implementation "com.huawei.agconnect:agconnect-core:$huawei"
+    implementation "com.huawei.agconnect:agconnect-crash:$huawei"
+    implementation "com.huawei.agconnect:agconnect-remoteconfig:$huawei"
+    implementation "com.huawei.agconnect:agconnect-storage:1.5.0.100"
+    implementation 'com.huawei.hms:hianalytics:6.4.1.302'
     //debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar"
@@ -98,6 +112,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.compose.compiler:compiler:$compose_ui_version"
     implementation "androidx.compose.material:material:$compose_ui_version"
+    implementation 'androidx.compose.material3:material3:1.0.0-alpha12'
     implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
     implementation "androidx.compose.runtime:runtime:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
@@ -146,8 +161,6 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger"
     implementation "com.google.dagger:dagger-android:$dagger"
     implementation "com.google.dagger:dagger:$dagger"
-    implementation "com.google.firebase:firebase-analytics-ktx:$analytics"
-    implementation "com.google.firebase:firebase-crashlytics-ktx:$crashlytics"
     implementation "com.jakewharton.timber:timber:$timber"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
     implementation "com.squareup.okhttp3:okhttp:$okhttp"
