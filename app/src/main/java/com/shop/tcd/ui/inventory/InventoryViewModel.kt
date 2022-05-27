@@ -9,15 +9,12 @@ import com.shop.tcd.App
 import com.shop.tcd.core.di.*
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.extension.notNull
-import com.shop.tcd.core.utils.Constants
+import com.shop.tcd.core.utils.*
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_PREFIX
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_CRC
 import com.shop.tcd.core.utils.Constants.Inventory.CODE_LENGTH
 import com.shop.tcd.core.utils.Constants.SelectedObjects.shopTemplate
-import com.shop.tcd.core.utils.ReceiverLiveData
-import com.shop.tcd.core.utils.SearchType
-import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.inventory.InvItem
 import com.shop.tcd.data.dto.inventory.InventoryPair
 import com.shop.tcd.data.dto.inventory.InventoryResult
@@ -42,16 +39,13 @@ class InventoryViewModel : ViewModel() {
     private var _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> get() = _loading
 
-    private var _successMessage = MutableLiveData<String>()
-    val successMessage: LiveData<String> get() = _successMessage
+    private var _successMessage = SingleLiveEvent<String>()
+    val successMessage: SingleLiveEvent<String> get() = _successMessage
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
     }
 
-    /**
-     * Наблюдатели для терминалов
-     */
     private var _urovoScanner = MutableLiveData<String>()
     val urovoScanner: LiveData<String> get() = _urovoScanner
 
@@ -246,8 +240,13 @@ class InventoryViewModel : ViewModel() {
     }
 
     private fun isWeightProduct(barcode: String, code: String?): Boolean {
+        var paddedCode: String = code.toString()
+        code?.let {
+            paddedCode = it.padStart(5, '0')
+        }
+
         when {
-            barcode.length.equals(BARCODE_LENGTH) && shopTemplate.prefix.equals(barcode.take(2)) && code.equals(
+            barcode.length.equals(BARCODE_LENGTH) && shopTemplate.prefix.equals(barcode.take(2)) && paddedCode.equals(
                 barcode.substring(
                     shopTemplate.infoPosition.first,
                     shopTemplate.infoPosition.second
