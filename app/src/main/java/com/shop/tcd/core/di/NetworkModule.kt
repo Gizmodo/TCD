@@ -47,7 +47,7 @@ object NetworkModule {
             .addInterceptor(logging)
             .addInterceptor(BasicAuthInterceptor("tsd", "tsd159753"))
             .eventListener(BugsnagOkHttpPlugin())
-            .connectTimeout(OK_HTTP_TIMEOUT, TimeUnit.MINUTES)
+            .connectTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(OK_HTTP_TIMEOUT, TimeUnit.MINUTES)
             .writeTimeout(OK_HTTP_TIMEOUT, TimeUnit.MINUTES)
             .build()

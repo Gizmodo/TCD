@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/username"
             android:inputType="none"
-            android:textColorHint="#757575"
+            android:textColorHint="#8D6E63"
             tools:ignore="SpeakableTextPresentCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -48,6 +48,7 @@
             android:layout_height="48dp"
             android:inputType="textPassword"
             android:singleLine="true"
+            android:textColorHint="#8D6E63"
             tools:ignore="SpeakableTextPresentCheck" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -93,6 +94,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.52"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="TODO" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnOptions"
+        style="?attr/materialIconButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="SpeakableTextPresentCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

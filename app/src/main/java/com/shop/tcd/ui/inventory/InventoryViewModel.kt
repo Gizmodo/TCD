@@ -59,7 +59,7 @@ class InventoryViewModel : ViewModel() {
     private val context = App.applicationContext() as Application
 
     private val injector: ViewModelInjector =
-        DaggerViewModelInjector.builder().app(AppModule).dbm(DataBaseModule(context))
+        DaggerViewModelInjector.builder().app(AppModule(context)).dbm(DataBaseModule(context))
             .nm(NetworkModule).datastore(DataStoreModule).build()
 
     init {

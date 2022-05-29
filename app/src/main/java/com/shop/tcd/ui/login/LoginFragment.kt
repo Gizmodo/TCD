@@ -15,6 +15,7 @@ import android.view.animation.RotateAnimation
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.*
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_FROM_DEGREE
@@ -71,6 +72,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun initViewModelObservers() {
+        viewModel.launchDataLoad()
+        /*lifecycleScope.launchWhenCreated {
+            viewModel.loadUsers()
+        }*/
         viewModel.usersLiveData.observe(viewLifecycleOwner) {
             Timber.d(it.toString())
             usersList = it
@@ -107,6 +112,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         binding.btnLogin.setOnClickListener {
             login()
+        }
+
+        binding.btnOptions.setOnClickListener {
+            viewModel.job?.cancel()
+            navigateExt(LoginFragmentDirections.actionLoginFragmentToOptionsFragment())
         }
     }
 

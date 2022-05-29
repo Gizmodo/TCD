@@ -25,6 +25,10 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(LineNumberDebugTree())
+        }
+        Timber.d("------------------------Application create------------------------")
         AGConnectCrash.getInstance().enableCrashCollection(true)
         AccessNetworkManager.getInstance().setAccessNetwork(true)
         val bugsnagOkHttpPlugin = BugsnagOkHttpPlugin()
@@ -34,16 +38,13 @@ class App : Application() {
         /*  LeakCanary.config = LeakCanary.config.copy(
               onHeapAnalyzedListener = BugsnagLeakUploader(applicationContext = this)
           )*/
-        if (BuildConfig.DEBUG) {
-            Timber.plant(LineNumberDebugTree())
-        }
     }
 
     inner class LineNumberDebugTree : Timber.DebugTree() {
 
-        override fun createStackElementTag(element: StackTraceElement) =
-            "${element.fileName}:${element.lineNumber}"
-
+        override fun createStackElementTag(element: StackTraceElement): String {
+            return "X0(${element.fileName}:${element.lineNumber})"
+        }
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
             super.log(priority, "$tag", message, t)
         }

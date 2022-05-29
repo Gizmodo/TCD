@@ -63,7 +63,7 @@ class PrintViewModel : ViewModel() {
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .app(AppModule)
+        .app(AppModule(context))
         .nm(NetworkModule)
         .dbm(DataBaseModule(context))
         .datastore(DataStoreModule)

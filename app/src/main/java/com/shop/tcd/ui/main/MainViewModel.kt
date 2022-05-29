@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
 
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .app(AppModule)
+        .app(AppModule(context))
         .nm(NetworkModule)
         .dbm(DataBaseModule(context))
         .dbh(DataSourceModule)

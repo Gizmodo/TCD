@@ -5,6 +5,10 @@ import com.shop.tcd.data.dto.shop.ShopModel
 import com.shop.tcd.data.dto.user.UserModel
 
 class Constants {
+    object DataStore {
+        const val KEY_BASE_URL = "baseurl"
+    }
+
     object Inventory {
         const val DEBOUNCE_TIME = 1000L
         const val BARCODE_LENGTH = 13
@@ -14,7 +18,7 @@ class Constants {
     }
 
     object Network {
-        const val BASE_URL = "http://192.168.0.154/"
+        var BASE_URL = "http://192.168.0.154/"
         var TEST_SERVER_1 = "http://10.254.1.230:3000/"
         var TEST_SERVER_2 = "http://192.168.88.87:3000/"
         var PROD_SERVER_1 = "http://192.168.0.154/"
@@ -23,7 +27,7 @@ class Constants {
          * Изменяемый адрес, который указывает на выбранный магазин (сервер 1С)
          */
         var BASE_SHOP_URL = ""
-        const val OK_HTTP_TIMEOUT = 15L
+        const val OK_HTTP_TIMEOUT = 5L
         const val OK_HTTP_TIMEOUT_SHOP = 10L
     }
 
