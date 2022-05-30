@@ -8,7 +8,7 @@ import com.shop.tcd.ui.inventory.detail.InventoryItemDetailViewModel
 import com.shop.tcd.ui.login.LoginViewModel
 import com.shop.tcd.ui.main.MainViewModel
 import com.shop.tcd.ui.nomenclature.NomenclatureViewModel
-import com.shop.tcd.ui.options.OptionsFragment
+import com.shop.tcd.ui.options.OptionsViewModel
 import com.shop.tcd.ui.overestimation.OverEstimationViewModel
 import com.shop.tcd.ui.print.PrintViewModel
 import com.shop.tcd.ui.remains.RemainsViewModel
@@ -37,7 +37,7 @@ interface ViewModelInjector {
     fun inject(viewmodel: InventoryChronologyViewModel)
     fun inject(viewmodel: OverEstimationViewModel)
     fun inject(viewmodel: RemainsViewModel)
-    fun inject(fragment: OptionsFragment)
+    fun inject(viewmodel: OptionsViewModel)
 
     @Component.Builder
     interface Builder {

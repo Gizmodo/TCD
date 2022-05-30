@@ -1,66 +1,54 @@
 package com.shop.tcd.ui.options
 
-import android.app.Application
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.shop.tcd.App
 import com.shop.tcd.R
-import com.shop.tcd.core.di.*
-import com.shop.tcd.core.extension.textChanges
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.toObservable
 import com.shop.tcd.core.extension.viewBindingWithBinder
-import com.shop.tcd.core.utils.Constants
-import com.shop.tcd.core.utils.Constants.DataStore.KEY_BASE_URL
-import com.shop.tcd.core.utils.Constants.Network.BASE_URL
-import com.shop.tcd.data.local.DataStoreRepository
 import com.shop.tcd.databinding.FragmentOptionsBinding
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import io.reactivex.rxjava3.core.BackpressureStrategy
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
-import javax.inject.Inject
 
 class OptionsFragment : Fragment(R.layout.fragment_options) {
     private val binding by viewBindingWithBinder(FragmentOptionsBinding::bind)
-    private var job: Job? = null
-    private val context = App.applicationContext() as Application
-    private val injector: ViewModelInjector = DaggerViewModelInjector
-        .builder()
-        .app(AppModule(context))
-        .nm(NetworkModule)
-        .dbm(DataBaseModule(context))
-        .datastore(DataStoreModule)
-        .build()
-
-    init {
-        injector.inject(this)
-        Timber.d("Init OptionsFragment")
+    private val viewModel: OptionsViewModel by lazy {
+        getViewModel { OptionsViewModel() }
     }
-
-    @Inject
-    lateinit var ds: DataStoreRepository
+    private var subscriptions: CompositeDisposable = CompositeDisposable()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        job = serverChangeListener()
-        binding.edtServer.setText(BASE_URL)
+        initViewModelObservers()
+        initUIListener()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    fun serverChangeListener() = binding.edtServer
-        .textChanges()
-        .filterNot { it.isNullOrBlank() }
-        .debounce(Constants.Inventory.DEBOUNCE_TIME)
-        .onEach {
-            BASE_URL = it.toString()
-         //   ds.putString(KEY_BASE_URL, BASE_URL)
-        }
-        .launchIn(lifecycleScope)
+    private fun initUIListener() {
+        val subscribeEdtDescription = toObservable(binding.edtServer)
+            .toFlowable(BackpressureStrategy.DROP)
+            .observeOn(Schedulers.io())
+            .subscribe({ viewModel.saveBaseUrl(it) }, { t -> Timber.e(t) })
+        subscriptions.add(subscribeEdtDescription)
+    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job?.cancel()
+    private fun initViewModelObservers() {
+        viewModel.url.observe(viewLifecycleOwner) {
+            Timber.d("URL: $it")
+            binding.edtServer.setText(it)
+        }
+
+        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
+            Timber.e(it)
+            fancyException { it }
+        }
+    }
+
+    override fun onDestroy() {
+        subscriptions.clear()
+        super.onDestroy()
     }
 }

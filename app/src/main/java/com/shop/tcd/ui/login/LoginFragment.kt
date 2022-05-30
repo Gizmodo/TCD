@@ -72,10 +72,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun initViewModelObservers() {
-        viewModel.launchDataLoad()
-        /*lifecycleScope.launchWhenCreated {
-            viewModel.loadUsers()
-        }*/
+        lifecycleScope.launchWhenCreated {
+            viewModel.loadOptions()
+        }
+
         viewModel.usersLiveData.observe(viewLifecycleOwner) {
             Timber.d(it.toString())
             usersList = it
