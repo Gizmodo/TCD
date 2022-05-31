@@ -11,3 +11,5 @@ local.properties
 app/version.properties
 
 app/debug/
+
+app/agconnect-services.json

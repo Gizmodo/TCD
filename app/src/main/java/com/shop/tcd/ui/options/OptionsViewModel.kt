@@ -7,6 +7,7 @@ import com.shop.tcd.App
 import com.shop.tcd.core.di.*
 import com.shop.tcd.core.utils.Constants.DataStore.KEY_BASE_URL
 import com.shop.tcd.core.utils.SingleLiveEvent
+import com.shop.tcd.core.utils.Util.isValidServerAddress
 import com.shop.tcd.data.local.DataStoreRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -53,7 +54,7 @@ class OptionsViewModel : ViewModel() {
     }
 
     fun saveBaseUrl(url: String) {
-        val isValidDescription = url.isNotEmpty()
+        val isValidDescription = url.isValidServerAddress()
         if (isValidDescription) viewModelScope.launch {
             ds.putString(KEY_BASE_URL, url)
         }

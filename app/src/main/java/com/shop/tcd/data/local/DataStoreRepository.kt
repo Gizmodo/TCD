@@ -12,7 +12,6 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
 class DataStoreRepository @Inject constructor(private val context: Context) :
     IDataStoreRepository {
