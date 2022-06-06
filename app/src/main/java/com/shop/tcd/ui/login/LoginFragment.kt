@@ -33,24 +33,27 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         getViewModel { LoginViewModel() }
     }
 
+    private fun showAnimation() = with(binding) {
+        val rotate = RotateAnimation(
+            ANIMATION_FROM_DEGREE,
+            ANIMATION_TO_DEGREE,
+            Animation.RELATIVE_TO_SELF,
+            ANIMATION_PIVOT,
+            Animation.RELATIVE_TO_SELF,
+            ANIMATION_PIVOT
+        )
+        rotate.duration = ANIMATION_TIMEOUT
+        rotate.repeatMode = Animation.INFINITE
+        rotate.repeatCount = Animation.INFINITE
+        rotate.interpolator = AccelerateDecelerateInterpolator()
+        imageView.startAnimation(rotate)
+    }
+
+    private fun hideAnimation() {
+        binding.imageView.clearAnimation()
+    }
+
     private fun setStateUI(enabled: Boolean) = with(binding) {
-        if (!enabled) {
-            val rotate = RotateAnimation(
-                ANIMATION_FROM_DEGREE,
-                ANIMATION_TO_DEGREE,
-                Animation.RELATIVE_TO_SELF,
-                ANIMATION_PIVOT,
-                Animation.RELATIVE_TO_SELF,
-                ANIMATION_PIVOT
-            )
-            rotate.duration = ANIMATION_TIMEOUT
-            rotate.repeatMode = Animation.INFINITE
-            rotate.repeatCount = Animation.INFINITE
-            rotate.interpolator = AccelerateDecelerateInterpolator()
-            imageView.startAnimation(rotate)
-        } else {
-            imageView.clearAnimation()
-        }
         tilLogin.isFocusableInTouchMode = enabled
         tilPassword.isFocusableInTouchMode = enabled
         btnLogin.isEnabled = enabled
@@ -64,7 +67,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         showBuildVersion()
 
         initUIListener()
-        setStateUI(enabled = false)
+        setStateUI(false)
+        showAnimation()
         initViewModelObservers()
     }
 
@@ -74,26 +78,27 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
 
         viewModel.usersLiveData.observe(viewLifecycleOwner) {
-            Timber.d(it.toString())
             usersList = it
+            setStateUI(usersList.size > 0)
             setupLogins(binding.edtLogin, it)
         }
 
         viewModel.exceptionMessage.observe(viewLifecycleOwner) {
+            hideAnimation()
             Timber.e(it)
             fancyException { it }
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
+            hideAnimation()
             Timber.e(it)
             fancyError { it }
         }
 
         viewModel.loading.observe(viewLifecycleOwner) {
-            if (it) {
-                setStateUI(enabled = false)
-            } else {
-                setStateUI(enabled = true)
+            when (it) {
+                false -> hideAnimation()
+                true -> showAnimation()
             }
         }
     }
