@@ -3,7 +3,6 @@ package com.shop.tcd.core.extension
 import retrofit2.HttpException
 import retrofit2.Response
 
-
 fun <T : Any> T?.notNull(f: (it: T) -> Unit) {
     if (this != null) f(this)
 }

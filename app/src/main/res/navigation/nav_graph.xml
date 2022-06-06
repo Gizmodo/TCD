@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_loginFragment_to_printFragment"
             app:destination="@id/printFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_optionsFragment"
+            app:destination="@id/optionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/catalogFragment"
@@ -104,4 +107,9 @@
         android:name="com.shop.tcd.ui.remains.RemainsFragment"
         android:label="fragment_remains"
         tools:layout="@layout/fragment_remains" />
+    <fragment
+        android:id="@+id/optionsFragment"
+        android:name="com.shop.tcd.ui.options.OptionsFragment"
+        android:label="fragment_options"
+        tools:layout="@layout/fragment_options" />
 </navigation>

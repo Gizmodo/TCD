@@ -13,6 +13,7 @@ import com.shop.tcd.core.utils.ReceiverLiveData
 import com.shop.tcd.data.dto.remains.request.RemainsBarcodeFieldRequest
 import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
 import com.shop.tcd.data.dto.remains.response.RemainsResponse
+import com.shop.tcd.data.remote.ShopRepository
 import com.shop.tcd.data.repository.Repository
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -55,7 +56,7 @@ class RemainsViewModel : ViewModel() {
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .app(AppModule)
+        .app(AppModule(context))
         .nm(NetworkModule)
         .dbm(DataBaseModule(context))
         .datastore(DataStoreModule)
@@ -68,6 +69,10 @@ class RemainsViewModel : ViewModel() {
 
     @Inject
     lateinit var repository: Repository
+
+    @Inject
+    lateinit var shopRepository: ShopRepository
+
     private fun initDeviceObservables() {
         _urovoScanner = ReceiverLiveData(
             context,
@@ -110,7 +115,7 @@ class RemainsViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
             when (val response: NetworkResult<RemainsResponse> =
-                repository.getRemains(convertToRemainsRequestBody(list))) {
+                shopRepository.getRemains(convertToRemainsRequestBody(list))) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }

@@ -15,7 +15,8 @@ import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponseItem
 import com.shop.tcd.data.dto.printer.PrintersList
-import com.shop.tcd.data.repository.Repository
+import com.shop.tcd.data.remote.SettingsRepository
+import com.shop.tcd.data.remote.ShopRepository
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.time.LocalDateTime
@@ -63,7 +64,7 @@ class PrintViewModel : ViewModel() {
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .app(AppModule)
+        .app(AppModule(context))
         .nm(NetworkModule)
         .dbm(DataBaseModule(context))
         .datastore(DataStoreModule)
@@ -76,7 +77,11 @@ class PrintViewModel : ViewModel() {
     }
 
     @Inject
-    lateinit var repository: Repository
+    lateinit var repository: SettingsRepository
+
+    @Inject
+    lateinit var shopRepository: ShopRepository
+
     private fun initDeviceObservables() {
         _urovoScanner = ReceiverLiveData(
             context,
@@ -113,7 +118,7 @@ class PrintViewModel : ViewModel() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
             when (val response: NetworkResult<PriceTagResponse> =
-                repository.getPrintInfoByBarcodes(converterToPriceTag(list))) {
+                shopRepository.getPrintInfoByBarcodes(converterToPriceTag(list))) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }
