@@ -9,6 +9,7 @@ import com.shop.tcd.core.di.*
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.data.dto.shop.ShopsList
 import com.shop.tcd.data.remote.SettingsRepository
+import com.shop.tcd.data.repository.Repository
 import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -50,13 +51,23 @@ class MainViewModel : ViewModel() {
     }
 
     @Inject
-    lateinit var repository: SettingsRepository
+    lateinit var settingsRepository: SettingsRepository
+
+    @Inject
+    lateinit var repository: Repository
+
+    fun clearNomenclature() {
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            repository.deleteAllNomenclature()
+        }
+    }
 
     private fun loadShops() {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response = repository.shops()) {
+            when (val response = settingsRepository.shops()) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }
