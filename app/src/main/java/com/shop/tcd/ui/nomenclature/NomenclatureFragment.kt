@@ -1,10 +1,12 @@
 package com.shop.tcd.ui.nomenclature
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -46,6 +48,22 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
             } else {
                 viewModel.loadNomenclature()
             }
+        }
+        binding.fabClear.setOnClickListener {
+            clearNomenclature()
+        }
+    }
+
+    private fun clearNomenclature() {
+        val builderAlert = AlertDialog.Builder(requireContext())
+        with(builderAlert) {
+            setTitle("Внимание")
+            setMessage("Очистить номенклатуру?")
+            setPositiveButton("Да") { _: DialogInterface, _: Int ->
+                viewModel.clearNomenclature()
+            }
+            setNegativeButton("Нет") { _, _ -> fancyInfo { "Очистка отменена" } }
+            show()
         }
     }
 

@@ -53,6 +53,14 @@ class NomenclatureViewModel : ViewModel() {
     @Inject
     lateinit var repository: Repository
 
+    fun clearNomenclature() {
+        job?.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            repository.deleteAllNomenclature()
+            loadNomenclature()
+        }
+    }
+
     fun loadNomenclature() {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
