@@ -19,15 +19,13 @@ class Constants {
 
     object Network {
         var BASE_URL = "http://192.168.0.154/"
-        var TEST_SERVER_1 = "http://10.254.1.230:3000/"
-        var TEST_SERVER_2 = "http://192.168.88.87:3000/"
-        var PROD_SERVER_1 = "http://192.168.0.154/"
 
         /**
          * Изменяемый адрес, который указывает на выбранный магазин (сервер 1С)
          */
         var BASE_SHOP_URL = ""
-        const val OK_HTTP_TIMEOUT = 5L
+        const val OK_HTTP_CONNECT_TIMEOUT = 15L
+        const val OK_HTTP_RW_TIMEOUT = 5L
         const val OK_HTTP_TIMEOUT_SHOP = 10L
     }
 

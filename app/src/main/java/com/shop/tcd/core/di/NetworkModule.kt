@@ -5,7 +5,8 @@ import com.google.gson.GsonBuilder
 import com.shop.tcd.core.utils.BasicAuthInterceptor
 import com.shop.tcd.core.utils.Constants.Network.BASE_SHOP_URL
 import com.shop.tcd.core.utils.Constants.Network.BASE_URL
-import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_TIMEOUT
+import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_CONNECT_TIMEOUT
+import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_RW_TIMEOUT
 import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_TIMEOUT_SHOP
 import com.shop.tcd.data.remote.SettingsApi
 import com.shop.tcd.data.remote.ShopApi
@@ -47,9 +48,9 @@ object NetworkModule {
             .addInterceptor(logging)
             .addInterceptor(BasicAuthInterceptor("tsd", "tsd159753"))
             .eventListener(BugsnagOkHttpPlugin())
-            .connectTimeout(OK_HTTP_TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(OK_HTTP_TIMEOUT, TimeUnit.MINUTES)
-            .writeTimeout(OK_HTTP_TIMEOUT, TimeUnit.MINUTES)
+            .connectTimeout(OK_HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
+            .readTimeout(OK_HTTP_RW_TIMEOUT, TimeUnit.MINUTES)
+            .writeTimeout(OK_HTTP_RW_TIMEOUT, TimeUnit.MINUTES)
             .build()
     }
 
