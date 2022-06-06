@@ -9,19 +9,17 @@ import com.shop.tcd.App
 import com.shop.tcd.core.di.*
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.extension.notNull
-import com.shop.tcd.core.utils.Constants
+import com.shop.tcd.core.utils.*
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_PREFIX
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_CRC
 import com.shop.tcd.core.utils.Constants.Inventory.CODE_LENGTH
 import com.shop.tcd.core.utils.Constants.SelectedObjects.shopTemplate
-import com.shop.tcd.core.utils.ReceiverLiveData
-import com.shop.tcd.core.utils.SearchType
-import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.inventory.InvItem
 import com.shop.tcd.data.dto.inventory.InventoryPair
 import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
+import com.shop.tcd.data.remote.ShopRepository
 import com.shop.tcd.data.repository.Repository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -42,24 +40,18 @@ class InventoryViewModel : ViewModel() {
     private var _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> get() = _loading
 
-    private var _successMessage = MutableLiveData<String>()
-    val successMessage: LiveData<String> get() = _successMessage
+    private var _successMessage = SingleLiveEvent<String>()
+    val successMessage: SingleLiveEvent<String> get() = _successMessage
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
     }
 
-    /**
-     * Наблюдатели для терминалов
-     */
     private var _urovoScanner = MutableLiveData<String>()
     val urovoScanner: LiveData<String> get() = _urovoScanner
 
     private var _idataScanner = MutableLiveData<String>()
     val idataScanner: LiveData<String> get() = _idataScanner
-
-    private var _urovoKeyboard = MutableLiveData<Boolean>()
-    val urovoKeyboard: LiveData<Boolean> get() = _urovoKeyboard
 
     private var _inventoryList = MutableLiveData<List<InvItem>>()
     val inventoryList: LiveData<List<InvItem>> get() = _inventoryList
@@ -68,7 +60,7 @@ class InventoryViewModel : ViewModel() {
     private val context = App.applicationContext() as Application
 
     private val injector: ViewModelInjector =
-        DaggerViewModelInjector.builder().app(AppModule).dbm(DataBaseModule(context))
+        DaggerViewModelInjector.builder().app(AppModule(context)).dbm(DataBaseModule(context))
             .nm(NetworkModule).datastore(DataStoreModule).build()
 
     init {
@@ -79,6 +71,9 @@ class InventoryViewModel : ViewModel() {
 
     @Inject
     lateinit var repository: Repository
+
+    @Inject
+    lateinit var shopRepository: ShopRepository
 
     fun clearInventory() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -103,7 +98,7 @@ class InventoryViewModel : ViewModel() {
                     prefix = Constants.SelectedObjects.ShopModel.prefix,
                     document = list
                 )
-                when (val response = repository.postInventory(inventoryResult)) {
+                when (val response = shopRepository.postInventory(inventoryResult)) {
                     is NetworkResult.Error -> {
                         onError("${response.code} ${response.message}")
                     }
@@ -152,6 +147,7 @@ class InventoryViewModel : ViewModel() {
                         Timber.d("Поиск по шаблону")
                         when (shopTemplate.searchType) {
                             SearchType.SearchByCode -> {
+                                searchString = searchString.toInt().toString()
                                 Timber.d("Поиск по коду $searchString")
                                 job?.cancel()
                                 job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
@@ -242,14 +238,19 @@ class InventoryViewModel : ViewModel() {
             shopTemplate.weightPosition.first,
             shopTemplate.weightPosition.second
         )
-        val kg = productWeight.take(2).toInt()
-        val gr = productWeight.takeLast(3).toInt()
+        val kg = productWeight.take(2)
+        val gr = productWeight.takeLast(3)
         return "$kg.$gr".toFloat().toString().replace('.', ',')
     }
 
     private fun isWeightProduct(barcode: String, code: String?): Boolean {
+        var paddedCode: String = code.toString()
+        code?.let {
+            paddedCode = it.padStart(5, '0')
+        }
+
         when {
-            barcode.length.equals(BARCODE_LENGTH) && shopTemplate.prefix.equals(barcode.take(2)) && code.equals(
+            barcode.length.equals(BARCODE_LENGTH) && shopTemplate.prefix.equals(barcode.take(2)) && paddedCode.equals(
                 barcode.substring(
                     shopTemplate.infoPosition.first,
                     shopTemplate.infoPosition.second
@@ -263,15 +264,9 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
-    fun parseBarcode(item: NomenclatureItem?, manualBarcode: String): StatefulData<String> {
+    fun parseBarcode(item: NomenclatureItem?, barcode: String): StatefulData<String> {
         var result: StatefulData<String> = StatefulData.Error("")
         item.notNull {
-            var barcode: String = ""
-            if (it.barcode.length == 0) {
-                barcode = manualBarcode
-            } else {
-                barcode = it.barcode
-            }
             Timber.d("parseBarcode $barcode")
             when {
                 isEAN13(barcode) -> {
@@ -298,18 +293,6 @@ class InventoryViewModel : ViewModel() {
             intent.extras?.let { data = it["barcode_string"].toString() }
             data
         }
-
-        _urovoKeyboard =
-            ReceiverLiveData(
-                context,
-                IntentFilter("android.intent.action_keyboard")
-            ) { _, intent ->
-                var data = false
-                intent.extras?.let {
-                    data = it["kbrd_enter"].toString() == "enter"
-                }
-                data
-            }
 
         _idataScanner = ReceiverLiveData(
             context,

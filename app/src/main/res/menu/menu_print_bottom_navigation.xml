@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_clean"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="@string/menu_clean" />
+    <item
+        android:id="@+id/menu_print"
+        android:icon="@drawable/ic_printer"
+        android:title="@string/print" />
+    <item
+        android:id="@+id/menu_add"
+        android:icon="@drawable/ic_post_add"
+        android:title="@string/add" />
+</menu>

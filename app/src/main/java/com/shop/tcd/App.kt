@@ -7,13 +7,11 @@ import android.content.Context
 import com.bugsnag.android.Bugsnag
 import com.bugsnag.android.Configuration
 import com.bugsnag.android.okhttp.BugsnagOkHttpPlugin
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.huawei.agconnect.common.network.AccessNetworkManager
+import com.huawei.agconnect.crash.AGConnectCrash
 import timber.log.Timber
 
 class App : Application() {
-    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
-
     init {
         instance = this
     }
@@ -27,6 +25,12 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        if (BuildConfig.DEBUG) {
+            Timber.plant(LineNumberDebugTree())
+        }
+        Timber.d("------------------------Application create------------------------")
+        AGConnectCrash.getInstance().enableCrashCollection(true)
+        AccessNetworkManager.getInstance().setAccessNetwork(true)
         val bugsnagOkHttpPlugin = BugsnagOkHttpPlugin()
         val config = Configuration.load(this)
         config.addPlugin(bugsnagOkHttpPlugin)
@@ -34,19 +38,13 @@ class App : Application() {
         /*  LeakCanary.config = LeakCanary.config.copy(
               onHeapAnalyzedListener = BugsnagLeakUploader(applicationContext = this)
           )*/
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-        if (BuildConfig.DEBUG) {
-            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
-            Timber.plant(LineNumberDebugTree())
-        } else {
-            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(true)
-        }
     }
 
     inner class LineNumberDebugTree : Timber.DebugTree() {
 
-        override fun createStackElementTag(element: StackTraceElement) =
-            "${element.fileName}:${element.lineNumber}"
+        override fun createStackElementTag(element: StackTraceElement): String {
+            return "X0(${element.fileName}:${element.lineNumber})"
+        }
 
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
             super.log(priority, "$tag", message, t)

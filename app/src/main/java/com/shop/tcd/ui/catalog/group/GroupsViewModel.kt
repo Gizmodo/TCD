@@ -9,6 +9,7 @@ import com.shop.tcd.core.di.*
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.data.dto.group.GroupsList
 import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
+import com.shop.tcd.data.remote.ShopRepository
 import com.shop.tcd.data.repository.Repository
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -38,7 +39,7 @@ class GroupsViewModel : ViewModel() {
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .app(AppModule)
+        .app(AppModule(context))
         .nm(NetworkModule)
         .dbm(DataBaseModule(context))
         .datastore(DataStoreModule)
@@ -52,11 +53,14 @@ class GroupsViewModel : ViewModel() {
     @Inject
     lateinit var repository: Repository
 
+    @Inject
+    lateinit var shopRepository: ShopRepository
+
     private fun loadGroups() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response = repository.getGroupsList()) {
+            when (val response = shopRepository.getGroupsList()) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }
@@ -75,7 +79,7 @@ class GroupsViewModel : ViewModel() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response = repository.getNomenclatureByGroup(filtered)) {
+            when (val response = shopRepository.getNomenclatureByGroup(filtered)) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }

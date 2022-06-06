@@ -16,6 +16,7 @@
     <string name="loadremainder">Загрузить товары по остаткам</string>
     <string name="loadgroups">Загрузить товары с отбором по группам</string>
     <string name="loadturnover">Загрузить товары по оборотам за период</string>
+    <string name="remains">Остатки онлайн</string>
     <string name="txtLoadSelectedGroups">Загрузить выбранные группы товаров</string>
     <string name="shop_select">Выбор магазина</string>
     <string name="login_select">Выбор пользователя</string>
@@ -50,4 +51,9 @@
     <string name="menu_chronology">Хронология</string>
     <string name="menu_insert">Добавить</string>
     <string name="totalCount">Общее кол-во</string>
+    <string name="remain">Остаток</string>
+    <string name="doc">Последний приходный документ</string>
+    <string name="sales">Оперативные продажи с касс</string>
+    <string name="price_remains">Цена</string>
+    <string name="remains_request">Запросить информацию</string>
 </resources>

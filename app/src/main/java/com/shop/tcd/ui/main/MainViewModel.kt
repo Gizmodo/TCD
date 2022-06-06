@@ -38,7 +38,7 @@ class MainViewModel : ViewModel() {
 
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .app(AppModule)
+        .app(AppModule(context))
         .nm(NetworkModule)
         .dbm(DataBaseModule(context))
         .dbh(DataSourceModule)
@@ -50,13 +50,13 @@ class MainViewModel : ViewModel() {
     }
 
     @Inject
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var repository: SettingsRepository
 
     private fun loadShops() {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response = settingsRepository.shops()) {
+            when (val response = repository.shops()) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }

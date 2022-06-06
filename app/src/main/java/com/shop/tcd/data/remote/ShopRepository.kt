@@ -7,29 +7,34 @@ import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureList
 import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
+import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
+import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import javax.inject.Inject
 
 class ShopRepository @Inject constructor(
-    private val apiService: ShopApi,
+    private val shopApi: ShopApi,
 ) {
     suspend fun getPrintInfoByBarcodes(barcodesList: PriceTag): NetworkResult<PriceTagResponse> =
-        handleApi { apiService.getPriceTag(barcodesList) }
+        handleApi { shopApi.getPriceTag(barcodesList) }
+
+    suspend fun getRemains(barcodesList: RemainsRequestBody): NetworkResult<RemainsResponse> =
+        handleApi { shopApi.getRemains(barcodesList) }
 
     suspend fun getNomenclatureFull(): NetworkResult<NomenclatureList> =
-        handleApi { apiService.getNomenclatureFull() }
+        handleApi { shopApi.getNomenclatureFull() }
 
     suspend fun getNomenclatureRemainders(): NetworkResult<NomenclatureList> =
-        handleApi { apiService.getNomenclatureRemainders() }
+        handleApi { shopApi.getNomenclatureRemainders() }
 
     suspend fun getNomenclatureByPeriod(period: String): NetworkResult<NomenclatureList> =
-        handleApi { apiService.getNomenclatureByPeriod(period) }
+        handleApi { shopApi.getNomenclatureByPeriod(period) }
 
     suspend fun getGroupsList(): NetworkResult<GroupsList> =
-        handleApi { apiService.getGroupsList() }
+        handleApi { shopApi.getGroupsList() }
 
     suspend fun getNomenclatureByGroup(filter: String): NetworkResult<NomenclatureList> =
-        handleApi { apiService.getNomenclatureByGroup(filter) }
+        handleApi { shopApi.getNomenclatureByGroup(filter) }
 
     suspend fun postInventory(data: InventoryResult): NetworkResult<String> =
-        handleApi { apiService.postInventory("", data) }
+        handleApi { shopApi.postInventory("", data) }
 }

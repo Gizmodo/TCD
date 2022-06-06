@@ -3,10 +3,12 @@ package com.shop.tcd.ui.print
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
@@ -17,17 +19,14 @@ import androidx.work.*
 import com.google.android.material.textfield.TextInputEditText
 import com.shop.tcd.ExampleWorker
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.fancyError
-import com.shop.tcd.core.extension.fancyException
-import com.shop.tcd.core.extension.getViewModel
-import com.shop.tcd.core.extension.viewBindingWithBinder
+import com.shop.tcd.core.extension.*
 import com.shop.tcd.core.utils.Constants.SelectedObjects.PrinterModel
 import com.shop.tcd.core.utils.Constants.SelectedObjects.PrinterModelPosition
+import com.shop.tcd.core.utils.Constants.SelectedObjects.isPrinterSelected
 import com.shop.tcd.core.utils.TcpClientService
 import com.shop.tcd.data.dto.printer.PrintersList
 import com.shop.tcd.databinding.FragmentPrintBinding
 import com.shop.tcd.ui.print.adapter.PriceTagAdapter
-import timber.log.Timber
 
 class PrintFragment : Fragment(R.layout.fragment_print) {
     /*  val vm = getViewModel<CatchViewModel>()
@@ -35,8 +34,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
       val activityScopedVm = activity?.getViewModel<CatchViewModel>()
       val activityScopedVm2 = activity?.getViewModel { CatchViewModel().apply { init(stuff) } }*/
     private val binding by viewBindingWithBinder(FragmentPrintBinding::bind)
-    private lateinit var btnPrint: Button
-    private lateinit var btnInsertItem: Button
     private lateinit var edtBarcode: TextInputEditText
     private lateinit var shimmer: ConstraintLayout
     private lateinit var rvPriceTags: RecyclerView
@@ -51,10 +48,19 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
         initUIListeners()
+        initNavigationMenuListeners()
         initRecyclerView()
-        setStateUI(enabled = false)
         restoreSelectedPrinter()
         initViewModelObservers()
+    }
+
+    private fun initUIListeners() {
+        edtBarcode.setOnKeyListener { view, i, keyEvent ->
+            if (i == 66 && keyEvent.action == KeyEvent.ACTION_UP) {
+                addBarcode()
+            }
+            false
+        }
     }
 
     private fun initRecyclerView() {
@@ -72,30 +78,58 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
 
     private fun restoreSelectedPrinter() {
         if (PrinterModelPosition != -1) {
-            binding.edtPrinter.setText(PrinterModel.ip)
-            setStateUI(enabled = true)
+            binding.edtPrinter.setText(PrinterModel.name)
         }
     }
 
     private fun initUI() {
-        btnPrint = binding.btnPrint
         shimmer = binding.shimmer
         edtBarcode = binding.edtBarcode
-        btnInsertItem = binding.btnInsertItem
         rvPriceTags = binding.rvPriceTags
+        rvPriceTags.isFocusable = false
+        binding.edtBarcode.apply {
+            showSoftInputOnFocus = false
+            setOnClickListener { hideKeyboard() }
+            setOnFocusChangeListener { _, _ -> hideKeyboard() }
+        }
     }
 
-    private fun initUIListeners() {
-        btnPrint.setOnClickListener {
-            viewModel.loadPrintInfoByBarcodes(list)
-        }
+    private fun hideKeyboard() {
+        this.hideSoftKeyboardExt()
+    }
 
-        btnInsertItem.setOnClickListener {
-            val inputString = edtBarcode.text.toString()
-            if (inputString.isNotEmpty()) {
-                list.add(0, inputString)
-                adapter.notifyItemInserted(0)
+    private fun initNavigationMenuListeners() {
+        binding.navView.setOnItemSelectedListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.menu_add -> {
+                    addBarcode()
+                    true
+                }
+                R.id.menu_print -> {
+                    if (list.isNotEmpty()) {
+                        viewModel.loadPrintInfoByBarcodes(list)
+                    } else {
+                        fancyError { "Список для печати пустой!" }
+                    }
+                    true
+                }
+
+                R.id.menu_clean -> {
+                    list.removeAll(list)
+                    adapter.notifyDataSetChanged()
+                    true
+                }
+                else -> false
             }
+        }
+    }
+
+    private fun addBarcode() {
+        val inputString = edtBarcode.text.toString()
+        if (inputString.isNotEmpty()) {
+            list.add(0, inputString)
+            adapter.notifyItemInserted(0)
+            clearFields()
         }
     }
 
@@ -105,10 +139,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
 
     private fun hideShimmer() {
         shimmer.visibility = View.GONE
-    }
-
-    private fun setStateUI(enabled: Boolean) {
-        btnPrint.isEnabled = enabled
     }
 
     private fun initViewModelObservers() {
@@ -122,12 +152,10 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
         }
 
         viewModel.exceptionMessage.observe(viewLifecycleOwner) {
-            Timber.e(it)
             fancyException { it }
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
-            Timber.e(it)
             fancyError { it }
         }
 
@@ -137,10 +165,44 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
                 else -> hideShimmer()
             }
         }
+        viewModel.urovoKeyboard.observe(viewLifecycleOwner) {
+            if (edtBarcode.isFocused) {
+                moveFocus(edtBarcode)
+                addBarcode()
+            }
+        }
+
+        viewModel.urovoScanner.observe(viewLifecycleOwner) {
+            onReceiveScannerData(it)
+        }
+
+        viewModel.idataScanner.observe(viewLifecycleOwner) {
+            onReceiveScannerData(it)
+        }
+    }
+
+    private fun moveFocus(view: EditText) {
+        view.requestFocus()
+        view.setSelection(view.text.length, 0)
+    }
+
+    private fun clearFields() {
+        edtBarcode.setText("")
+    }
+
+    private fun onReceiveScannerData(message: String) {
+        if (message.isNotEmpty()) {
+            clearFields()
+            edtBarcode.apply {
+                setText(message)
+                moveFocus(this)
+            }
+            addBarcode()
+        }
     }
 
     private fun runService(list: List<String>) {
-        if (list.isNotEmpty()) {
+        if (isPrinterSelected()) {
             val intent = Intent(requireContext(), TcpClientService::class.java)
             val payload = list.joinToString(separator = "")
             intent.putExtra("payload", payload)
@@ -151,6 +213,8 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
             } else {
                 requireContext().startService(intent)
             }
+        } else {
+            fancyError { "Не выбран принтер!" }
         }
     }
 
@@ -174,20 +238,19 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     private fun setupAutoComplete(view: AutoCompleteTextView, items: PrintersList) {
         val printersIP: AbstractList<String?> = object : AbstractList<String?>() {
             override fun get(index: Int): String {
-                return items.printers[index].ip
+                return items[index].name
             }
 
             override val size: Int
-                get() = items.printers.size
+                get() = items.size
         }
         val adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, printersIP)
         view.setAdapter(adapter)
 
         view.setOnItemClickListener { _, _, position, _ ->
-            PrinterModel = items.printers[position]
+            PrinterModel = items[position]
             PrinterModelPosition = position
-            setStateUI(enabled = true)
         }
         if (PrinterModelPosition != -1) {
             view.setText(adapter.getItem(PrinterModelPosition), false)

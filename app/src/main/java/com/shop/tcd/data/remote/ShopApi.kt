@@ -5,6 +5,8 @@ import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureList
 import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
+import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
+import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -24,6 +26,13 @@ interface ShopApi {
     @POST("pricetag/POST")
     @Headers("Content-Type:application/json")
     suspend fun getPriceTag(@Body priceTag: PriceTag): Response<PriceTagResponse>
+
+    /**
+     * Запрос информации остатков на основе ШК/кода
+     */
+    @POST("remains")
+    @Headers("Content-Type:application/json")
+    suspend fun getRemains(@Body body: RemainsRequestBody): Response<RemainsResponse>
 
     @GET("getgrouplist")
     suspend fun getGroupsList(): Response<GroupsList>

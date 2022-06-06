@@ -5,6 +5,7 @@ import com.shop.tcd.data.dto.shop.ShopsList
 import com.shop.tcd.data.dto.user.UsersList
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface SettingsApi {
     @GET("Tech/hs/tsd/users/get")
@@ -14,5 +15,5 @@ interface SettingsApi {
     suspend fun getShopsSuspend(): Response<ShopsList>
 
     @GET("Tech/hs/tsd/printers/get")
-    suspend fun getPrinters(): Response<PrintersList>
+    suspend fun getPrinters(@Query("prefix") prefix: String): Response<PrintersList>
 }

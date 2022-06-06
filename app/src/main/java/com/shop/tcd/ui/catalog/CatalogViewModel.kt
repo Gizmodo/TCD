@@ -8,6 +8,7 @@ import com.shop.tcd.App
 import com.shop.tcd.core.di.*
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
+import com.shop.tcd.data.remote.ShopRepository
 import com.shop.tcd.data.repository.Repository
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -34,7 +35,7 @@ class CatalogViewModel : ViewModel() {
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
-        .app(AppModule)
+        .app(AppModule(context))
         .nm(NetworkModule)
         .dbm(DataBaseModule(context))
         .datastore(DataStoreModule)
@@ -47,11 +48,14 @@ class CatalogViewModel : ViewModel() {
     @Inject
     lateinit var repository: Repository
 
+    @Inject
+    lateinit var shopRepository: ShopRepository
+
     fun loadNomenclatureFull() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response = repository.getNomenclatureFull()) {
+            when (val response = shopRepository.getNomenclatureFull()) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }
@@ -77,7 +81,7 @@ class CatalogViewModel : ViewModel() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response = repository.getNomenclatureRemainders()) {
+            when (val response = shopRepository.getNomenclatureRemainders()) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }
@@ -103,7 +107,7 @@ class CatalogViewModel : ViewModel() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response = repository.getNomenclatureByPeriod(period)) {
+            when (val response = shopRepository.getNomenclatureByPeriod(period)) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }

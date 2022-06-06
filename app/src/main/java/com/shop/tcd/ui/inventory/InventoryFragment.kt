@@ -3,6 +3,7 @@ package com.shop.tcd.ui.inventory
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -61,10 +62,12 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     }
 
     private fun onItemClick(inventoryItem: InvItem) {
-        navigateExt(InventoryFragmentDirections.actionInventoryFragmentToInventoryItemDetailFragment(
-            inventoryItem.code,
-            inventoryItem.barcode
-        ))
+        navigateExt(
+            InventoryFragmentDirections.actionInventoryFragmentToInventoryItemDetailFragment(
+                inventoryItem.code,
+                inventoryItem.barcode
+            )
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,7 +124,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
                 txtPrice.text = price
                 txtPLU.text = plu
             }
-            when (val response = viewModel.parseBarcode(item,edtBarcode.text.toString())) {
+            when (val response = viewModel.parseBarcode(item, edtBarcode.text.toString())) {
                 is Error -> {
                     fancyErrorShort { response.msg }
                     edtCount.setText("")
@@ -247,7 +250,13 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             setSelectAllOnFocus(true)
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
-            setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus) }
+            setOnKeyListener { _: View, i: Int, keyEvent: KeyEvent ->
+                if (i == 66 && keyEvent.action == KeyEvent.ACTION_UP) {
+                    moveFocus(edtCount)
+                    addNomenclatureItem()
+                }
+                !true
+            }
         }
 
         edtBarcode.apply {
@@ -255,7 +264,13 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             setSelectAllOnFocus(true)
             setOnClickListener { hideKeyboard() }
             setOnFocusChangeListener { _, _ -> hideKeyboard() }
-            setOnFocusChangeListener { view, hasFocus -> onFocus(view, hasFocus) }
+            setOnKeyListener { _: View, i: Int, keyEvent: KeyEvent ->
+                if (i == 66 && keyEvent.action == KeyEvent.ACTION_UP) {
+                    moveFocus(binding.edtCount)
+                    onFocus(binding.edtCount, true)
+                }
+                !true
+            }
         }
     }
 
@@ -278,15 +293,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             data = items
             adapterInventory.updateList(data)
             adapterInventory.notifyDataSetChanged()
-        }
-
-        viewModel.urovoKeyboard.observe(viewLifecycleOwner) {
-            if (edtCount.isFocused) {
-                moveFocus(edtCount)
-                addNomenclatureItem()
-            } else if (edtBarcode.isFocused) {
-                moveFocus(edtCount)
-            }
         }
 
         viewModel.urovoScanner.observe(viewLifecycleOwner) {

@@ -1,68 +1,18 @@
 package com.shop.tcd.data.repository
 
-import com.shop.tcd.core.extension.NetworkResult
-import com.shop.tcd.core.extension.handleApi
-import com.shop.tcd.data.dto.group.GroupsList
 import com.shop.tcd.data.dto.inventory.InvItem
-import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
-import com.shop.tcd.data.dto.nomenclature.NomenclatureList
-import com.shop.tcd.data.dto.pricetag.PriceTag
-import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
-import com.shop.tcd.data.dto.printer.PrintersList
-import com.shop.tcd.data.dto.shop.ShopsList
-import com.shop.tcd.data.dto.user.UsersList
 import com.shop.tcd.data.local.InventoryDao
 import com.shop.tcd.data.local.NomenclatureDao
-import com.shop.tcd.data.remote.SettingsApi
-import com.shop.tcd.data.remote.ShopApi
 import javax.inject.Inject
 
 class Repository @Inject constructor(
     private val inventoryDao: InventoryDao,
     private val nomenclatureDao: NomenclatureDao,
-    private val shopApi: ShopApi,
-    private val settingsApi: SettingsApi,
 ) : IRepository {
-    override suspend fun invoke(): NetworkResult<PrintersList> =
-        handleApi { settingsApi.getPrinters() }
-
-    override suspend fun printers(): NetworkResult<PrintersList> =
-        handleApi { settingsApi.getPrinters() }
-
-    override suspend fun shops(): NetworkResult<ShopsList> =
-        handleApi { settingsApi.getShopsSuspend() }
-
-    override suspend fun users(): NetworkResult<UsersList> =
-        handleApi { settingsApi.getUsersSuspend() }
-
-    //*************************************************************************************************
-    override suspend fun getPrintInfoByBarcodes(barcodesList: PriceTag): NetworkResult<PriceTagResponse> =
-        handleApi { shopApi.getPriceTag(barcodesList) }
-
-    override suspend fun getNomenclatureFull(): NetworkResult<NomenclatureList> =
-        handleApi { shopApi.getNomenclatureFull() }
-
-    override suspend fun getNomenclatureRemainders(): NetworkResult<NomenclatureList> =
-        handleApi { shopApi.getNomenclatureRemainders() }
-
-    override suspend fun getNomenclatureByPeriod(period: String): NetworkResult<NomenclatureList> =
-        handleApi { shopApi.getNomenclatureByPeriod(period) }
-
-    override suspend fun getGroupsList(): NetworkResult<GroupsList> =
-        handleApi { shopApi.getGroupsList() }
-
-    override suspend fun getNomenclatureByGroup(filter: String): NetworkResult<NomenclatureList> =
-        handleApi { shopApi.getNomenclatureByGroup(filter) }
-
-    override suspend fun postInventory(data: InventoryResult): NetworkResult<String> =
-        handleApi { shopApi.postInventory("", data) }
-
     override suspend fun getAll(): List<NomenclatureItem> {
         return nomenclatureDao.getAll()
     }
-//*************************************************************************************************
-
 
     override suspend fun getInventarisationItems(): List<InvItem> = inventoryDao.selectAllSuspend()
 
