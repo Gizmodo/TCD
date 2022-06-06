@@ -71,7 +71,7 @@ class LoginViewModel : ViewModel() {
             val retro = NetworkModule_ProvideRetrofitInterfaceFactory(ok)
             val api = NetworkModule_ProvideSettingsApiFactory(retro)
 
-            val settingsRepository = SettingsRepository(apiService = api.get())
+            val settingsRepository = SettingsRepository(settingsApi = api.get())
 
             _loading.postValue(true)
             when (val response = settingsRepository.users()) {

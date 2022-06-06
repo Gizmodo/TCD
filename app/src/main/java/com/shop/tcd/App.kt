@@ -45,6 +45,7 @@ class App : Application() {
         override fun createStackElementTag(element: StackTraceElement): String {
             return "X0(${element.fileName}:${element.lineNumber})"
         }
+
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
             super.log(priority, "$tag", message, t)
         }

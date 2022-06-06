@@ -12,29 +12,29 @@ import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import javax.inject.Inject
 
 class ShopRepository @Inject constructor(
-    private val apiService: ShopApi,
+    private val shopApi: ShopApi,
 ) {
     suspend fun getPrintInfoByBarcodes(barcodesList: PriceTag): NetworkResult<PriceTagResponse> =
-        handleApi { apiService.getPriceTag(barcodesList) }
+        handleApi { shopApi.getPriceTag(barcodesList) }
 
-    suspend fun getRemainsByBarcodes(barcodesList: RemainsRequestBody): NetworkResult<RemainsResponse> =
-        handleApi { apiService.getRemains(barcodesList) }
+    suspend fun getRemains(barcodesList: RemainsRequestBody): NetworkResult<RemainsResponse> =
+        handleApi { shopApi.getRemains(barcodesList) }
 
     suspend fun getNomenclatureFull(): NetworkResult<NomenclatureList> =
-        handleApi { apiService.getNomenclatureFull() }
+        handleApi { shopApi.getNomenclatureFull() }
 
     suspend fun getNomenclatureRemainders(): NetworkResult<NomenclatureList> =
-        handleApi { apiService.getNomenclatureRemainders() }
+        handleApi { shopApi.getNomenclatureRemainders() }
 
     suspend fun getNomenclatureByPeriod(period: String): NetworkResult<NomenclatureList> =
-        handleApi { apiService.getNomenclatureByPeriod(period) }
+        handleApi { shopApi.getNomenclatureByPeriod(period) }
 
     suspend fun getGroupsList(): NetworkResult<GroupsList> =
-        handleApi { apiService.getGroupsList() }
+        handleApi { shopApi.getGroupsList() }
 
     suspend fun getNomenclatureByGroup(filter: String): NetworkResult<NomenclatureList> =
-        handleApi { apiService.getNomenclatureByGroup(filter) }
+        handleApi { shopApi.getNomenclatureByGroup(filter) }
 
     suspend fun postInventory(data: InventoryResult): NetworkResult<String> =
-        handleApi { apiService.postInventory("", data) }
+        handleApi { shopApi.postInventory("", data) }
 }

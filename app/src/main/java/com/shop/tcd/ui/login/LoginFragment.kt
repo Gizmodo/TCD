@@ -1,11 +1,7 @@
 package com.shop.tcd.ui.login
 
 import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
-import android.os.Build
 import android.os.Bundle
 import android.text.format.Formatter
 import android.view.View
@@ -16,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.shop.tcd.BuildConfig
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.*
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_FROM_DEGREE
@@ -64,7 +61,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showIPAddress()
-        showVPNUsage()
+        showBuildVersion()
 
         initUIListener()
         setStateUI(enabled = false)
@@ -149,36 +146,8 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
     }
 
-    private fun showVPNUsage() {
-        when {
-            vpnActive() -> {
-                binding.txtVPNStatus.text = "VPN"
-            }
-            else -> {
-                binding.txtVPNStatus.text = "No VPN"
-            }
-        }
-    }
-
-    private fun vpnActive(): Boolean {
-        var vpnInUse = false
-        val connectivityManager =
-            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val activeNetwork: Network? = connectivityManager.activeNetwork
-            val caps = connectivityManager.getNetworkCapabilities(activeNetwork)
-            return caps!!.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
-        }
-        val networks: Array<Network> = connectivityManager.allNetworks
-        for (i in networks.indices) {
-            val caps = connectivityManager.getNetworkCapabilities(networks[i])
-            if (caps!!.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
-                vpnInUse = true
-                break
-            }
-        }
-        return vpnInUse
+    private fun showBuildVersion() {
+        binding.txtVPNStatus.text = BuildConfig.VERSION_NAME
     }
 
     private fun showIPAddress() {

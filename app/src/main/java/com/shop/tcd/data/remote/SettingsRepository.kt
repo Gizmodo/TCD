@@ -8,17 +8,17 @@ import com.shop.tcd.data.dto.user.UsersList
 import javax.inject.Inject
 
 class SettingsRepository @Inject constructor(
-    private val apiService: SettingsApi,
+    private val settingsApi: SettingsApi,
 ) {
-    suspend operator fun invoke(prefix: String): NetworkResult<PrintersList> =
-        handleApi { apiService.getPrinters(prefix) }
+    suspend fun invoke(prefix: String): NetworkResult<PrintersList> =
+        handleApi { settingsApi.getPrinters(prefix) }
 
     suspend fun printers(prefix: String): NetworkResult<PrintersList> =
-        handleApi { apiService.getPrinters(prefix) }
+        handleApi { settingsApi.getPrinters(prefix) }
 
     suspend fun shops(): NetworkResult<ShopsList> =
-        handleApi { apiService.getShopsSuspend() }
+        handleApi { settingsApi.getShopsSuspend() }
 
     suspend fun users(): NetworkResult<UsersList> =
-        handleApi { apiService.getUsersSuspend() }
+        handleApi { settingsApi.getUsersSuspend() }
 }

@@ -19,6 +19,7 @@ import com.shop.tcd.data.dto.inventory.InvItem
 import com.shop.tcd.data.dto.inventory.InventoryPair
 import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
+import com.shop.tcd.data.remote.ShopRepository
 import com.shop.tcd.data.repository.Repository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -71,6 +72,9 @@ class InventoryViewModel : ViewModel() {
     @Inject
     lateinit var repository: Repository
 
+    @Inject
+    lateinit var shopRepository: ShopRepository
+
     fun clearInventory() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             repository.deleteAllInventory()
@@ -94,7 +98,7 @@ class InventoryViewModel : ViewModel() {
                     prefix = Constants.SelectedObjects.ShopModel.prefix,
                     document = list
                 )
-                when (val response = repository.postInventory(inventoryResult)) {
+                when (val response = shopRepository.postInventory(inventoryResult)) {
                     is NetworkResult.Error -> {
                         onError("${response.code} ${response.message}")
                     }
