@@ -36,6 +36,9 @@ class GroupsAdapter(
             binding.itemCode.text = group.code
             binding.itemName.text = group.name
             binding.itemCheckBox.isChecked = group.checked
+            binding.itemCheckBox.setOnClickListener {
+                group.checked = binding.itemCheckBox.isChecked
+            }
             binding.root.setOnClickListener {
                 binding.itemCheckBox.isChecked = !binding.itemCheckBox.isChecked
                 group.checked = binding.itemCheckBox.isChecked

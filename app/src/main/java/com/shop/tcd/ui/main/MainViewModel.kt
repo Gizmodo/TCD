@@ -15,9 +15,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MainViewModel : ViewModel() {
-    /**
-     * Сотояния для UI
-     **/
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
