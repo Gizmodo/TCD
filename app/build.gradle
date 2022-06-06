@@ -112,7 +112,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.compose.compiler:compiler:$compose_ui_version"
     implementation "androidx.compose.material:material:$compose_ui_version"
-    implementation 'androidx.compose.material3:material3:1.0.0-alpha12'
+    implementation 'androidx.compose.material3:material3:1.0.0-alpha13'
     implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
     implementation "androidx.compose.runtime:runtime:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
@@ -154,7 +154,7 @@ dependencies {
     implementation "com.bugsnag:bugsnag-plugin-android-okhttp:$bugsnag"
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.karczews:rx2-broadcast-receiver:$broadcast_receiver"
-    implementation "com.github.skydoves:sandwich:1.2.4"
+    implementation 'com.github.skydoves:sandwich:1.2.5'
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.18.0"
     implementation "com.google.android.material:material:$material"
     implementation "com.google.code.gson:gson:$gson"
