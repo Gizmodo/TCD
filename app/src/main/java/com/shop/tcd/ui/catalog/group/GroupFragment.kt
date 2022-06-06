@@ -33,7 +33,6 @@ class GroupFragment : Fragment(R.layout.fragment_group) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         initUI()
         initUIListeners()
         initRecyclerView()
@@ -90,9 +89,17 @@ class GroupFragment : Fragment(R.layout.fragment_group) {
 
     private fun initUIListeners() {
         btnLoad.setOnClickListener {
-            val filtered: String = data.filter { it.checked }.joinToString { it.code }
-            Timber.d(filtered)
-            viewModel.loadSelectedGroups(filtered)
+            val internalData = data
+            val filtered = internalData.filter { item ->
+                item.checked
+            }.joinToString { itemGroup ->
+                itemGroup.code
+            }
+            val filteredString: String = filtered
+            Timber.d(filteredString)
+            if (filtered.isNotEmpty()) {
+                viewModel.loadSelectedGroups(filteredString)
+            }
         }
     }
 
