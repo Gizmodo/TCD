@@ -104,6 +104,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         view.setAdapter(adapter)
 
         view.setOnItemClickListener { _, _, position, _ ->
+            if (ShopModelPosition != position) {
+                viewModel.clearNomenclature()
+            }
+
             ShopModel = items[position]
             setShopTemplate(ShopModel)
             ShopModelPosition = position
@@ -111,6 +115,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                 "http://" + items[position].address + "/" + items[position].service + "/hs/TSD/"
             setStateUI(enabled = true)
         }
+
         if (ShopModelPosition != -1) {
             view.setText(adapter.getItem(ShopModelPosition), false)
         }
