@@ -2,11 +2,13 @@ package com.shop.tcd.ui.remains
 
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.*
@@ -16,8 +18,7 @@ import com.shop.tcd.databinding.FragmentRemainsBinding
 class RemainsFragment : Fragment(R.layout.fragment_remains) {
     private val binding by viewBindingWithBinder(FragmentRemainsBinding::bind)
     private lateinit var edtBarcode: TextInputEditText
-    private lateinit var shimmer: ConstraintLayout
-
+    private lateinit var dialog: AlertDialog
     private val viewModel: RemainsViewModel by lazy {
         getViewModel { RemainsViewModel() }
     }
@@ -31,7 +32,6 @@ class RemainsFragment : Fragment(R.layout.fragment_remains) {
     }
 
     private fun initUI() {
-        shimmer = binding.shimmer
         edtBarcode = binding.edtBarcode
         binding.edtBarcode.apply {
             showSoftInputOnFocus = false
@@ -77,11 +77,24 @@ class RemainsFragment : Fragment(R.layout.fragment_remains) {
     }
 
     private fun showShimmer() {
-        shimmer.visibility = View.VISIBLE
+        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
+        val dialogView: View = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_shimmer, null, false)
+        dialogBuilder.setView(dialogView)
+            .setCancelable(true)
+            .setTitle("Ожидайте")
+            .setNegativeButton("Отмена") { dialog, _ ->
+                viewModel.cancelCurrentJob()
+                dialog.dismiss()
+            }
+            .setOnDismissListener {
+                viewModel.cancelCurrentJob()
+            }
+        dialog = dialogBuilder.show()
     }
 
     private fun hideShimmer() {
-        shimmer.visibility = View.GONE
+        dialog.dismiss()
     }
 
     private fun initViewModelObservers() {
