@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.*
@@ -29,7 +28,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private lateinit var btnNomenclature: Button
     private lateinit var btnInventory: Button
     private lateinit var btnOverEstimate: Button
-    private lateinit var shimmer: ConstraintLayout
     private lateinit var shopsList: ShopsList
     private val viewModel: MainViewModel by lazy {
         getViewModel { MainViewModel() }
@@ -49,14 +47,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             binding.edtShop.setText(ShopModel.name)
             setStateUI(enabled = true)
         }
-    }
-
-    private fun showShimmer() {
-        shimmer.visibility = View.VISIBLE
-    }
-
-    private fun hideShimmer() {
-        shimmer.visibility = View.GONE
     }
 
     private fun setStateUI(enabled: Boolean) {
@@ -83,12 +73,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             fancyError { it }
         }
 
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when {
-                it -> showShimmer()
-                else -> hideShimmer()
-            }
-        }
     }
 
     private fun setupShops(view: AutoCompleteTextView, items: ShopsList) {
@@ -167,7 +151,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         btnInventory = binding.btnInventory
         btnPrint = binding.btnPrint
         btnOverEstimate = binding.btnOverEstimate
-        shimmer = binding.shimmer
     }
 
     private fun initUIListeners() {

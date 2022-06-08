@@ -16,9 +16,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class GroupsViewModel : ViewModel() {
-    /**
-     * Сотояния для UI
-     **/
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
@@ -55,6 +52,10 @@ class GroupsViewModel : ViewModel() {
 
     @Inject
     lateinit var shopRepository: ShopRepository
+
+    fun cancelCurrentJob() {
+        job.cancel()
+    }
 
     private fun loadGroups() {
         job.cancel()
