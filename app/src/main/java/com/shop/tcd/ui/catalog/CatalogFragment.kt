@@ -1,6 +1,5 @@
 package com.shop.tcd.ui.catalog
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -122,51 +121,50 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
     }
 
     private fun showPeriodDialog() {
-        val dateDialog = Dialog(requireContext())
-        dateDialog.setCancelable(true)
-        dateDialog.setContentView(R.layout.dialog_period)
+        val dialogPeriodBuilder = MaterialAlertDialogBuilder(requireContext())
+        val dialogPeriodView: View = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_period, null, false)
+        val edtBegin = dialogPeriodView.findViewById<EditText>(R.id.edtDateBegin)
+        val edtEnd = dialogPeriodView.findViewById<EditText>(R.id.edtDateEnd)
 
-        val btnOk = dateDialog.findViewById<Button>(R.id.btnDialogOk)
-        val btnCancel = dateDialog.findViewById<Button>(R.id.btnDialogCancel)
-        val edtBegin = dateDialog.findViewById<EditText>(R.id.edtDateBegin)
-        val edtEnd = dateDialog.findViewById<EditText>(R.id.edtDateEnd)
-
-        fun clearText() {
+        fun clearFields() {
             dateBegin = ""
             dateEnd = ""
             edtBegin.setText("")
             edtEnd.setText("")
         }
 
-        btnCancel.setOnClickListener {
-            clearText()
-            dateDialog.dismiss()
-        }
-
-        btnOk.setOnClickListener {
-            if (dateBegin.isNotEmpty() && dateEnd.isNotEmpty()) {
-                val formatter = DateTimeFormatter.ofPattern("dd.MM.yyy")
-                val firstDate: LocalDate = LocalDate.parse(dateBegin, formatter)
-                val secondDate: LocalDate = LocalDate.parse(dateEnd, formatter)
-                var period = ""
-                when {
-                    firstDate.isAfter(secondDate) -> {
-                        period = "$dateEnd 0:00:00,$dateBegin 23:59:59"
-                    }
-                    firstDate.isBefore(secondDate) -> {
-                        period = "$dateBegin 0:00:00,$dateEnd 23:59:59"
-                    }
-                    firstDate.isEqual(secondDate) -> {
-                        period = "$dateBegin 0:00:00,$dateEnd 23:59:59"
-                    }
-                }
-                viewModel.loadNomenclatureByPeriod(period)
-            } else {
-                clearText()
-                longFancy { "Диапазон указан не полностью" }
+        dialogPeriodBuilder.setView(dialogPeriodView)
+            .setCancelable(true)
+            .setTitle(R.string.period_select)
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
+                clearFields()
+                dialog.dismiss()
             }
-            dateDialog.dismiss()
-        }
+            .setPositiveButton(R.string.ok) { dialog, _ ->
+                if (dateBegin.isNotEmpty() && dateEnd.isNotEmpty()) {
+                    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyy")
+                    val firstDate: LocalDate = LocalDate.parse(dateBegin, formatter)
+                    val secondDate: LocalDate = LocalDate.parse(dateEnd, formatter)
+                    var period = ""
+                    when {
+                        firstDate.isAfter(secondDate) -> {
+                            period = "$dateEnd 0:00:00,$dateBegin 23:59:59"
+                        }
+                        firstDate.isBefore(secondDate) -> {
+                            period = "$dateBegin 0:00:00,$dateEnd 23:59:59"
+                        }
+                        firstDate.isEqual(secondDate) -> {
+                            period = "$dateBegin 0:00:00,$dateEnd 23:59:59"
+                        }
+                    }
+                    viewModel.loadNomenclatureByPeriod(period)
+                } else {
+                    clearFields()
+                    fancyError { "Диапазон указан не полностью" }
+                }
+                dialog.dismiss()
+            }
 
         edtBegin.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -210,6 +208,6 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
             }
             datePicker.show(requireActivity().supportFragmentManager, datePicker.toString())
         }
-        dateDialog.show()
+        dialogPeriodBuilder.show()
     }
 }
