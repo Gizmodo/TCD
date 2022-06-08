@@ -146,7 +146,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 navigateExt(LoginFragmentDirections.actionLoginFragmentToMainFragment())
             }
             else -> {
-                longFancy { "Неверно указаны данные для входа" }
+                fancyError { "Неверно указаны данные для входа" }
             }
         }
     }
