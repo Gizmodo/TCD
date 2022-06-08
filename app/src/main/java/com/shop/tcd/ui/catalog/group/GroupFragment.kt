@@ -1,15 +1,17 @@
 package com.shop.tcd.ui.catalog.group
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.fancyError
 import com.shop.tcd.core.extension.fancyException
@@ -26,9 +28,8 @@ class GroupFragment : Fragment(R.layout.fragment_group) {
     private val binding by viewBindingWithBinder(FragmentGroupBinding::bind)
     private lateinit var btnLoad: Button
     private lateinit var rvGroups: RecyclerView
-    private lateinit var shimmer: ConstraintLayout
     private var adapterGroups = GroupsAdapter(mutableListOf())
-
+    private lateinit var dialog: AlertDialog
     private val viewModel: GroupsViewModel by lazy { getViewModel { GroupsViewModel() } }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -106,15 +107,27 @@ class GroupFragment : Fragment(R.layout.fragment_group) {
     private fun initUI() {
         btnLoad = binding.btnLoad
         rvGroups = binding.rvGroups
-        shimmer = binding.shimmer
     }
 
     private fun showShimmer() {
-        shimmer.visibility = View.VISIBLE
+        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
+        val dialogView: View = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_shimmer, null, false)
+        dialogBuilder.setView(dialogView)
+            .setCancelable(true)
+            .setTitle("Ожидайте")
+            .setNegativeButton("Отмена") { dialog, _ ->
+                viewModel.cancelCurrentJob()
+                dialog.dismiss()
+            }
+            .setOnDismissListener {
+                viewModel.cancelCurrentJob()
+            }
+        dialog = dialogBuilder.show()
     }
 
     private fun hideShimmer() {
-        shimmer.visibility = View.GONE
+        dialog.dismiss()
     }
 
     override fun onDestroyView() {
