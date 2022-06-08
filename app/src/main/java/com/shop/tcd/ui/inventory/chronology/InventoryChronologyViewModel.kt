@@ -13,17 +13,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class InventoryChronologyViewModel : ViewModel() {
-    /**
-     * Сотояния для UI
-     **/
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
     private var _exceptionMessage = MutableLiveData<String>()
     val exceptionMessage: LiveData<String> get() = _exceptionMessage
-
-    private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
@@ -66,16 +60,9 @@ class InventoryChronologyViewModel : ViewModel() {
         }
     }
 
-    private fun onError(message: String) {
-        Timber.e(message)
-        _errorMessage.postValue(message)
-        _loading.postValue(false)
-    }
-
     private fun onException(throwable: Throwable) {
         Timber.e(throwable)
         _exceptionMessage.postValue(throwable.message)
-        _loading.postValue(false)
     }
 
     override fun onCleared() {

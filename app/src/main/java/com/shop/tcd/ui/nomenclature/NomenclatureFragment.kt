@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,16 +21,14 @@ import com.shop.tcd.ui.nomenclature.adapter.NomenclatureAdapter
 import timber.log.Timber
 import java.util.*
 
-@Suppress("ktPropBy")
 class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
     private var data: List<NomenclatureItem> = mutableListOf()
     private val binding by viewBindingWithBinder(FragmentNomenclatureBinding::bind)
-    private lateinit var shimmer: ConstraintLayout
     private lateinit var tilSearch: TextInputLayout
     private lateinit var edtSearch: EditText
     private lateinit var rvNomenclature: RecyclerView
     private val viewModel: NomenclatureViewModel by lazy { getViewModel { NomenclatureViewModel() } }
-    private var adapterNomeclature = NomenclatureAdapter(mutableListOf())
+    private var adapterNomenclature = NomenclatureAdapter(mutableListOf())
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,8 +68,8 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
     private fun initViewModelObservers() {
         viewModel.nomenclatureLiveData.observe(viewLifecycleOwner) { items ->
             data = items
-            adapterNomeclature.updateList(data)
-            adapterNomeclature.notifyDataSetChanged()
+            adapterNomenclature.updateList(data)
+            adapterNomenclature.notifyDataSetChanged()
         }
 
         viewModel.exceptionMessage.observe(viewLifecycleOwner) {
@@ -83,13 +80,6 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
             fancyError { it }
-        }
-
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when {
-                it -> showShimmer()
-                else -> hideShimmer()
-            }
         }
     }
 
@@ -107,7 +97,7 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
                     LinearLayout.VERTICAL
                 )
             )
-            adapter = adapterNomeclature
+            adapter = adapterNomenclature
         }
     }
 
@@ -115,19 +105,10 @@ class NomenclatureFragment : Fragment(R.layout.fragment_nomenclature) {
         tilSearch = binding.tilSearch
         edtSearch = binding.edtSearch
         rvNomenclature = binding.rvNomenclature
-        shimmer = binding.shimmer
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         rvNomenclature.adapter = null
-    }
-
-    private fun showShimmer() {
-        shimmer.visibility = View.VISIBLE
-    }
-
-    private fun hideShimmer() {
-        shimmer.visibility = View.GONE
     }
 }
