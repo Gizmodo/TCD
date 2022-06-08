@@ -53,7 +53,7 @@ class InventoryViewModel : ViewModel() {
     private var _inventoryList = MutableLiveData<List<InvItem>>()
     val inventoryList: LiveData<List<InvItem>> get() = _inventoryList
 
-    private var job: Job? = null
+    private var job: Job = Job()
     private val context = App.applicationContext() as Application
 
     private val injector: ViewModelInjector =
@@ -72,6 +72,10 @@ class InventoryViewModel : ViewModel() {
     @Inject
     lateinit var shopRepository: ShopRepository
 
+    fun cancelCurrentJob() {
+        job.cancel()
+    }
+
     fun clearInventory() {
         CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             repository.deleteAllInventory()
@@ -81,7 +85,7 @@ class InventoryViewModel : ViewModel() {
 
     fun sendResults() {
         _loading.value = true
-        job?.cancel()
+        job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
             val list = repository.selectAllSuspend()
@@ -121,12 +125,12 @@ class InventoryViewModel : ViewModel() {
 
         when {
             len <= CODE_LENGTH -> {
-                job?.cancel()
+                job.cancel()
                 job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                     previousItem = repository.selectInventoryItemByCode(productString)
                     currentItem = repository.selectNomenclatureItemByCode(productString)
                 }
-                job?.join()
+                job.join()
                 return searchResult(currentItem, previousItem)
             }
             else -> {
@@ -146,7 +150,7 @@ class InventoryViewModel : ViewModel() {
                             SearchType.SearchByCode -> {
                                 searchString = searchString.toInt().toString()
                                 Timber.d("Поиск по коду $searchString")
-                                job?.cancel()
+                                job.cancel()
                                 job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                                     previousItem =
                                         repository.selectInventoryItemByCode(searchString)
@@ -155,12 +159,12 @@ class InventoryViewModel : ViewModel() {
                                             searchString
                                         )
                                 }
-                                job?.join()
+                                job.join()
                                 return searchResult(currentItem, previousItem)
                             }
                             SearchType.SearchByPLU -> {
                                 Timber.d("Поиск по PLU $searchString")
-                                job?.cancel()
+                                job.cancel()
                                 job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                                     previousItem =
                                         repository.selectInventoryItemByPLUCode(searchString)
@@ -169,7 +173,7 @@ class InventoryViewModel : ViewModel() {
                                             searchString
                                         )
                                 }
-                                job?.join()
+                                job.join()
                                 return searchResult(currentItem, previousItem)
                             }
                             else -> {
@@ -182,13 +186,13 @@ class InventoryViewModel : ViewModel() {
                         Timber.d("Поиск по штрихкоду")
                         val barcode =
                             productString.padStart(BARCODE_LENGTH, '0').takeLast(BARCODE_LENGTH)
-                        job?.cancel()
+                        job.cancel()
                         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
                             previousItem = repository.selectInventoryItemByBarcode(barcode)
                             currentItem =
                                 repository.selectNomenclatureItemByBarcode(barcode)
                         }
-                        job?.join()
+                        job.join()
                         return searchResult(currentItem, previousItem)
                     }
                 }
@@ -293,7 +297,7 @@ class InventoryViewModel : ViewModel() {
     }
 
     fun loadInventoryList() {
-        job?.cancel()
+        job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response: List<InvItem> = repository.loadInventoryGrouped()
             _inventoryList.postValue(response)
@@ -314,11 +318,11 @@ class InventoryViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        job?.cancel()
+        job.cancel()
     }
 
     fun insertInventory(inv: InvItem) {
-        job?.cancel()
+        job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             repository.insertInventory(inv)
             val response: List<InvItem> = repository.loadInventoryGrouped()

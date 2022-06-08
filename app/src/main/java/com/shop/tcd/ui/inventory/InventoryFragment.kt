@@ -1,9 +1,9 @@
 package com.shop.tcd.ui.inventory
 
-import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.*
@@ -46,7 +47,7 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     private lateinit var txtPrice: TextView
     private lateinit var txtTotalCount: TextView
     private lateinit var rvInventory: RecyclerView
-    private lateinit var progressDialog: ProgressDialog
+    private lateinit var dialog: AlertDialog
     private var jobAuto: Job? = null
 
     private val binding by viewBindingWithBinder(FragmentInventoryBinding::bind)
@@ -316,10 +317,31 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
 
         viewModel.loading.observe(viewLifecycleOwner) {
             when {
-                it -> progressDialog.show()
-                else -> progressDialog.dismiss()
+                it -> showShimmer()
+                else -> hideShimmer()
             }
         }
+    }
+
+    private fun showShimmer() {
+        val dialogBuilder = MaterialAlertDialogBuilder(requireContext())
+        val dialogView: View = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_shimmer, null, false)
+        dialogBuilder.setView(dialogView)
+            .setCancelable(true)
+            .setTitle("Ожидайте")
+            .setNegativeButton("Отмена") { dialog, _ ->
+                viewModel.cancelCurrentJob()
+                dialog.dismiss()
+            }
+            .setOnDismissListener {
+                viewModel.cancelCurrentJob()
+            }
+        dialog = dialogBuilder.show()
+    }
+
+    private fun hideShimmer() {
+        dialog.dismiss()
     }
 
     private fun onReceiveScannerData(message: String) {
@@ -346,8 +368,8 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
     }
 
     private fun moveFocus(view: EditText) {
-        view.requestFocus();
-        view.setSelection(view.text.length, 0);
+        view.requestFocus()
+        view.setSelection(view.text.length, 0)
     }
 
     private fun initUI() {
@@ -361,10 +383,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
         txtPrice = binding.txtValuePrice
         txtTotalCount = binding.txtValueTotalCount
 
-        progressDialog = ProgressDialog(requireContext()).apply {
-            setTitle("Загрузка...")
-            setMessage("Пожалуйста, ожидайте")
-        }
         with(rvInventory) {
             val animator = itemAnimator
             if (animator is SimpleItemAnimator) {
