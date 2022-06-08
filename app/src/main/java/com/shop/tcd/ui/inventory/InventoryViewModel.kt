@@ -47,9 +47,6 @@ class InventoryViewModel : ViewModel() {
         onException(throwable)
     }
 
-    private var _urovoScanner = MutableLiveData<String>()
-    val urovoScanner: LiveData<String> get() = _urovoScanner
-
     private var _idataScanner = MutableLiveData<String>()
     val idataScanner: LiveData<String> get() = _idataScanner
 
@@ -285,15 +282,6 @@ class InventoryViewModel : ViewModel() {
     }
 
     private fun initDeviceObservables() {
-        _urovoScanner = ReceiverLiveData(
-            context,
-            IntentFilter("android.intent.ACTION_DECODE_DATA")
-        ) { _, intent ->
-            var data = ""
-            intent.extras?.let { data = it["barcode_string"].toString() }
-            data
-        }
-
         _idataScanner = ReceiverLiveData(
             context,
             IntentFilter("android.intent.action.SCANRESULT")

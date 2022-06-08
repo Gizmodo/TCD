@@ -295,10 +295,6 @@ class InventoryFragment : Fragment(R.layout.fragment_inventory) {
             adapterInventory.notifyDataSetChanged()
         }
 
-        viewModel.urovoScanner.observe(viewLifecycleOwner) {
-            onReceiveScannerData(it)
-        }
-
         viewModel.idataScanner.observe(viewLifecycleOwner) {
             onReceiveScannerData(it)
         }
