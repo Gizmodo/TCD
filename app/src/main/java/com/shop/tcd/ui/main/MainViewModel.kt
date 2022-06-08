@@ -21,9 +21,6 @@ class MainViewModel : ViewModel() {
     private var _exceptionMessage = MutableLiveData<String>()
     val exceptionMessage: LiveData<String> get() = _exceptionMessage
 
-    private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
-
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
     }
@@ -63,7 +60,6 @@ class MainViewModel : ViewModel() {
     private fun loadShops() {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            _loading.postValue(true)
             when (val response = settingsRepository.shops()) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
@@ -75,20 +71,17 @@ class MainViewModel : ViewModel() {
                     _shopsLiveData.postValue(response.data)
                 }
             }
-            _loading.postValue(false)
         }
     }
 
     private fun onError(message: String) {
         Timber.e(message)
         _errorMessage.postValue(message)
-        _loading.postValue(false)
     }
 
     private fun onException(throwable: Throwable) {
         Timber.e(throwable)
         _exceptionMessage.postValue(throwable.message)
-        _loading.postValue(false)
     }
 
     override fun onCleared() {
