@@ -81,21 +81,6 @@ class InventoryChronologyFragment : Fragment(R.layout.fragment_inventory_chronol
             Timber.e(it)
             fancyError { it }
         }
-
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when {
-                it -> showShimmer()
-                else -> hideShimmer()
-            }
-        }
-    }
-
-    private fun showShimmer() {
-        binding.shimmer.visibility = View.VISIBLE
-    }
-
-    private fun hideShimmer() {
-        binding.shimmer.visibility = View.GONE
     }
 
     private fun initRecyclerView() {
