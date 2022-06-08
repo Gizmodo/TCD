@@ -13,20 +13,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class NomenclatureViewModel : ViewModel() {
-    /**
-     * Сотояния для UI
-     **/
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
     private var _exceptionMessage = MutableLiveData<String>()
     val exceptionMessage: LiveData<String> get() = _exceptionMessage
-
-    private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
-
-    private var _successMessage = MutableLiveData<String>()
-    val successMessage: LiveData<String> get() = _successMessage
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
@@ -64,7 +55,7 @@ class NomenclatureViewModel : ViewModel() {
     fun loadNomenclature() {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response: List<NomenclatureItem> = repository.getAll() //nomenclatureDao.getAll()
+            val response: List<NomenclatureItem> = repository.getAll()
             _nomenclatureLiveData.postValue(response)
         }
     }
@@ -77,21 +68,9 @@ class NomenclatureViewModel : ViewModel() {
         }
     }
 
-    private fun onError(message: String) {
-        Timber.e(message)
-        _errorMessage.postValue(message)
-        _loading.postValue(false)
-    }
-
     private fun onException(throwable: Throwable) {
         Timber.e(throwable)
         _exceptionMessage.postValue(throwable.message)
-        _loading.postValue(false)
-    }
-
-    private fun onSuccess(message: String) {
-        _successMessage.postValue(message)
-        _loading.postValue(false)
     }
 
     override fun onCleared() {
