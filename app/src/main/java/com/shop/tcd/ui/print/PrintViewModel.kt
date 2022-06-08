@@ -24,9 +24,6 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class PrintViewModel : ViewModel() {
-    /**
-     * Сотояния для UI
-     **/
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
@@ -40,17 +37,8 @@ class PrintViewModel : ViewModel() {
         onException(throwable)
     }
 
-    /**
-     * Наблюдатели для терминалов
-     */
-    private var _urovoScanner = MutableLiveData<String>()
-    val urovoScanner: LiveData<String> get() = _urovoScanner
-
     private var _idataScanner = MutableLiveData<String>()
     val idataScanner: LiveData<String> get() = _idataScanner
-
-    private var _urovoKeyboard = MutableLiveData<Boolean>()
-    val urovoKeyboard: LiveData<Boolean> get() = _urovoKeyboard
 
     private var _printersLiveData = MutableLiveData<PrintersList>()
     val printersLiveData: LiveData<PrintersList>
@@ -60,7 +48,7 @@ class PrintViewModel : ViewModel() {
     val printerPayloadLiveData: LiveData<List<String>>
         get() = _printerPayload
 
-    private var job: Job? = null
+    private var job: Job = Job()
     private val context = App.applicationContext() as Application
     private val injector: ViewModelInjector = DaggerViewModelInjector
         .builder()
@@ -82,28 +70,11 @@ class PrintViewModel : ViewModel() {
     @Inject
     lateinit var shopRepository: ShopRepository
 
+    fun cancelCurrentJob() {
+        job.cancel()
+    }
+
     private fun initDeviceObservables() {
-        _urovoScanner = ReceiverLiveData(
-            context,
-            IntentFilter("android.intent.ACTION_DECODE_DATA")
-        ) { _, intent ->
-            var data = ""
-            intent.extras?.let { data = it["barcode_string"].toString() }
-            data
-        }
-
-        _urovoKeyboard =
-            ReceiverLiveData(
-                context,
-                IntentFilter("android.intent.action_keyboard")
-            ) { _, intent ->
-                var data = false
-                intent.extras?.let {
-                    data = it["kbrd_enter"].toString() == "enter"
-                }
-                data
-            }
-
         _idataScanner = ReceiverLiveData(
             context,
             IntentFilter("android.intent.action.SCANRESULT")
@@ -115,7 +86,8 @@ class PrintViewModel : ViewModel() {
     }
 
     fun loadPrintInfoByBarcodes(list: MutableList<String>) {
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        job.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
             when (val response: NetworkResult<PriceTagResponse> =
                 shopRepository.getPrintInfoByBarcodes(converterToPriceTag(list))) {
@@ -135,7 +107,8 @@ class PrintViewModel : ViewModel() {
     }
 
     private fun loadPrinters() {
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        job.cancel()
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
             when (val response = repository.printers(ShopModel.prefix)) {
                 is NetworkResult.Error -> {
@@ -371,6 +344,6 @@ class PrintViewModel : ViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        job?.cancel()
+        job.cancel()
     }
 }
