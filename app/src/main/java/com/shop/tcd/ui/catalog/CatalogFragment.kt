@@ -2,15 +2,24 @@ package com.shop.tcd.ui.catalog
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.utils.ShimmerState
 import com.shop.tcd.databinding.FragmentCatalogBinding
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -24,11 +33,13 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
     private lateinit var btnLoadByGroups: Button
     private lateinit var btnLoadByPeriod: Button
     private lateinit var btnRemains: Button
-    private lateinit var shimmer: ConstraintLayout
     private val viewModel: CatalogViewModel by lazy { getViewModel { CatalogViewModel() } }
     private lateinit var dateBegin: String
     private lateinit var dateEnd: String
-
+    private lateinit var txtState: TextView
+    private lateinit var dialogView: View
+    private lateinit var dialogBuilder: MaterialAlertDialogBuilder
+    private lateinit var dialog: AlertDialog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
@@ -36,14 +47,45 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
     }
 
     private fun showShimmer() {
-        shimmer.visibility = View.VISIBLE
+        dialogBuilder = MaterialAlertDialogBuilder(requireContext())
+        dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_shimmer, null, false)
+        txtState = dialogView.findViewById(R.id.txtState)
+        dialogBuilder.setView(dialogView)
+            .setCancelable(true)
+            .setTitle("Ожидайте")
+            .setNegativeButton("Отмена") { dialog, _ ->
+                viewModel.cancelCurrentJob()
+                dialog.dismiss()
+            }
+            .setOnDismissListener {
+                viewModel.cancelCurrentJob()
+            }
+        dialog = dialogBuilder.show()
     }
 
     private fun hideShimmer() {
-        shimmer.visibility = View.GONE
+        dialog.dismiss()
     }
 
     private fun initViewModelObservers() {
+        viewModel.state.flowWithLifecycle(viewLifecycleOwner.lifecycle, Lifecycle.State.STARTED)
+            .onEach {
+                when (it) {
+                    is ShimmerState.Loading -> {
+                        showShimmer()
+                    }
+                    ShimmerState.Finishing -> {
+                        hideShimmer()
+                    }
+                    ShimmerState.Empty -> {}
+                    is ShimmerState.State -> {
+                        txtState.text = it.result
+                    }
+                }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+
         viewModel.exceptionMessage.observe(viewLifecycleOwner) {
             Timber.e(it)
             fancyException { it }
@@ -53,13 +95,6 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
             Timber.e(it)
             fancyError { it }
         }
-
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when {
-                it -> showShimmer()
-                else -> hideShimmer()
-            }
-        }
     }
 
     private fun initUI() {
@@ -68,7 +103,6 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         btnLoadByGroups = binding.btnLoadByGroups
         btnLoadByPeriod = binding.btnLoadByPeriod
         btnRemains = binding.btnRemains
-        shimmer = binding.shimmer
 
         btnLoadByGroups.setOnClickListener {
             navigateExt(CatalogFragmentDirections.actionCatalogFragmentToGroupFragment())

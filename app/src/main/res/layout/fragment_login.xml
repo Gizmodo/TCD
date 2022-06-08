@@ -46,7 +46,7 @@
             android:id="@+id/edtPassword"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:inputType="textPassword"
+            android:inputType="numberPassword"
             android:singleLine="true"
             android:textColorHint="#8D6E63"
             tools:ignore="SpeakableTextPresentCheck" />
