@@ -179,16 +179,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
                 else -> hideShimmer()
             }
         }
-        viewModel.urovoKeyboard.observe(viewLifecycleOwner) {
-            if (edtBarcode.isFocused) {
-                moveFocus(edtBarcode)
-                addBarcode()
-            }
-        }
-
-        viewModel.urovoScanner.observe(viewLifecycleOwner) {
-            onReceiveScannerData(it)
-        }
 
         viewModel.idataScanner.observe(viewLifecycleOwner) {
             onReceiveScannerData(it)
