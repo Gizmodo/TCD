@@ -3,9 +3,8 @@ buildscript {
         appcompat = '1.6.0-alpha04'
         broadcast_receiver = "1.0.6"
         bugsnag = '5.22.4'
-        bugsnag_gradle = "7.2.0"
+        bugsnag_gradle = "7.2.1"
         coil = '2.1.0'
-        compose_ui_version = '1.2.0-beta03'
         constraintlayout = "2.1.4"
         core_ktx = '1.9.0-alpha04'
         coroutines = '1.6.2'
@@ -17,13 +16,13 @@ buildscript {
         glide = '4.13.2'
         gson = "2.9.0"
         huawei = "1.6.5.300"
-        kotlin = "1.6.21"
+        kotlin = "1.7.0"
         leakcanary = "2.9.1"
         lifecycle = '2.5.0-rc01'
         lifecycle_extensions = "2.2.0"
         material = '1.7.0-alpha02'
         navigation = '2.5.0-rc01'
-        okhttp = '5.0.0-alpha.7'
+        okhttp = '5.0.0-alpha.8'
         page = "3.1.1"
         retrofit = "2.9.0"
         room = '2.5.0-alpha02'
