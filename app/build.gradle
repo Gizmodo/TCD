@@ -44,6 +44,7 @@ android {
     compileSdkPreview "Tiramisu"
     buildToolsVersion '33.0.0 rc4'
     defaultConfig {
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         applicationId "com.shop.tcd"
         minSdk 22
         targetSdk 32
@@ -96,16 +97,12 @@ detekt {
     parallel = true
 }
 dependencies {
-    implementation 'com.huawei.agconnect:agconnect-apms:1.5.2.309'
-    implementation "com.huawei.agconnect:agconnect-applinking:$huawei"
-    implementation "com.huawei.agconnect:agconnect-appmessaging:$huawei"
-    implementation 'com.huawei.agconnect:agconnect-cloud-database:1.5.2.300'
-    implementation "com.huawei.agconnect:agconnect-core:$huawei"
-    implementation "com.huawei.agconnect:agconnect-crash:$huawei"
-    implementation "com.huawei.agconnect:agconnect-remoteconfig:$huawei"
-    implementation "com.huawei.agconnect:agconnect-storage:1.5.0.100"
-    implementation 'com.huawei.hms:hianalytics:6.4.1.302'
     //debugImplementation "com.squareup.leakcanary:leakcanary-android:$leakcanary"
+    androidTestImplementation "androidx.work:work-testing:$work"
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    androidTestImplementation "androidx.test.ext:junit:1.1.3"
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar"
     debugImplementation "com.bugsnag:bugsnag-android:$bugsnag"
     implementation "androidx.appcompat:appcompat:$appcompat"
@@ -138,19 +135,22 @@ dependencies {
     implementation "androidx.room:room-runtime:$room"
     implementation "androidx.room:room-rxjava3:$room"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swiperefreshlayout"
-    implementation "androidx.work:work-multiprocess:$work"
     implementation "androidx.work:work-runtime-ktx:$work"
-    implementation "androidx.work:work-rxjava3:$work"
     implementation "com.bugsnag:bugsnag-plugin-android-okhttp:$bugsnag"
     implementation "com.github.bumptech.glide:glide:$glide"
     implementation "com.github.karczews:rx2-broadcast-receiver:$broadcast_receiver"
-    implementation 'com.github.skydoves:sandwich:1.2.5'
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.18.0"
     implementation "com.google.android.material:material:$material"
     implementation "com.google.code.gson:gson:$gson"
     implementation "com.google.dagger:dagger-android-support:$dagger"
     implementation "com.google.dagger:dagger-android:$dagger"
     implementation "com.google.dagger:dagger:$dagger"
+    implementation "com.huawei.agconnect:agconnect-applinking:$huawei"
+    implementation "com.huawei.agconnect:agconnect-appmessaging:$huawei"
+    implementation "com.huawei.agconnect:agconnect-core:$huawei"
+    implementation "com.huawei.agconnect:agconnect-crash:$huawei"
+    implementation "com.huawei.agconnect:agconnect-remoteconfig:$huawei"
+    implementation "com.huawei.agconnect:agconnect-storage:1.5.0.100"
     implementation "com.jakewharton.timber:timber:$timber"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
     implementation "com.squareup.okhttp3:okhttp:$okhttp"
@@ -168,10 +168,19 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_json"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.test:core-ktx:1.4.0'
+    implementation 'com.github.skydoves:sandwich:1.2.5'
+    implementation 'com.huawei.agconnect:agconnect-apms:1.5.2.309'
+    implementation 'com.huawei.agconnect:agconnect-cloud-database:1.5.2.300'
+    implementation 'com.huawei.hms:hianalytics:6.4.1.302'
     kapt "androidx.room:room-compiler:$room"
     kapt "com.github.bumptech.glide:compiler:$glide"
     kapt "com.google.dagger:dagger-android-processor:$dagger"
     kapt "com.google.dagger:dagger-compiler:$dagger"
+    testImplementation "androidx.work:work-testing:$work"
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation "android.arch.core:core-testing:1.1.1"
 }
 kotlin {
     sourceSets {
