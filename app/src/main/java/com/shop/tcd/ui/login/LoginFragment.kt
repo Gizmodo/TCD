@@ -24,7 +24,6 @@ import com.shop.tcd.core.utils.Constants.SelectedObjects.UserModelPosition
 import com.shop.tcd.data.dto.user.UserModel
 import com.shop.tcd.data.dto.user.UsersList
 import com.shop.tcd.databinding.FragmentLoginBinding
-import timber.log.Timber
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private val binding by viewBindingWithBinder(FragmentLoginBinding::bind)
@@ -85,13 +84,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         viewModel.exceptionMessage.observe(viewLifecycleOwner) {
             hideAnimation()
-            Timber.e(it)
             fancyException { it }
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             hideAnimation()
-            Timber.e(it)
             fancyError { it }
         }
 
