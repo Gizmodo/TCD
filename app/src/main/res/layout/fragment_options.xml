@@ -10,7 +10,7 @@
     <TextView
         android:id="@+id/txtOptionsTitle"
         style="@style/InventoryItemDetailHeader"
-        android:text="Настройки"
+        android:text="@string/options_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,13 +24,13 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtOptionsTitle">
+        app:layout_constraintTop_toBottomOf="@id/txtOptionsTitle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtServer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Адрес сервера" />
+            android:hint="@string/options_hint_server" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
@@ -40,10 +40,49 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:text="Шаблон: http://192.168.0.154/"
+        android:text="@string/options_template_server"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tilServer" />
+        app:layout_constraintTop_toBottomOf="@id/tilServer" />
 
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilUpdateServer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView3">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edtUpdateServer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/options_hint_server_update" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/options_template_server_update"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tilUpdateServer" />
+
+    <Button
+        android:id="@+id/btnCheckUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/options_check_update"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView5" />
 </androidx.constraintlayout.widget.ConstraintLayout>

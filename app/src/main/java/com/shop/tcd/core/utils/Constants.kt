@@ -7,6 +7,7 @@ import com.shop.tcd.data.dto.user.UserModel
 class Constants {
     object DataStore {
         const val KEY_BASE_URL = "baseurl"
+        const val KEY_URL_UPDATE_SERVER = "urlupdateserver"
     }
 
     object Inventory {
@@ -19,6 +20,7 @@ class Constants {
 
     object Network {
         var BASE_URL = "http://192.168.0.154/"
+        var BASE_URL_UPDATE_SERVER = "http://192.168.88.14:3000/"
 
         /**
          * Изменяемый адрес, который указывает на выбранный магазин (сервер 1С)

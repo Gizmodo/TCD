@@ -2,6 +2,7 @@ package com.shop.tcd.data.remote
 
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.extension.handleApi
+import com.shop.tcd.data.dto.ato.UpdateRequest
 import com.shop.tcd.data.dto.printer.PrintersList
 import com.shop.tcd.data.dto.shop.ShopsList
 import com.shop.tcd.data.dto.user.UsersList
@@ -21,4 +22,10 @@ class SettingsRepository @Inject constructor(
 
     suspend fun users(): NetworkResult<UsersList> =
         handleApi { settingsApi.getUsersSuspend() }
+
+    suspend fun pingUpdateServer(): NetworkResult<String> =
+        handleApi { settingsApi.sendPing() }
+
+    suspend fun checkUpdatePost(updateRequest: UpdateRequest) =
+        handleApi { settingsApi.checkUpdatePost(updateRequest) }
 }
