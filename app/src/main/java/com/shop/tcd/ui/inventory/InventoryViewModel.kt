@@ -6,31 +6,41 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.core.di.*
+import com.shop.tcd.core.di.AppModule
+import com.shop.tcd.core.di.DaggerViewModelInjector
+import com.shop.tcd.core.di.DataBaseModule
+import com.shop.tcd.core.di.DataStoreModule
+import com.shop.tcd.core.di.NetworkModule
+import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.extension.notNull
-import com.shop.tcd.core.utils.*
+import com.shop.tcd.core.utils.Constants
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_PREFIX
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_CRC
 import com.shop.tcd.core.utils.Constants.Inventory.CODE_LENGTH
 import com.shop.tcd.core.utils.Constants.SelectedObjects.shopTemplate
+import com.shop.tcd.core.utils.ReceiverLiveData
+import com.shop.tcd.core.utils.SearchType
+import com.shop.tcd.core.utils.SingleLiveEvent
+import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.inventory.InvItem
 import com.shop.tcd.data.dto.inventory.InventoryPair
 import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
 import com.shop.tcd.data.remote.ShopRepository
 import com.shop.tcd.data.repository.Repository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 class InventoryViewModel : ViewModel() {
-    /**
-     * Сотояния для UI
-     **/
     private var _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
@@ -230,8 +240,10 @@ class InventoryViewModel : ViewModel() {
             }
         }
         val checksumDigit = ((10 - ((odd + 3 * even) % 10)) % 10)
-        return (((barcode.length == BARCODE_LENGTH) && (checksumDigit.toString() == barcode.last()
-            .toString())))
+        return (barcode.length == BARCODE_LENGTH) && (
+                checksumDigit.toString() == barcode.last()
+                    .toString()
+                )
     }
 
     private fun getWeight(barcode: String): String {
