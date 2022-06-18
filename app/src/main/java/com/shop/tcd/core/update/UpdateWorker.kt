@@ -11,9 +11,9 @@ import com.shop.tcd.core.di.DaggerViewModelInjector
 import com.shop.tcd.core.di.DataBaseModule
 import com.shop.tcd.core.di.DataStoreModule
 import com.shop.tcd.core.di.NetworkModule
-import com.shop.tcd.core.di.NetworkModule_ProvideOkHttpClientSettingsFactory
-import com.shop.tcd.core.di.NetworkModule_ProvideRetrofitInterfaceFactory
-import com.shop.tcd.core.di.NetworkModule_ProvideSettingsApiFactory
+import com.shop.tcd.core.di.NetworkModule_ProvidesUpdateApiFactory
+import com.shop.tcd.core.di.NetworkModule_ProvidesUpdateOkHttpClientFactory
+import com.shop.tcd.core.di.NetworkModule_ProvidesUpdateRetrofitFactory
 import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.utils.Constants.DataStore.KEY_URL_UPDATE_SERVER
@@ -21,7 +21,7 @@ import com.shop.tcd.core.utils.Constants.Network.BASE_URL_UPDATE_SERVER
 import com.shop.tcd.core.utils.ServiceNotification
 import com.shop.tcd.data.dto.ato.UpdateRequest
 import com.shop.tcd.data.local.DataStoreRepository
-import com.shop.tcd.data.remote.SettingsRepository
+import com.shop.tcd.data.remote.UpdateRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,15 +63,15 @@ class UpdateWorker(
                 ds.putString(KEY_URL_UPDATE_SERVER, BASE_URL_UPDATE_SERVER)
             }
 
-            val api = NetworkModule_ProvideSettingsApiFactory(
-                NetworkModule_ProvideRetrofitInterfaceFactory(
-                    NetworkModule_ProvideOkHttpClientSettingsFactory()
+            val api = NetworkModule_ProvidesUpdateApiFactory(
+                NetworkModule_ProvidesUpdateRetrofitFactory(
+                    NetworkModule_ProvidesUpdateOkHttpClientFactory()
                 )
             ).get()
-            val settingsRepository = SettingsRepository(api)
+            val updateRepository = UpdateRepository(api)
 
             when (
-                val response = settingsRepository.checkUpdatePost(
+                val response = updateRepository.checkUpdatePost(
                     UpdateRequest("TCD", BuildConfig.VERSION_NAME)
                 )
             ) {
