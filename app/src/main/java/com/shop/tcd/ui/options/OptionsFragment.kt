@@ -9,7 +9,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.fancyError
 import com.shop.tcd.core.extension.fancyException
-import com.shop.tcd.core.extension.fancySuccess
+import com.shop.tcd.core.extension.fancySuccessShort
 import com.shop.tcd.core.extension.getViewModel
 import com.shop.tcd.core.extension.toObservable
 import com.shop.tcd.core.extension.viewBindingWithBinder
@@ -55,12 +55,10 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
 
     private fun initViewModelObservers() {
         viewModel.url.observe(viewLifecycleOwner) {
-            Timber.d("URL: $it")
             binding.edtServer.setText(it)
         }
 
         viewModel.urlUpdateServer.observe(viewLifecycleOwner) {
-            Timber.d("URL UpdateServer: $it")
             binding.edtUpdateServer.setText(it)
         }
 
@@ -78,7 +76,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                             fancyException { it.msg }
                         }
                         is StatefulData.Success -> {
-                            fancySuccess { "Доступна новая версия ${it.result.version}" }
+                            fancySuccessShort { "Доступна новая версия ${it.result.version}" }
                         }
                     }
                 }

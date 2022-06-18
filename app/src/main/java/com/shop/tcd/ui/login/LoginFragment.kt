@@ -14,7 +14,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.shop.tcd.BuildConfig
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.hideSoftKeyboardExt
+import com.shop.tcd.core.extension.navigateExt
+import com.shop.tcd.core.extension.setReadOnly
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_FROM_DEGREE
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_PIVOT
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_TIMEOUT

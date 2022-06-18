@@ -3,12 +3,16 @@ package com.shop.tcd.core.utils
 import com.shop.tcd.data.dto.printer.Printer
 import com.shop.tcd.data.dto.shop.ShopModel
 import com.shop.tcd.data.dto.user.UserModel
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 class Constants {
     object Notifications {
         const val CHANNEL_ID = "com.shop.tcd.channel_1"
         const val CHANNEL_NAME = "Internal notifications"
         const val NOTY_ID = 1
+        const val WORKER_TAG = "update_worker"
+        val WORKER_TIMEOUT = 15.minutes.toJavaDuration()
     }
 
     object DataStore {

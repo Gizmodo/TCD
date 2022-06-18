@@ -17,6 +17,8 @@ import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.utils.Constants.DataStore.KEY_BASE_URL
 import com.shop.tcd.core.utils.Constants.DataStore.KEY_URL_UPDATE_SERVER
+import com.shop.tcd.core.utils.Constants.Network.BASE_URL_UPDATE_SERVER
+import com.shop.tcd.core.utils.ServiceNotification
 import com.shop.tcd.core.utils.SingleLiveEvent
 import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.core.utils.Util.isValidServerAddress
@@ -29,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 class OptionsViewModel : ViewModel() {
@@ -62,6 +63,9 @@ class OptionsViewModel : ViewModel() {
 
     @Inject
     lateinit var ds: DataStoreRepository
+
+    @Inject
+    lateinit var serviceNotification: ServiceNotification
 
     private fun loadSettings() {
         viewModelScope.launch(
@@ -106,7 +110,6 @@ class OptionsViewModel : ViewModel() {
                 pkgname = "TCD",
                 version = BuildConfig.VERSION_NAME
             )
-            Timber.d(updateRequestBody.toString())
             when (
                 val response: NetworkResult<UpdateResponse> =
                     settingsRepository.checkUpdatePost(updateRequestBody)
@@ -118,6 +121,9 @@ class OptionsViewModel : ViewModel() {
                     onException(response.e)
                 }
                 is NetworkResult.Success -> {
+                    val content =
+                        BASE_URL_UPDATE_SERVER.take(BASE_URL_UPDATE_SERVER.length - 1) + response.data.url
+                    serviceNotification.showNotification(content)
                     _state.value = StatefulData.Success(response.data)
                 }
             }

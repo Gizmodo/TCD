@@ -6,12 +6,11 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.work.Configuration
-import androidx.work.ListenableWorker
 import androidx.work.WorkManager
 import androidx.work.testing.SynchronousExecutor
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.testing.WorkManagerTestInitHelper
-import com.shop.tcd.ato.OneTimeWorker
+import com.shop.tcd.core.update.UpdateWorker
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -44,10 +43,10 @@ class ExampleInstrumentedTest {
     @Test
     @Throws(ExecutionException::class, InterruptedException::class)
     fun createWork() {
-        val worker: OneTimeWorker =
-            TestListenableWorkerBuilder.from(context, OneTimeWorker::class.java).build()
+        val worker =
+            TestListenableWorkerBuilder.from(context, UpdateWorker::class.java).build()
 
-        val result: ListenableWorker.Result = worker.startWork().get()
+        val result = worker.startWork().get()
 
 //        assertEquals(result, ListenableWorker.Result.success())
         /* assertEquals(
