@@ -5,6 +5,12 @@ import com.shop.tcd.data.dto.shop.ShopModel
 import com.shop.tcd.data.dto.user.UserModel
 
 class Constants {
+    object Notifications {
+        const val CHANNEL_ID = "com.shop.tcd.channel_1"
+        const val CHANNEL_NAME = "Internal notifications"
+        const val NOTY_ID = 1
+    }
+
     object DataStore {
         const val KEY_BASE_URL = "baseurl"
         const val KEY_URL_UPDATE_SERVER = "urlupdateserver"
