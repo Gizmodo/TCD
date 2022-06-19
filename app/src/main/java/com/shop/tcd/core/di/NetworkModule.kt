@@ -6,9 +6,8 @@ import com.shop.tcd.core.utils.BasicAuthInterceptor
 import com.shop.tcd.core.utils.Constants.Network.BASE_SHOP_URL
 import com.shop.tcd.core.utils.Constants.Network.BASE_URL
 import com.shop.tcd.core.utils.Constants.Network.BASE_URL_UPDATE_SERVER
-import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_CONNECT_TIMEOUT
-import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_RW_TIMEOUT
-import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_TIMEOUT_SHOP
+import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_SETTINGS_TIMEOUT
+import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_SHOP_TIMEOUT
 import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_UPDATE_TIMEOUT
 import com.shop.tcd.data.remote.SettingsApi
 import com.shop.tcd.data.remote.ShopApi
@@ -23,7 +22,6 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -56,9 +54,9 @@ object NetworkModule {
             .addInterceptor(logging)
             .addInterceptor(BasicAuthInterceptor("tsd", "tsd159753"))
             .eventListener(BugsnagOkHttpPlugin())
-            .connectTimeout(OK_HTTP_CONNECT_TIMEOUT, TimeUnit.SECONDS)
-            .readTimeout(OK_HTTP_RW_TIMEOUT, TimeUnit.MINUTES)
-            .writeTimeout(OK_HTTP_RW_TIMEOUT, TimeUnit.MINUTES)
+            .connectTimeout(OK_HTTP_SETTINGS_TIMEOUT)
+            .readTimeout(OK_HTTP_SETTINGS_TIMEOUT)
+            .writeTimeout(OK_HTTP_SETTINGS_TIMEOUT)
             .build()
     }
 
@@ -71,9 +69,9 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .eventListener(BugsnagOkHttpPlugin())
-            .connectTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
-            .readTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
-            .writeTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
+            .connectTimeout(OK_HTTP_SHOP_TIMEOUT)
+            .readTimeout(OK_HTTP_SHOP_TIMEOUT)
+            .writeTimeout(OK_HTTP_SHOP_TIMEOUT)
             .build()
     }
 

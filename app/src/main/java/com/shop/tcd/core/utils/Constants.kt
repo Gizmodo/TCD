@@ -31,17 +31,12 @@ class Constants {
 
     object Network {
         var BASE_URL = "http://192.168.0.154/"
-        var BASE_URL_UPDATE_SERVER = "http://192.168.88.14:3000/"
-
-        /**
-         * Изменяемый адрес, который указывает на выбранный магазин (сервер 1С)
-         */
+        var BASE_URL_UPDATE_SERVER = "http://192.168.0.154:3000/"
         var BASE_SHOP_URL = ""
-        const val OK_HTTP_CONNECT_TIMEOUT = 15L
-        const val OK_HTTP_RW_TIMEOUT = 5L
-        const val OK_HTTP_TIMEOUT_SHOP = 10L
 
         val OK_HTTP_UPDATE_TIMEOUT = 10.seconds.toJavaDuration()
+        val OK_HTTP_SETTINGS_TIMEOUT = 10.seconds.toJavaDuration()
+        val OK_HTTP_SHOP_TIMEOUT = 10.minutes.toJavaDuration()
     }
 
     object TCP {
