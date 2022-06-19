@@ -1,5 +1,6 @@
 package com.shop.tcd.core.di
 
+import com.shop.tcd.core.update.UpdateWorker
 import com.shop.tcd.ui.catalog.CatalogViewModel
 import com.shop.tcd.ui.catalog.group.GroupsViewModel
 import com.shop.tcd.ui.inventory.InventoryViewModel
@@ -38,6 +39,7 @@ interface ViewModelInjector {
     fun inject(viewmodel: OverEstimationViewModel)
     fun inject(viewmodel: RemainsViewModel)
     fun inject(viewmodel: OptionsViewModel)
+    fun inject(worker: UpdateWorker)
 
     @Component.Builder
     interface Builder {

@@ -3,10 +3,22 @@ package com.shop.tcd.core.utils
 import com.shop.tcd.data.dto.printer.Printer
 import com.shop.tcd.data.dto.shop.ShopModel
 import com.shop.tcd.data.dto.user.UserModel
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 class Constants {
+    object Notifications {
+        const val CHANNEL_ID = "com.shop.tcd.channel_1"
+        const val CHANNEL_NAME = "Internal notifications"
+        const val NOTY_ID = 1
+        const val WORKER_TAG = "update_worker"
+        val WORKER_TIMEOUT = 15.minutes.toJavaDuration()
+    }
+
     object DataStore {
         const val KEY_BASE_URL = "baseurl"
+        const val KEY_URL_UPDATE_SERVER = "urlupdateserver"
     }
 
     object Inventory {
@@ -19,14 +31,12 @@ class Constants {
 
     object Network {
         var BASE_URL = "http://192.168.0.154/"
-
-        /**
-         * Изменяемый адрес, который указывает на выбранный магазин (сервер 1С)
-         */
+        var BASE_URL_UPDATE_SERVER = "http://192.168.0.154:3000/"
         var BASE_SHOP_URL = ""
-        const val OK_HTTP_CONNECT_TIMEOUT = 15L
-        const val OK_HTTP_RW_TIMEOUT = 5L
-        const val OK_HTTP_TIMEOUT_SHOP = 10L
+
+        val OK_HTTP_UPDATE_TIMEOUT = 10.seconds.toJavaDuration()
+        val OK_HTTP_SETTINGS_TIMEOUT = 10.seconds.toJavaDuration()
+        val OK_HTTP_SHOP_TIMEOUT = 10.minutes.toJavaDuration()
     }
 
     object TCP {

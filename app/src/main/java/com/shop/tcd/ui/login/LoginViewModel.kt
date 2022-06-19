@@ -6,10 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shop.tcd.App
-import com.shop.tcd.core.di.*
+import com.shop.tcd.core.di.AppModule
+import com.shop.tcd.core.di.DaggerViewModelInjector
+import com.shop.tcd.core.di.DataBaseModule
+import com.shop.tcd.core.di.DataStoreModule
+import com.shop.tcd.core.di.NetworkModule
+import com.shop.tcd.core.di.NetworkModule_ProvideOkHttpClientSettingsFactory
+import com.shop.tcd.core.di.NetworkModule_ProvideRetrofitInterfaceFactory
+import com.shop.tcd.core.di.NetworkModule_ProvideSettingsApiFactory
+import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
-import com.shop.tcd.core.utils.Constants.DataStore.KEY_BASE_URL
-import com.shop.tcd.core.utils.Constants.Network.BASE_URL
 import com.shop.tcd.core.utils.SingleLiveEvent
 import com.shop.tcd.data.dto.user.UsersList
 import com.shop.tcd.data.local.DataStoreRepository
@@ -59,14 +65,6 @@ class LoginViewModel : ViewModel() {
     fun loadOptions() {
         job?.cancel()
         job = viewModelScope.launch(exceptionHandler) {
-            val baseUrl = ds.getString(KEY_BASE_URL)
-            Timber.d("Read baseUrl from datastore: $baseUrl")
-            BASE_URL = if (baseUrl.isNullOrEmpty()) {
-                "http://192.168.0.154/"
-            } else {
-                baseUrl
-            }
-
             val ok = NetworkModule_ProvideOkHttpClientSettingsFactory()
             val retro = NetworkModule_ProvideRetrofitInterfaceFactory(ok)
             val api = NetworkModule_ProvideSettingsApiFactory(retro)

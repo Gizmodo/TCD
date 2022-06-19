@@ -1,9 +1,20 @@
 package com.shop.tcd.core.utils
 
-//import leakcanary.DefaultOnHeapAnalyzedListener
-//import leakcanary.OnHeapAnalyzedListener
-//import shark.*
-/*
+import android.app.Application
+import com.bugsnag.android.Bugsnag
+import com.bugsnag.android.Client
+import com.bugsnag.android.Configuration
+import com.bugsnag.android.ErrorTypes
+import com.bugsnag.android.Event
+import com.bugsnag.android.ThreadSendPolicy
+import leakcanary.DefaultOnHeapAnalyzedListener
+import leakcanary.OnHeapAnalyzedListener
+import shark.HeapAnalysis
+import shark.HeapAnalysisFailure
+import shark.HeapAnalysisSuccess
+import shark.Leak
+import shark.LeakTrace
+import shark.LibraryLeak
 
 class BugsnagLeakUploader(applicationContext: Application) :
     OnHeapAnalyzedListener {
@@ -84,4 +95,4 @@ class BugsnagLeakUploader(applicationContext: Application) :
             unhandledRejections = false
         )
     }
-}*/
+}

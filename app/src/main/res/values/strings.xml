@@ -56,4 +56,12 @@
     <string name="sales">Оперативные продажи с касс</string>
     <string name="price_remains">Цена</string>
     <string name="remains_request">Запросить информацию</string>
+    <string name="options_title">Настройки</string>
+    <string name="options_hint_server">Адрес сервера</string>
+    <string name="options_template_server">Шаблон: http://192.168.0.154/</string>
+    <string name="options_hint_server_update">Адрес сервера обновлений</string>
+    <string name="options_template_server_update">Шаблон: http://192.168.0.154:3000/</string>
+    <string name="options_check_update">Проверить обновление</string>
+    <string name="notification_title">Доступна новая версия</string>
+    <string name="notification_text">Выполните установку</string>
 </resources>

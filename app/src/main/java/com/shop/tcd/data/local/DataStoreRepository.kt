@@ -2,7 +2,11 @@ package com.shop.tcd.data.local
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,15 +17,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DataStoreRepository @Inject constructor(private val context: Context) :
-    IDataStoreRepository {
+class DataStoreRepository @Inject constructor(
+    private val context: Context
+) : IDataStoreRepository {
     companion object {
         private const val PREFERENCES_NAME = "datastore-pref"
-        private val Context.dataStore: DataStore<Preferences>
-                by preferencesDataStore(
-                    name = PREFERENCES_NAME,
-                    scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-                )
+        private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+            name = PREFERENCES_NAME,
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+        )
     }
 
     override suspend fun putString(key: String, value: String) {

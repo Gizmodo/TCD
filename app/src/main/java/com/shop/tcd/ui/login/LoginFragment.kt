@@ -1,9 +1,6 @@
 package com.shop.tcd.ui.login
 
-import android.content.Context
-import android.net.wifi.WifiManager
 import android.os.Bundle
-import android.text.format.Formatter
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
@@ -14,7 +11,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.shop.tcd.BuildConfig
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.hideSoftKeyboardExt
+import com.shop.tcd.core.extension.navigateExt
+import com.shop.tcd.core.extension.setReadOnly
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_FROM_DEGREE
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_PIVOT
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_TIMEOUT
@@ -24,7 +27,6 @@ import com.shop.tcd.core.utils.Constants.SelectedObjects.UserModelPosition
 import com.shop.tcd.data.dto.user.UserModel
 import com.shop.tcd.data.dto.user.UsersList
 import com.shop.tcd.databinding.FragmentLoginBinding
-import timber.log.Timber
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private val binding by viewBindingWithBinder(FragmentLoginBinding::bind)
@@ -63,9 +65,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showIPAddress()
-        showBuildVersion()
-
+        binding.txtVersion.text = BuildConfig.VERSION_NAME
         initUIListener()
         setStateUI(false)
         showAnimation()
@@ -85,13 +85,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
         viewModel.exceptionMessage.observe(viewLifecycleOwner) {
             hideAnimation()
-            Timber.e(it)
             fancyException { it }
         }
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             hideAnimation()
-            Timber.e(it)
             fancyError { it }
         }
 
@@ -128,9 +126,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         userPassword: String,
     ): Boolean {
         val result = selectedUser.name == userName && selectedUser.password == userPassword
-        if (result) {
-            UserModel = selectedUser
-        }
+        if (result) UserModel = selectedUser
         return result
     }
 
@@ -149,17 +145,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 fancyError { "Неверно указаны данные для входа" }
             }
         }
-    }
-
-    private fun showBuildVersion() {
-        binding.txtVPNStatus.text = BuildConfig.VERSION_NAME
-    }
-
-    private fun showIPAddress() {
-        val wifiManager =
-            requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val ipAddress: String = Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
-        binding.txtIPAddress.text = ipAddress
     }
 
     private fun setupLogins(view: AutoCompleteTextView, items: UsersList) {
