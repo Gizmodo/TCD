@@ -4,6 +4,7 @@ import com.shop.tcd.data.dto.printer.Printer
 import com.shop.tcd.data.dto.shop.ShopModel
 import com.shop.tcd.data.dto.user.UserModel
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 class Constants {
@@ -39,6 +40,8 @@ class Constants {
         const val OK_HTTP_CONNECT_TIMEOUT = 15L
         const val OK_HTTP_RW_TIMEOUT = 5L
         const val OK_HTTP_TIMEOUT_SHOP = 10L
+
+        val OK_HTTP_UPDATE_TIMEOUT = 10.seconds.toJavaDuration()
     }
 
     object TCP {

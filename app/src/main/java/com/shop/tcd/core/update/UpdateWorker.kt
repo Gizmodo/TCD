@@ -16,7 +16,6 @@ import com.shop.tcd.core.di.NetworkModule_ProvidesUpdateOkHttpClientFactory
 import com.shop.tcd.core.di.NetworkModule_ProvidesUpdateRetrofitFactory
 import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
-import com.shop.tcd.core.utils.Constants.DataStore.KEY_URL_UPDATE_SERVER
 import com.shop.tcd.core.utils.Constants.Network.BASE_URL_UPDATE_SERVER
 import com.shop.tcd.core.utils.ServiceNotification
 import com.shop.tcd.data.dto.ato.UpdateRequest
@@ -58,11 +57,7 @@ class UpdateWorker(
 
     override suspend fun doWork(): Result {
         val job = CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
-            val baseUrlUpdateServer = ds.getString(KEY_URL_UPDATE_SERVER)
-            if (baseUrlUpdateServer.isNullOrEmpty()) {
-                ds.putString(KEY_URL_UPDATE_SERVER, BASE_URL_UPDATE_SERVER)
-            }
-
+            Timber.d("Запущен UpdateWorker по адресу $BASE_URL_UPDATE_SERVER")
             val api = NetworkModule_ProvidesUpdateApiFactory(
                 NetworkModule_ProvidesUpdateRetrofitFactory(
                     NetworkModule_ProvidesUpdateOkHttpClientFactory()

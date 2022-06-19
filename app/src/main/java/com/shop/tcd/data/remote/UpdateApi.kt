@@ -4,7 +4,6 @@ import com.shop.tcd.data.dto.ato.UpdateRequest
 import com.shop.tcd.data.dto.ato.UpdateResponse
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 
@@ -17,11 +16,4 @@ interface UpdateApi {
     @POST("checkupdate")
     @Headers("Content-Type:application/json")
     suspend fun checkUpdatePost(@Body updateRequest: UpdateRequest): Response<UpdateResponse>
-
-    /**
-     * Отправить ping серверу автообновлений.
-     *
-     */
-    @GET("ping")
-    suspend fun sendPing(): Response<String>
 }

@@ -17,6 +17,7 @@ import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.utils.Constants.DataStore.KEY_BASE_URL
 import com.shop.tcd.core.utils.Constants.DataStore.KEY_URL_UPDATE_SERVER
+import com.shop.tcd.core.utils.Constants.Network.BASE_URL
 import com.shop.tcd.core.utils.Constants.Network.BASE_URL_UPDATE_SERVER
 import com.shop.tcd.core.utils.ServiceNotification
 import com.shop.tcd.core.utils.SingleLiveEvent
@@ -84,6 +85,7 @@ class OptionsViewModel : ViewModel() {
         val isValid = url.isValidServerAddress()
         if (isValid) viewModelScope.launch {
             ds.putString(KEY_BASE_URL, url)
+            BASE_URL = url
         }
     }
 
@@ -91,15 +93,13 @@ class OptionsViewModel : ViewModel() {
         val isValid = url.isValidServerAddress()
         if (isValid) viewModelScope.launch {
             ds.putString(KEY_URL_UPDATE_SERVER, url)
+            BASE_URL_UPDATE_SERVER = url
         }
     }
 
     fun checkUpdate() {
         viewModelScope.launch(exceptionHandler) {
-            // TODO: сделать еще один сетевой модуль для обращения к серверу обновлений.
-            // TODO: В последствии предложить разрабочику бэкенда странслировать сетевые запросы/ответы через 1С. Тогда можно будет убрать сетевой модуль, отвечающий за опрос сервера обновлений.
             _state.value = StatefulData.Loading
-            val urlUpdateServer = ds.getString(KEY_URL_UPDATE_SERVER)
             val api = NetworkModule_ProvidesUpdateApiFactory(
                 NetworkModule_ProvidesUpdateRetrofitFactory(
                     NetworkModule_ProvidesUpdateOkHttpClientFactory()

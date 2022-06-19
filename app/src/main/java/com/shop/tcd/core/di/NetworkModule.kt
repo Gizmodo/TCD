@@ -9,6 +9,7 @@ import com.shop.tcd.core.utils.Constants.Network.BASE_URL_UPDATE_SERVER
 import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_CONNECT_TIMEOUT
 import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_RW_TIMEOUT
 import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_TIMEOUT_SHOP
+import com.shop.tcd.core.utils.Constants.Network.OK_HTTP_UPDATE_TIMEOUT
 import com.shop.tcd.data.remote.SettingsApi
 import com.shop.tcd.data.remote.ShopApi
 import com.shop.tcd.data.remote.UpdateApi
@@ -81,13 +82,12 @@ object NetworkModule {
     fun providesUpdateOkHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor { message -> Timber.i(message) }
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
-
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .eventListener(BugsnagOkHttpPlugin())
-            .connectTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
-            .readTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
-            .writeTimeout(OK_HTTP_TIMEOUT_SHOP, TimeUnit.MINUTES)
+            .connectTimeout(OK_HTTP_UPDATE_TIMEOUT)
+            .readTimeout(OK_HTTP_UPDATE_TIMEOUT)
+            .writeTimeout(OK_HTTP_UPDATE_TIMEOUT)
             .build()
     }
 

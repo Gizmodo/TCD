@@ -14,8 +14,17 @@ import com.huawei.agconnect.common.network.AccessNetworkManager
 import com.huawei.agconnect.crash.AGConnectCrash
 import com.shop.tcd.core.update.UpdateWorker
 import com.shop.tcd.core.utils.BugsnagLeakUploader
+import com.shop.tcd.core.utils.Constants.DataStore.KEY_BASE_URL
+import com.shop.tcd.core.utils.Constants.DataStore.KEY_URL_UPDATE_SERVER
+import com.shop.tcd.core.utils.Constants.Network.BASE_URL
+import com.shop.tcd.core.utils.Constants.Network.BASE_URL_UPDATE_SERVER
 import com.shop.tcd.core.utils.Constants.Notifications.WORKER_TAG
 import com.shop.tcd.core.utils.Constants.Notifications.WORKER_TIMEOUT
+import com.shop.tcd.data.local.DataStoreRepository
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import leakcanary.LeakCanary
 import timber.log.Timber
 
@@ -31,12 +40,36 @@ class App : Application() {
         }
     }
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.e(throwable)
+    }
+
+    private fun loadSettings() {
+        val ds = DataStoreRepository(applicationContext)
+        CoroutineScope(Dispatchers.IO).launch(exceptionHandler) {
+            val baseUrl = ds.getString(KEY_BASE_URL)
+            if (baseUrl.isNullOrEmpty()) {
+                ds.putString(KEY_BASE_URL, BASE_URL)
+            } else {
+                BASE_URL = baseUrl
+            }
+
+            val baseUrlUpdate = ds.getString(KEY_URL_UPDATE_SERVER)
+            if (baseUrlUpdate.isNullOrEmpty()) {
+                ds.putString(KEY_URL_UPDATE_SERVER, BASE_URL_UPDATE_SERVER)
+            } else {
+                BASE_URL_UPDATE_SERVER = baseUrlUpdate
+            }
+        }
+    }
+
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
             Timber.plant(LineNumberDebugTree())
         }
         Timber.d("------------------------Application create------------------------")
+        loadSettings()
         AGConnectCrash.getInstance().enableCrashCollection(true)
         AccessNetworkManager.getInstance().setAccessNetwork(true)
         val bugsnagOkHttpPlugin = BugsnagOkHttpPlugin()
