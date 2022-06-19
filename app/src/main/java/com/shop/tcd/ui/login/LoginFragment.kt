@@ -1,9 +1,6 @@
 package com.shop.tcd.ui.login
 
-import android.content.Context
-import android.net.wifi.WifiManager
 import android.os.Bundle
-import android.text.format.Formatter
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
@@ -68,9 +65,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showIPAddress()
-        showBuildVersion()
-
+        binding.txtVersion.text = BuildConfig.VERSION_NAME
         initUIListener()
         setStateUI(false)
         showAnimation()
@@ -131,9 +126,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         userPassword: String,
     ): Boolean {
         val result = selectedUser.name == userName && selectedUser.password == userPassword
-        if (result) {
-            UserModel = selectedUser
-        }
+        if (result) UserModel = selectedUser
         return result
     }
 
@@ -152,17 +145,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                 fancyError { "Неверно указаны данные для входа" }
             }
         }
-    }
-
-    private fun showBuildVersion() {
-        binding.txtVPNStatus.text = BuildConfig.VERSION_NAME
-    }
-
-    private fun showIPAddress() {
-        val wifiManager =
-            requireContext().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val ipAddress: String = Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
-        binding.txtIPAddress.text = ipAddress
     }
 
     private fun setupLogins(view: AutoCompleteTextView, items: UsersList) {
