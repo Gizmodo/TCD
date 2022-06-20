@@ -29,11 +29,14 @@ class ShopRepository @Inject constructor(
     suspend fun getNomenclatureByPeriod(period: String): NetworkResult<NomenclatureList> =
         handleApi { shopApi.getNomenclatureByPeriod(period) }
 
-    suspend fun getGroupsList(): NetworkResult<GroupsList> =
-        handleApi { shopApi.getGroupsList() }
+    suspend fun getGroupsList(prefix: String): NetworkResult<GroupsList> =
+        handleApi { shopApi.getGroupsList(prefix) }
 
-    suspend fun getNomenclatureByGroup(filter: String): NetworkResult<NomenclatureList> =
-        handleApi { shopApi.getNomenclatureByGroup(filter) }
+    suspend fun getNomenclatureByGroup(
+        filter: String,
+        prefix: String
+    ): NetworkResult<NomenclatureList> =
+        handleApi { shopApi.getNomenclatureByGroup(filter, prefix) }
 
     suspend fun postInventory(data: InventoryResult): NetworkResult<String> =
         handleApi { shopApi.postInventory("", data) }

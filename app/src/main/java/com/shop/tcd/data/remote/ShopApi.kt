@@ -8,7 +8,11 @@ import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
 import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
 import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ShopApi {
     @GET("getitemlist")
@@ -35,10 +39,15 @@ interface ShopApi {
     suspend fun getRemains(@Body body: RemainsRequestBody): Response<RemainsResponse>
 
     @GET("getgrouplist")
-    suspend fun getGroupsList(): Response<GroupsList>
+    suspend fun getGroupsList(
+        @Query("prefix") prefix: String
+    ): Response<GroupsList>
 
     @GET("getgrouplist")
-    suspend fun getNomenclatureByGroup(@Query("filter") filter: String): Response<NomenclatureList>
+    suspend fun getNomenclatureByGroup(
+        @Query("filter") filter: String,
+        @Query("prefix") prefix: String
+    ): Response<NomenclatureList>
 
     @POST("receiveddocument")
     @Headers("Content-Type:application/json")
