@@ -16,7 +16,9 @@ import retrofit2.http.Query
 
 interface ShopApi {
     @GET("getitemlist")
-    suspend fun getNomenclatureFull(): Response<NomenclatureList>
+    suspend fun getNomenclatureFull(
+        @Query("prefix") prefix: String
+    ): Response<NomenclatureList>
 
     @GET("getiteminstock")
     suspend fun getNomenclatureRemainders(): Response<NomenclatureList>

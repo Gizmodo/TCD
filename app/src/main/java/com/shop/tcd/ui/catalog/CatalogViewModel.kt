@@ -5,16 +5,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.core.di.*
+import com.shop.tcd.core.di.AppModule
+import com.shop.tcd.core.di.DaggerViewModelInjector
+import com.shop.tcd.core.di.DataBaseModule
+import com.shop.tcd.core.di.DataStoreModule
+import com.shop.tcd.core.di.NetworkModule
+import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
+import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
 import com.shop.tcd.core.utils.ShimmerState
 import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
 import com.shop.tcd.data.remote.ShopRepository
 import com.shop.tcd.data.repository.Repository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -60,7 +70,7 @@ class CatalogViewModel : ViewModel() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _state.value = ShimmerState.Loading
-            when (val response = shopRepository.getNomenclatureFull()) {
+            when (val response = shopRepository.getNomenclatureFull(ShopModel.prefix)) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }

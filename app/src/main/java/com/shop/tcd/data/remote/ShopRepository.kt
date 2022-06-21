@@ -20,8 +20,8 @@ class ShopRepository @Inject constructor(
     suspend fun getRemains(barcodesList: RemainsRequestBody): NetworkResult<RemainsResponse> =
         handleApi { shopApi.getRemains(barcodesList) }
 
-    suspend fun getNomenclatureFull(): NetworkResult<NomenclatureList> =
-        handleApi { shopApi.getNomenclatureFull() }
+    suspend fun getNomenclatureFull(prefix: String): NetworkResult<NomenclatureList> =
+        handleApi { shopApi.getNomenclatureFull(prefix) }
 
     suspend fun getNomenclatureRemainders(): NetworkResult<NomenclatureList> =
         handleApi { shopApi.getNomenclatureRemainders() }
