@@ -6,16 +6,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.core.di.*
+import com.shop.tcd.core.di.AppModule
+import com.shop.tcd.core.di.DaggerViewModelInjector
+import com.shop.tcd.core.di.DataBaseModule
+import com.shop.tcd.core.di.DataStoreModule
+import com.shop.tcd.core.di.NetworkModule
+import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
-import com.shop.tcd.core.utils.Constants
+import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
 import com.shop.tcd.core.utils.ReceiverLiveData
 import com.shop.tcd.data.dto.remains.request.RemainsBarcodeFieldRequest
 import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
 import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import com.shop.tcd.data.remote.ShopRepository
 import com.shop.tcd.data.repository.Repository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -109,15 +118,17 @@ class RemainsViewModel : ViewModel() {
     private fun convertToRemainsRequestBody(list: MutableList<String>): RemainsRequestBody {
         val barcodeList: MutableList<RemainsBarcodeFieldRequest> = mutableListOf()
         list.mapTo(barcodeList) { RemainsBarcodeFieldRequest(it) }
-        return RemainsRequestBody(Constants.SelectedObjects.ShopModel.prefix, barcodeList)
+        return RemainsRequestBody(ShopModel.prefix, barcodeList)
     }
 
     fun loadRemainInfoByBarcodes(list: MutableList<String>) {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response: NetworkResult<RemainsResponse> =
-                shopRepository.getRemains(convertToRemainsRequestBody(list))) {
+            when (
+                val response: NetworkResult<RemainsResponse> =
+                    shopRepository.getRemains(convertToRemainsRequestBody(list))
+            ) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }
