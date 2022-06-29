@@ -11,7 +11,11 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.hideSoftKeyboardExt
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import com.shop.tcd.databinding.FragmentRemainsBinding
 
@@ -116,15 +120,6 @@ class RemainsFragment : Fragment(R.layout.fragment_remains) {
                 it -> showShimmer()
                 else -> hideShimmer()
             }
-        }
-        viewModel.urovoKeyboard.observe(viewLifecycleOwner) {
-            if (it) {
-                getRemains()
-            }
-        }
-
-        viewModel.urovoScanner.observe(viewLifecycleOwner) {
-            onReceiveScannerData(it)
         }
 
         viewModel.idataScanner.observe(viewLifecycleOwner) {

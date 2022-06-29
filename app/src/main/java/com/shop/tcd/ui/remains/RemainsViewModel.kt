@@ -42,17 +42,8 @@ class RemainsViewModel : ViewModel() {
         onException(throwable)
     }
 
-    /**
-     * Наблюдатели для терминалов
-     */
-    private var _urovoScanner = MutableLiveData<String>()
-    val urovoScanner: LiveData<String> get() = _urovoScanner
-
     private var _idataScanner = MutableLiveData<String>()
     val idataScanner: LiveData<String> get() = _idataScanner
-
-    private var _urovoKeyboard = MutableLiveData<Boolean>()
-    val urovoKeyboard: LiveData<Boolean> get() = _urovoKeyboard
 
     private var _remains = MutableLiveData<RemainsResponse>()
     val remainsLiveData: LiveData<RemainsResponse>
@@ -84,27 +75,6 @@ class RemainsViewModel : ViewModel() {
     }
 
     private fun initDeviceObservables() {
-        _urovoScanner = ReceiverLiveData(
-            context,
-            IntentFilter("android.intent.ACTION_DECODE_DATA")
-        ) { _, intent ->
-            var data = ""
-            intent.extras?.let { data = it["barcode_string"].toString() }
-            data
-        }
-
-        _urovoKeyboard =
-            ReceiverLiveData(
-                context,
-                IntentFilter("android.intent.action_keyboard")
-            ) { _, intent ->
-                var data = false
-                intent.extras?.let {
-                    data = it["kbrd_enter"].toString() == "enter"
-                }
-                data
-            }
-
         _idataScanner = ReceiverLiveData(
             context,
             IntentFilter("android.intent.action.SCANRESULT")

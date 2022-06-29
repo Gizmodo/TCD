@@ -1,6 +1,5 @@
 package com.shop.tcd.data.dto.remains.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class RemainsItemResponse(
@@ -12,5 +11,5 @@ data class RemainsItemResponse(
     @SerializedName("plu") val plu: Int, // 123
     @SerializedName("price") val price: Double, // 49.9
     @SerializedName("remain") val remain: Double, // 101.978
-    @SerializedName("sales") val sales: Int, // 0
+    @SerializedName("sales") val sales: Double, // 0
 )
