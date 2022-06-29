@@ -6,7 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.shop.tcd.App
-import com.shop.tcd.core.di.*
+import com.shop.tcd.core.di.AppModule
+import com.shop.tcd.core.di.DaggerViewModelInjector
+import com.shop.tcd.core.di.DataBaseModule
+import com.shop.tcd.core.di.DataStoreModule
+import com.shop.tcd.core.di.NetworkModule
+import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
 import com.shop.tcd.core.utils.ReceiverLiveData
@@ -17,7 +22,11 @@ import com.shop.tcd.data.dto.pricetag.response.PriceTagResponseItem
 import com.shop.tcd.data.dto.printer.PrintersList
 import com.shop.tcd.data.remote.SettingsRepository
 import com.shop.tcd.data.remote.ShopRepository
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -89,8 +98,10 @@ class PrintViewModel : ViewModel() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
-            when (val response: NetworkResult<PriceTagResponse> =
-                shopRepository.getPrintInfoByBarcodes(converterToPriceTag(list))) {
+            when (
+                val response: NetworkResult<PriceTagResponse> =
+                    shopRepository.getPrintInfoByBarcodes(converterToPriceTag(list))
+            ) {
                 is NetworkResult.Error -> {
                     onError("${response.code} ${response.message}")
                 }

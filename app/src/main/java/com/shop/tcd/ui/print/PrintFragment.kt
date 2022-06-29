@@ -16,12 +16,21 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.shop.tcd.ExampleWorker
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.hideSoftKeyboardExt
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.Constants.SelectedObjects.PrinterModel
 import com.shop.tcd.core.utils.Constants.SelectedObjects.PrinterModelPosition
 import com.shop.tcd.core.utils.Constants.SelectedObjects.isPrinterSelected
@@ -152,7 +161,9 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     }
 
     private fun hideShimmer() {
-        dialog.dismiss()
+        if (this::dialog.isInitialized) {
+            dialog.dismiss()
+        }
     }
 
     private fun initViewModelObservers() {
