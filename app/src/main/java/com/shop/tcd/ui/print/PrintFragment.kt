@@ -16,15 +16,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
-import com.shop.tcd.ExampleWorker
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.fancyError
 import com.shop.tcd.core.extension.fancyException
@@ -231,23 +224,6 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
         } else {
             fancyError { "Не выбран принтер!" }
         }
-    }
-
-    fun runHeavyWork() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresStorageNotLow(true)
-            .build()
-
-        val heavyWorkRequest: WorkRequest =
-            OneTimeWorkRequest.Builder(ExampleWorker::class.java)
-                .setConstraints(constraints)
-                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                .build()
-
-        WorkManager
-            .getInstance(requireContext())
-            .enqueue(heavyWorkRequest)
     }
 
     private fun setupAutoComplete(view: AutoCompleteTextView, items: PrintersList) {
