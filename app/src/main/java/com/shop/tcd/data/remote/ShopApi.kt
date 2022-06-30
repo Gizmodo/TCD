@@ -5,6 +5,7 @@ import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureList
 import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
+import com.shop.tcd.data.dto.refund.request.RefundRequestBody
 import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
 import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import retrofit2.Response
@@ -39,6 +40,13 @@ interface ShopApi {
     @POST("remains")
     @Headers("Content-Type:application/json")
     suspend fun getRemains(@Body body: RemainsRequestBody): Response<RemainsResponse>
+
+    /**
+     * Отправка ШК/DataMatrix/PDF417
+     */
+    @POST("refund")
+    @Headers("Content-Type:application/json")
+    suspend fun getRefund(@Body body: RefundRequestBody): Response<String>
 
     @GET("getgrouplist")
     suspend fun getGroupsList(

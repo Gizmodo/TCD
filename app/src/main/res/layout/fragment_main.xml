@@ -38,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilShopsList"
-        app:layout_constraintVertical_bias="0.45"
+        app:layout_constraintVertical_bias="0.5"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
@@ -74,11 +74,24 @@
         android:layout_margin="8dp"
         android:text="@string/overestimate"
         app:icon="@drawable/ic_overestimate_48dp"
-        app:layout_constraintBottom_toTopOf="@id/btnPrint"
+        app:layout_constraintBottom_toTopOf="@id/btnRefund"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnInventory" />
+
+    <Button
+        android:id="@+id/btnRefund"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/refund"
+        app:icon="@drawable/ic_overestimate_48dp"
+        app:layout_constraintBottom_toTopOf="@id/btnPrint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnOverEstimate" />
 
     <Button
         android:id="@+id/btnPrint"
@@ -91,6 +104,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnOverEstimate" />
+        app:layout_constraintTop_toBottomOf="@id/btnRefund" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

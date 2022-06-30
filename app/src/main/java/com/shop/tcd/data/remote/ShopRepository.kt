@@ -7,6 +7,7 @@ import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureList
 import com.shop.tcd.data.dto.pricetag.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
+import com.shop.tcd.data.dto.refund.request.RefundRequestBody
 import com.shop.tcd.data.dto.remains.request.RemainsRequestBody
 import com.shop.tcd.data.dto.remains.response.RemainsResponse
 import javax.inject.Inject
@@ -19,6 +20,9 @@ class ShopRepository @Inject constructor(
 
     suspend fun getRemains(barcodesList: RemainsRequestBody): NetworkResult<RemainsResponse> =
         handleApi { shopApi.getRemains(barcodesList) }
+
+    suspend fun getRefund(payload: RefundRequestBody): NetworkResult<String> =
+        handleApi { shopApi.getRefund(payload) }
 
     suspend fun getNomenclatureFull(prefix: String): NetworkResult<NomenclatureList> =
         handleApi { shopApi.getNomenclatureFull(prefix) }

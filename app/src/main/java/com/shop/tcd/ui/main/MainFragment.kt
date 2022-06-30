@@ -7,7 +7,11 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.navigateExt
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.Constants
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH
 import com.shop.tcd.core.utils.Constants.Inventory.BARCODE_LENGTH_WO_CRC
@@ -28,6 +32,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     private lateinit var btnNomenclature: Button
     private lateinit var btnInventory: Button
     private lateinit var btnOverEstimate: Button
+    private lateinit var btnRefund: Button
     private lateinit var shopsList: ShopsList
     private val viewModel: MainViewModel by lazy {
         getViewModel { MainViewModel() }
@@ -55,6 +60,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         btnNomenclature.isEnabled = enabled
         btnInventory.isEnabled = enabled
         btnOverEstimate.isEnabled = enabled
+        btnRefund.isEnabled = enabled
     }
 
     private fun initViewModelObservers() {
@@ -72,7 +78,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             Timber.e(it)
             fancyError { it }
         }
-
     }
 
     private fun setupShops(view: AutoCompleteTextView, items: ShopsList) {
@@ -151,6 +156,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         btnInventory = binding.btnInventory
         btnPrint = binding.btnPrint
         btnOverEstimate = binding.btnOverEstimate
+        btnRefund = binding.btnRefund
     }
 
     private fun initUIListeners() {
@@ -168,6 +174,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
         btnOverEstimate.setOnClickListener {
             navigateExt(MainFragmentDirections.actionMainFragmentToOverestimationFragment())
+        }
+        btnRefund.setOnClickListener {
+            navigateExt(MainFragmentDirections.actionMainFragmentToRefundFragment())
         }
     }
 }

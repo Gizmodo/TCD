@@ -1,8 +1,12 @@
 package com.shop.tcd.core.extension
 
+import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -12,6 +16,17 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+
+fun ImageView.setTint(@ColorRes color: Int?) {
+    if (color == null) {
+        ImageViewCompat.setImageTintList(this, null)
+    } else {
+        ImageViewCompat.setImageTintList(
+            this,
+            ColorStateList.valueOf(ContextCompat.getColor(context, color))
+        )
+    }
+}
 
 /**
  * Загружает изображение по ссылке imageReference и передаёт для показа в imageView

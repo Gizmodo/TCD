@@ -28,7 +28,9 @@
     <string name="plu">PLU</string>
     <string name="barcode">Штрихкод</string>
     <string name="barcode_short">ШК</string>
+    <string name="datamatrix">DataMatrix</string>
     <string name="barcode_or_code">Штрихкод/код</string>
+    <string name="pdf417">Акцизная марка</string>
     <string name="price">Цена</string>
     <string name="entercode">Введите код</string>
     <string name="upload">Выгрузить</string>
@@ -65,4 +67,5 @@
     <string name="options_check_update">Проверить обновление</string>
     <string name="notification_title">Доступна новая версия</string>
     <string name="notification_text">Выполните установку</string>
+    <string name="refund">Списание/возврат</string>
 </resources>

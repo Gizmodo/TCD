@@ -64,7 +64,7 @@ object NetworkModule {
     @Named("Shop")
     fun provideOkHttpClientShop(): OkHttpClient {
         val logging = HttpLoggingInterceptor { message -> Timber.i(message) }
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY)
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
