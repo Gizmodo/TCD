@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 import com.shop.tcd.data.dto.datamatrix.Goods
 
 data class RefundRequestBody(
+    @SerializedName("doctype")
+    val doctype: String,
     @SerializedName("prefix")
     val prefix: String,
     @SerializedName("barcode")

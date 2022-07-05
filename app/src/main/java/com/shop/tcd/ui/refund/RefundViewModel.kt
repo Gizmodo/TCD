@@ -240,6 +240,7 @@ class RefundViewModel : ViewModel() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             _loading.postValue(true)
             val payload = RefundRequestBody(
+                doctype = "refund",
                 prefix = Constants.SelectedObjects.ShopModel.prefix,
                 barcode = _barcode.value,
                 datamatrix = _datamatrix.value,

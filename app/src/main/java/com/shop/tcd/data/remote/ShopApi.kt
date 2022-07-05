@@ -44,7 +44,7 @@ interface ShopApi {
     /**
      * Отправка ШК/DataMatrix/PDF417
      */
-    @POST("refund")
+    @POST("doc")
     @Headers("Content-Type:application/json")
     suspend fun getRefund(@Body body: RefundRequestBody): Response<String>
 
