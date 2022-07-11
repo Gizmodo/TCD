@@ -1,8 +1,6 @@
 package com.shop.tcd.ui.login
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shop.tcd.App
@@ -16,33 +14,25 @@ import com.shop.tcd.core.di.NetworkModule_ProvideRetrofitInterfaceFactory
 import com.shop.tcd.core.di.NetworkModule_ProvideSettingsApiFactory
 import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
-import com.shop.tcd.core.utils.SingleLiveEvent
+import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.user.UsersList
 import com.shop.tcd.data.local.DataStoreRepository
 import com.shop.tcd.data.remote.SettingsRepository
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 class LoginViewModel : ViewModel() {
-    private var _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
-
-    private var _exceptionMessage = SingleLiveEvent<String>()
-    val exceptionMessage: SingleLiveEvent<String> get() = _exceptionMessage
-
-    private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
+    private var _state = MutableStateFlow<StatefulData<UsersList>>(StatefulData.Loading)
+    val state: StateFlow<StatefulData<UsersList>> get() = _state
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
     }
-
-    private var _usersLiveData = MutableLiveData<UsersList>()
-    val usersLiveData: LiveData<UsersList>
-        get() = _usersLiveData
 
     var job: Job? = null
 
@@ -71,31 +61,23 @@ class LoginViewModel : ViewModel() {
 
             val settingsRepository = SettingsRepository(settingsApi = api.get())
 
-            _loading.postValue(true)
+            _state.value = StatefulData.Loading
             when (val response = settingsRepository.users()) {
                 is NetworkResult.Error -> {
-                    onError("${response.code} ${response.message}")
+                    _state.value = StatefulData.Notify("${response.code} ${response.message}")
                 }
                 is NetworkResult.Exception -> {
                     onException(response.e)
                 }
                 is NetworkResult.Success -> {
-                    _usersLiveData.postValue(response.data)
+                    _state.value = StatefulData.Success(response.data)
                 }
             }
-            _loading.postValue(false)
         }
     }
 
-    private fun onError(message: String) {
-        Timber.e(message)
-        _errorMessage.postValue(message)
-        _loading.postValue(false)
-    }
-
     private fun onException(throwable: Throwable) {
-        _exceptionMessage.postValue(throwable.message)
-        _loading.postValue(false)
+        _state.value = StatefulData.Error(throwable.message.toString())
     }
 
     override fun onCleared() {

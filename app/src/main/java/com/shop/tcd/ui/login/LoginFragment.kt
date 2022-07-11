@@ -8,7 +8,9 @@ import android.view.animation.RotateAnimation
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.shop.tcd.BuildConfig
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.fancyError
@@ -24,9 +26,13 @@ import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_TIMEOUT
 import com.shop.tcd.core.utils.Constants.Animation.ANIMATION_TO_DEGREE
 import com.shop.tcd.core.utils.Constants.SelectedObjects.UserModel
 import com.shop.tcd.core.utils.Constants.SelectedObjects.UserModelPosition
+import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.user.UserModel
 import com.shop.tcd.data.dto.user.UsersList
 import com.shop.tcd.databinding.FragmentLoginBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private val binding by viewBindingWithBinder(FragmentLoginBinding::bind)
@@ -73,30 +79,31 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     }
 
     private fun initViewModelObservers() {
-        lifecycleScope.launchWhenCreated {
-            viewModel.loadOptions()
-        }
-
-        viewModel.usersLiveData.observe(viewLifecycleOwner) {
-            usersList = it
-            setStateUI(usersList.size > 0)
-            setupLogins(binding.edtLogin, it)
-        }
-
-        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
-            hideAnimation()
-            fancyException { it }
-        }
-
-        viewModel.errorMessage.observe(viewLifecycleOwner) {
-            hideAnimation()
-            fancyError { it }
-        }
-
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when (it) {
-                false -> hideAnimation()
-                true -> showAnimation()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.loadOptions()
+                viewModel.state.collectLatest {
+                    when (it) {
+                        is StatefulData.Error -> {
+                            hideAnimation()
+                            fancyError { it.msg }
+                        }
+                        StatefulData.Loading -> {
+                            Timber.d("Запрос на получение обновлений")
+                            showAnimation()
+                        }
+                        is StatefulData.Notify -> {
+                            hideAnimation()
+                            fancyException { it.msg }
+                        }
+                        is StatefulData.Success -> {
+                            hideAnimation()
+                            usersList = it.result
+                            setStateUI(usersList.size > 0)
+                            setupLogins(binding.edtLogin, it.result)
+                        }
+                    }
+                }
             }
         }
     }
