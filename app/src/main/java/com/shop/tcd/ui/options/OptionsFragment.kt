@@ -11,23 +11,26 @@ import com.shop.tcd.core.extension.fancyError
 import com.shop.tcd.core.extension.fancyException
 import com.shop.tcd.core.extension.fancySuccessShort
 import com.shop.tcd.core.extension.getViewModel
-import com.shop.tcd.core.extension.toObservable
+import com.shop.tcd.core.extension.textChanges
 import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.databinding.FragmentOptionsBinding
-import io.reactivex.rxjava3.core.BackpressureStrategy
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 class OptionsFragment : Fragment(R.layout.fragment_options) {
     private val binding by viewBindingWithBinder(FragmentOptionsBinding::bind)
     private val viewModel: OptionsViewModel by lazy {
         getViewModel { OptionsViewModel() }
     }
-    private var subscriptions: CompositeDisposable = CompositeDisposable()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,18 +38,24 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
         initUIListener()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     private fun initUIListener() {
-        val subscribeEdtServer = toObservable(binding.edtServer)
-            .toFlowable(BackpressureStrategy.DROP)
-            .observeOn(Schedulers.io())
-            .subscribe({ viewModel.saveBaseUrl(it) }, { t -> Timber.e(t) })
-        subscriptions.add(subscribeEdtServer)
-
-        val subscribeEdtUpdateServer = toObservable(binding.edtUpdateServer)
-            .toFlowable(BackpressureStrategy.DROP)
-            .observeOn(Schedulers.io())
-            .subscribe({ viewModel.saveUrlUpdateServer(it) }, { t -> Timber.e(t) })
-        subscriptions.add(subscribeEdtUpdateServer)
+        binding.edtServer
+            .textChanges()
+            .filterNot { it.isNullOrBlank() }
+            .debounce(100.milliseconds)
+            .onEach {
+                viewModel.saveBaseUrl(it.toString())
+            }
+            .launchIn(lifecycleScope)
+        binding.edtUpdateServer
+            .textChanges()
+            .filterNot { it.isNullOrBlank() }
+            .debounce(100.milliseconds)
+            .onEach {
+                viewModel.saveUrlUpdateServer(it.toString())
+            }
+            .launchIn(lifecycleScope)
 
         binding.btnCheckUpdate.setOnClickListener {
             viewModel.checkUpdate()
@@ -82,10 +91,5 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        subscriptions.clear()
-        super.onDestroy()
     }
 }

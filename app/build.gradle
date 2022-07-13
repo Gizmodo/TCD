@@ -164,7 +164,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_json"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.test:core-ktx:1.4.0'
-    implementation 'com.github.skydoves:sandwich:1.2.5'
+    implementation 'com.github.skydoves:sandwich:1.2.6'
     implementation 'com.huawei.agconnect:agconnect-apms:1.5.2.309'
     implementation 'com.huawei.agconnect:agconnect-cloud-database:1.5.2.300'
     implementation 'com.huawei.hms:hianalytics:6.4.1.302'
