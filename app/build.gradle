@@ -5,7 +5,6 @@ plugins {
     id 'io.gitlab.arturbosch.detekt'
     id 'androidx.navigation.safeargs'
     id "org.jetbrains.kotlin.plugin.serialization"
-    id 'com.huawei.agconnect'
 }
 
 ext.versionMajor = 1
@@ -35,11 +34,6 @@ def generateVersionName() {
     return "${versionName}.BN-${buildNumber}"
 }
 
-agcp {
-    mappingUpload = true
-    debug = true
-    appVersion = generateVersionName()
-}
 android {
     compileSdkPreview "Tiramisu"
     buildToolsVersion '33.0.0 rc4'
@@ -137,37 +131,24 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:$work"
     implementation "com.bugsnag:bugsnag-plugin-android-okhttp:$bugsnag"
     implementation "com.github.bumptech.glide:glide:$glide"
-    implementation "com.github.karczews:rx2-broadcast-receiver:$broadcast_receiver"
     implementation "com.google.android.material:material:$material"
     implementation "com.google.code.gson:gson:$gson"
     implementation "com.google.dagger:dagger-android-support:$dagger"
     implementation "com.google.dagger:dagger-android:$dagger"
     implementation "com.google.dagger:dagger:$dagger"
-    implementation "com.huawei.agconnect:agconnect-applinking:$huawei"
-    implementation "com.huawei.agconnect:agconnect-appmessaging:$huawei"
-    implementation "com.huawei.agconnect:agconnect-core:$huawei"
-    implementation "com.huawei.agconnect:agconnect-crash:$huawei"
-    implementation "com.huawei.agconnect:agconnect-remoteconfig:$huawei"
-    implementation "com.huawei.agconnect:agconnect-storage:1.5.0.100"
     implementation "com.jakewharton.timber:timber:$timber"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
     implementation "com.squareup.okhttp3:okhttp:$okhttp"
-    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofit"
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation "io.github.shashank02051997:FancyToast:$fancy"
-    implementation "io.reactivex.rxjava3:rxandroid:$rxandroid"
-    implementation "io.reactivex.rxjava3:rxjava:$rxjava"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_json"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.test:core-ktx:1.4.0'
     implementation 'com.github.skydoves:sandwich:1.2.6'
-    implementation 'com.huawei.agconnect:agconnect-apms:1.5.2.309'
-    implementation 'com.huawei.agconnect:agconnect-cloud-database:1.5.2.300'
-    implementation 'com.huawei.hms:hianalytics:6.4.1.302'
     kapt "androidx.room:room-compiler:$room"
     kapt "com.github.bumptech.glide:compiler:$glide"
     kapt "com.google.dagger:dagger-android-processor:$dagger"

@@ -10,8 +10,6 @@ import androidx.work.WorkManager
 import com.bugsnag.android.Bugsnag
 import com.bugsnag.android.Configuration
 import com.bugsnag.android.okhttp.BugsnagOkHttpPlugin
-import com.huawei.agconnect.common.network.AccessNetworkManager
-import com.huawei.agconnect.crash.AGConnectCrash
 import com.shop.tcd.core.update.UpdateWorker
 import com.shop.tcd.core.utils.BugsnagLeakUploader
 import com.shop.tcd.core.utils.Constants.DataStore.KEY_BASE_URL
@@ -70,8 +68,6 @@ class App : Application() {
         }
         Timber.d("------------------------Application create------------------------")
         loadSettings()
-        AGConnectCrash.getInstance().enableCrashCollection(true)
-        AccessNetworkManager.getInstance().setAccessNetwork(true)
         val bugsnagOkHttpPlugin = BugsnagOkHttpPlugin()
         val config = Configuration.load(this)
         config.addPlugin(bugsnagOkHttpPlugin)

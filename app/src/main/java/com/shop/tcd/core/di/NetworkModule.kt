@@ -14,11 +14,9 @@ import com.shop.tcd.data.remote.ShopApi
 import com.shop.tcd.data.remote.UpdateApi
 import dagger.Module
 import dagger.Provides
-import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import timber.log.Timber
@@ -97,7 +95,6 @@ object NetworkModule {
             .baseUrl(BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .client(okHttpClient)
             .build()
     }
@@ -110,7 +107,6 @@ object NetworkModule {
             .baseUrl(BASE_SHOP_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .client(okHttpClient)
             .build()
     }

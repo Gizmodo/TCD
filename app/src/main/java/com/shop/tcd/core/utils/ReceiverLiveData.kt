@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.lifecycle.MutableLiveData
-import io.reactivex.rxjava3.functions.BiFunction
+import java.util.function.BiFunction
 
 class ReceiverLiveData<T : Any>(
     private val context: Context,
