@@ -14,7 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.navigateExt
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.ShimmerState
 import com.shop.tcd.databinding.FragmentCatalogBinding
 import kotlinx.coroutines.flow.launchIn

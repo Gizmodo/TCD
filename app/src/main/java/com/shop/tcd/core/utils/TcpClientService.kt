@@ -34,7 +34,8 @@ class TcpClientService : Service() {
             InetSocketAddress(
                 resolveHost(ip, TCP_SERVICE_DNS_TIMEOUT),
                 TCP_SERVICE_PORT
-            ), TCP_SERVICE_TCP_TIMEOUT_INT
+            ),
+            TCP_SERVICE_TCP_TIMEOUT_INT
         )
         return socket
     }

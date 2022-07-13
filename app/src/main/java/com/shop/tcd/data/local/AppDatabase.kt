@@ -11,7 +11,8 @@ import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
     entities = [
         NomenclatureItem::class,
         InvItem::class
-    ], version = 4, exportSchema = false
+    ],
+    version = 4, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun nomDao(): NomenclatureDao

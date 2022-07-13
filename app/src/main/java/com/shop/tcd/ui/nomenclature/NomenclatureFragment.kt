@@ -14,7 +14,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.textfield.TextInputLayout
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.fancyInfo
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.onChange
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.data.dto.nomenclature.NomenclatureItem
 import com.shop.tcd.databinding.FragmentNomenclatureBinding
 import com.shop.tcd.ui.nomenclature.adapter.NomenclatureAdapter

@@ -1,4 +1,4 @@
-package com.shop.tcd.data.dto.pricetag
+package com.shop.tcd.data.dto.pricetag.request
 
 import com.google.gson.annotations.SerializedName
 

@@ -3,7 +3,7 @@ package com.shop.tcd.data.remote
 import com.shop.tcd.data.dto.group.GroupsList
 import com.shop.tcd.data.dto.inventory.InventoryResult
 import com.shop.tcd.data.dto.nomenclature.NomenclatureList
-import com.shop.tcd.data.dto.pricetag.PriceTag
+import com.shop.tcd.data.dto.pricetag.request.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
 import com.shop.tcd.data.dto.refund.request.RefundRequestBody
 import com.shop.tcd.data.dto.remains.request.RemainsRequestBody

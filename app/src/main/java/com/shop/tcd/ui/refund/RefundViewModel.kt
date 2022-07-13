@@ -122,7 +122,7 @@ class RefundViewModel : ViewModel() {
         ) { _, intent ->
             var data = ""
             var type: Int = 0
-            val extras = intent?.extras?.keySet()?.map { "$it: ${intent.extras?.get(it)}" }
+            val extras = intent.extras?.keySet()?.map { "$it: ${intent.extras?.get(it)}" }
                 ?.joinToString { it }
             Timber.d(extras.toString())
             intent.extras?.let {

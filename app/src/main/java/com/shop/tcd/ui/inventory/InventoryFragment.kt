@@ -21,7 +21,18 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.shop.tcd.R
-import com.shop.tcd.core.extension.*
+import com.shop.tcd.core.extension.fancyError
+import com.shop.tcd.core.extension.fancyErrorShort
+import com.shop.tcd.core.extension.fancyException
+import com.shop.tcd.core.extension.fancyInfo
+import com.shop.tcd.core.extension.fancyInfoShort
+import com.shop.tcd.core.extension.fancySuccessShort
+import com.shop.tcd.core.extension.getViewModel
+import com.shop.tcd.core.extension.hideSoftKeyboardExt
+import com.shop.tcd.core.extension.longFancyConfusing
+import com.shop.tcd.core.extension.navigateExt
+import com.shop.tcd.core.extension.textChanges
+import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.Constants
 import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.core.utils.StatefulData.Error
@@ -33,7 +44,11 @@ import com.shop.tcd.ui.inventory.adapter.InventoryAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
