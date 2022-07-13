@@ -5,7 +5,7 @@ buildscript {
         bugsnag_gradle = "7.2.1"
         constraintlayout = "2.1.4"
         core_ktx = '1.9.0-alpha05'
-        coroutines = '1.6.3'
+        coroutines = '1.6.4'
         dagger = '2.42'
         datastore = "1.0.0"
         desugar = '1.2.0'
