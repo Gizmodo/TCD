@@ -12,6 +12,7 @@ import com.shop.tcd.core.di.DataSourceModule
 import com.shop.tcd.core.di.NetworkModule
 import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
+import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.shop.ShopsList
 import com.shop.tcd.data.remote.SettingsRepository
 import com.shop.tcd.data.repository.Repository
@@ -19,23 +20,22 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 class MainViewModel : ViewModel() {
-    private var _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
-
     private var _exceptionMessage = MutableLiveData<String>()
     val exceptionMessage: LiveData<String> get() = _exceptionMessage
+
+    private var _state = MutableStateFlow<StatefulData<ShopsList>>(StatefulData.Loading)
+    val state: StateFlow<StatefulData<ShopsList>> get() = _state
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
     }
-
-    private var _shopsLiveData = MutableLiveData<ShopsList>()
-    val shopsLiveData: LiveData<ShopsList> get() = _shopsLiveData
 
     var job: Job? = null
     private val context = App.applicationContext() as Application
@@ -69,23 +69,19 @@ class MainViewModel : ViewModel() {
     private fun loadShops() {
         job?.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            _state.value = StatefulData.Loading
             when (val response = settingsRepository.shops()) {
                 is NetworkResult.Error -> {
-                    onError("${response.code} ${response.message}")
+                    _state.value = StatefulData.Notify("${response.code} ${response.message}")
                 }
                 is NetworkResult.Exception -> {
                     onException(response.e)
                 }
                 is NetworkResult.Success -> {
-                    _shopsLiveData.postValue(response.data)
+                    _state.value = StatefulData.Success(response.data)
                 }
             }
         }
-    }
-
-    private fun onError(message: String) {
-        Timber.e(message)
-        _errorMessage.postValue(message)
     }
 
     private fun onException(throwable: Throwable) {

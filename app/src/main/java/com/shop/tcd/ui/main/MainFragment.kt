@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.fancyError
 import com.shop.tcd.core.extension.fancyException
@@ -20,19 +22,16 @@ import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
 import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModelPosition
 import com.shop.tcd.core.utils.Constants.SelectedObjects.shopTemplate
 import com.shop.tcd.core.utils.SearchType
+import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.shop.ShopModel
 import com.shop.tcd.data.dto.shop.ShopsList
 import com.shop.tcd.databinding.FragmentMainBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class MainFragment : Fragment(R.layout.fragment_main) {
     private val binding by viewBindingWithBinder(FragmentMainBinding::bind)
-    private lateinit var btnPrint: Button
-    private lateinit var btnCatalog: Button
-    private lateinit var btnNomenclature: Button
-    private lateinit var btnInventory: Button
-    private lateinit var btnOverEstimate: Button
-    private lateinit var btnRefund: Button
     private lateinit var shopsList: ShopsList
     private val viewModel: MainViewModel by lazy {
         getViewModel { MainViewModel() }
@@ -40,7 +39,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initUI()
         initUIListeners()
         setStateUI(enabled = false)
         restoreSelectedShop()
@@ -55,28 +53,37 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun setStateUI(enabled: Boolean) {
-        btnPrint.isEnabled = enabled
-        btnCatalog.isEnabled = enabled
-        btnNomenclature.isEnabled = enabled
-        btnInventory.isEnabled = enabled
-        btnOverEstimate.isEnabled = enabled
-        btnRefund.isEnabled = enabled
+        binding.btnPrint.isEnabled = enabled
+        binding.btnCatalog.isEnabled = enabled
+        binding.btnNomenclature.isEnabled = enabled
+        binding.btnInventory.isEnabled = enabled
+        binding.btnOverEstimate.isEnabled = enabled
+        binding.btnRefund.isEnabled = enabled
     }
 
     private fun initViewModelObservers() {
-        viewModel.shopsLiveData.observe(viewLifecycleOwner) {
-            shopsList = it
-            setupShops(binding.edtShop, it)
-        }
-
-        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
-            Timber.e(it)
-            fancyException { it }
-        }
-
-        viewModel.errorMessage.observe(viewLifecycleOwner) {
-            Timber.e(it)
-            fancyError { it }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest {
+                    when (it) {
+                        is StatefulData.Error -> {
+                            Timber.e(it.msg)
+                            fancyError { it.msg }
+                        }
+                        StatefulData.Loading -> {
+                            Timber.d("Запрос на получение списка магазинов")
+                        }
+                        is StatefulData.Notify -> {
+                            Timber.e(it.msg)
+                            fancyException { it.msg }
+                        }
+                        is StatefulData.Success -> {
+                            shopsList = it.result
+                            setupShops(binding.edtShop, it.result)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -120,10 +127,10 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     var infoPosition: Pair<Int, Int> = Pair(0, 0)
                     var searchType: SearchType = SearchType.Empty
 
-                    val matchTM = it.matches("^\\d{2}Т{5}М{5}К{1}".toRegex())
-                    val matchPM = it.matches("^\\d{2}П{5}М{5}К{1}".toRegex())
-                    val matchMT = it.matches("^\\d{2}М{5}Т{5}К{1}".toRegex())
-                    val matchMP = it.matches("^\\d{2}М{5}П{5}К{1}".toRegex())
+                    val matchTM = it.matches("^\\d{2}Т{5}М{5}К".toRegex())
+                    val matchPM = it.matches("^\\d{2}П{5}М{5}К".toRegex())
+                    val matchMT = it.matches("^\\d{2}М{5}Т{5}К".toRegex())
+                    val matchMP = it.matches("^\\d{2}М{5}П{5}К".toRegex())
 
                     if (matchPM || matchMP) {
                         searchType = SearchType.SearchByPLU
@@ -150,32 +157,23 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         }
     }
 
-    private fun initUI() {
-        btnCatalog = binding.btnCatalog
-        btnNomenclature = binding.btnNomenclature
-        btnInventory = binding.btnInventory
-        btnPrint = binding.btnPrint
-        btnOverEstimate = binding.btnOverEstimate
-        btnRefund = binding.btnRefund
-    }
-
     private fun initUIListeners() {
-        btnCatalog.setOnClickListener {
+        binding.btnCatalog.setOnClickListener {
             navigateExt(MainFragmentDirections.actionMainFragmentToCatalogFragment())
         }
-        btnNomenclature.setOnClickListener {
+        binding.btnNomenclature.setOnClickListener {
             navigateExt(MainFragmentDirections.actionMainFragmentToNomenclatureFragment())
         }
-        btnInventory.setOnClickListener {
+        binding.btnInventory.setOnClickListener {
             navigateExt(MainFragmentDirections.actionMainFragmentToInventoryFragment())
         }
-        btnPrint.setOnClickListener {
+        binding.btnPrint.setOnClickListener {
             navigateExt(MainFragmentDirections.actionMainFragmentToPrintFragment())
         }
-        btnOverEstimate.setOnClickListener {
+        binding.btnOverEstimate.setOnClickListener {
             navigateExt(MainFragmentDirections.actionMainFragmentToOverestimationFragment())
         }
-        btnRefund.setOnClickListener {
+        binding.btnRefund.setOnClickListener {
             navigateExt(MainFragmentDirections.actionMainFragmentToRefundFragment())
         }
     }
