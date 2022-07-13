@@ -15,8 +15,9 @@ import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.utils.Constants.SelectedObjects.ShopModel
 import com.shop.tcd.core.utils.ReceiverLiveData
-import com.shop.tcd.data.dto.pricetag.BarcodeTag
-import com.shop.tcd.data.dto.pricetag.PriceTag
+import com.shop.tcd.core.utils.StatefulData
+import com.shop.tcd.data.dto.pricetag.request.BarcodeTag
+import com.shop.tcd.data.dto.pricetag.request.PriceTag
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponse
 import com.shop.tcd.data.dto.pricetag.response.PriceTagResponseItem
 import com.shop.tcd.data.dto.printer.PrintersList
@@ -26,6 +27,8 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDateTime
@@ -33,14 +36,13 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class PrintViewModel : ViewModel() {
-    private var _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
+    private var _statePrintersList =
+        MutableStateFlow<StatefulData<PrintersList>>(StatefulData.Loading)
+    val statePrintersList: StateFlow<StatefulData<PrintersList>> get() = _statePrintersList
 
-    private var _exceptionMessage = MutableLiveData<String>()
-    val exceptionMessage: LiveData<String> get() = _exceptionMessage
-
-    private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
+    private var _statePrinterPayload =
+        MutableStateFlow<StatefulData<List<String>>>(StatefulData.Loading)
+    val statePrinterPayload: StateFlow<StatefulData<List<String>>> get() = _statePrinterPayload
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
@@ -48,14 +50,6 @@ class PrintViewModel : ViewModel() {
 
     private var _idataScanner = MutableLiveData<String>()
     val idataScanner: LiveData<String> get() = _idataScanner
-
-    private var _printersLiveData = MutableLiveData<PrintersList>()
-    val printersLiveData: LiveData<PrintersList>
-        get() = _printersLiveData
-
-    private var _printerPayload = MutableLiveData<List<String>>()
-    val printerPayloadLiveData: LiveData<List<String>>
-        get() = _printerPayload
 
     private var job: Job = Job()
     private val context = App.applicationContext() as Application
@@ -97,42 +91,42 @@ class PrintViewModel : ViewModel() {
     fun loadPrintInfoByBarcodes(list: MutableList<String>) {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            _loading.postValue(true)
+            _statePrinterPayload.value = StatefulData.Loading
             when (
-                val response: NetworkResult<PriceTagResponse> =
-                    shopRepository.getPrintInfoByBarcodes(converterToPriceTag(list))
+                val response = shopRepository.getPrintInfoByBarcodes(converterToPriceTag(list))
             ) {
                 is NetworkResult.Error -> {
-                    onError("${response.code} ${response.message}")
+                    _statePrinterPayload.value =
+                        StatefulData.Notify("${response.code} ${response.message}")
                 }
                 is NetworkResult.Exception -> {
                     onException(response.e)
                 }
                 is NetworkResult.Success -> {
-                    val payload: PriceTagResponse = response.data
-                    _printerPayload.postValue(createTSPLRequest(payload))
+                    _statePrinterPayload.value =
+                        StatefulData.Success(createTSPLRequest(response.data))
                 }
             }
-            _loading.postValue(false)
         }
     }
 
     private fun loadPrinters() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            _loading.postValue(true)
+            _statePrintersList.value = StatefulData.Loading
             when (val response = repository.printers(ShopModel.prefix)) {
                 is NetworkResult.Error -> {
-                    onError("${response.code} ${response.message}")
+                    _statePrintersList.value =
+                        StatefulData.Notify("${response.code} ${response.message}")
                 }
                 is NetworkResult.Exception -> {
                     onException(response.e)
+                    _statePrintersList.value = StatefulData.Error(response.e.message.toString())
                 }
                 is NetworkResult.Success -> {
-                    _printersLiveData.postValue(response.data)
+                    _statePrintersList.value = StatefulData.Success(response.data)
                 }
             }
-            _loading.postValue(false)
         }
     }
 
@@ -341,16 +335,8 @@ class PrintViewModel : ViewModel() {
         return response
     }
 
-    private fun onError(message: String) {
-        Timber.e(message)
-        _errorMessage.postValue(message)
-        _loading.postValue(false)
-    }
-
     private fun onException(throwable: Throwable) {
         Timber.e(throwable)
-        _exceptionMessage.postValue(throwable.message)
-        _loading.postValue(false)
     }
 
     override fun onCleared() {

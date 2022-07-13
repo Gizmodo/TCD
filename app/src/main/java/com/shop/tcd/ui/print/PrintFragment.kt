@@ -13,6 +13,9 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,10 +30,14 @@ import com.shop.tcd.core.extension.viewBindingWithBinder
 import com.shop.tcd.core.utils.Constants.SelectedObjects.PrinterModel
 import com.shop.tcd.core.utils.Constants.SelectedObjects.PrinterModelPosition
 import com.shop.tcd.core.utils.Constants.SelectedObjects.isPrinterSelected
+import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.core.utils.TcpClientService
 import com.shop.tcd.data.dto.printer.PrintersList
 import com.shop.tcd.databinding.FragmentPrintBinding
 import com.shop.tcd.ui.print.adapter.PriceTagAdapter
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class PrintFragment : Fragment(R.layout.fragment_print) {
     /*  val vm = getViewModel<CatchViewModel>()
@@ -160,27 +167,48 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
     }
 
     private fun initViewModelObservers() {
-        viewModel.printersLiveData.observe(viewLifecycleOwner) {
-            printersList = it
-            setupAutoComplete(binding.edtPrinter, it)
-        }
-
-        viewModel.printerPayloadLiveData.observe(viewLifecycleOwner) {
-            runService(it)
-        }
-
-        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
-            fancyException { it }
-        }
-
-        viewModel.errorMessage.observe(viewLifecycleOwner) {
-            fancyError { it }
-        }
-
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when {
-                it -> showShimmer()
-                else -> hideShimmer()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.statePrintersList.collectLatest {
+                    when (it) {
+                        is StatefulData.Error -> {
+                            hideShimmer()
+                            fancyError { it.msg }
+                        }
+                        StatefulData.Loading -> {
+                            Timber.d("Запрос на получение списка принтеров")
+                            showShimmer()
+                        }
+                        is StatefulData.Notify -> {
+                            hideShimmer()
+                            fancyException { it.msg }
+                        }
+                        is StatefulData.Success -> {
+                            hideShimmer()
+                            printersList = it.result
+                            setupAutoComplete(binding.edtPrinter, it.result)
+                        }
+                    }
+                }
+                viewModel.statePrinterPayload.collectLatest {
+                    when (it) {
+                        is StatefulData.Error -> {
+                            hideShimmer()
+                            fancyError { it.msg }
+                        }
+                        StatefulData.Loading -> {
+                            Timber.d("Запрос на печать")
+                            showShimmer()
+                        }
+                        is StatefulData.Notify -> {
+                            hideShimmer()
+                            fancyException { it.msg }
+                        }
+                        is StatefulData.Success -> {
+                            runService(it.result)
+                        }
+                    }
+                }
             }
         }
 
