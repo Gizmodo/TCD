@@ -10,6 +10,7 @@ sealed class StatefulData<out T : Any> {
     data class Error(val msg: String) : StatefulData<Nothing>()
     data class Notify(val msg: String) : StatefulData<Nothing>()
     object Loading : StatefulData<Nothing>()
+    object Empty : StatefulData<Nothing>()
 
     inline fun <R : Any> map(transform: (T) -> R): StatefulData<R> {
         return when (this) {
@@ -17,11 +18,13 @@ sealed class StatefulData<out T : Any> {
             is Error -> Error(this.msg)
             is Notify -> Notify(this.msg)
             is Success -> Success(transform(this.result))
+            is Empty -> Empty
         }
     }
 
     suspend inline fun <R : Any> suspendMap(crossinline transform: suspend (T) -> R): StatefulData<R> {
         return when (this) {
+            is Empty -> Empty
             is Loading -> Loading
             is Error -> Error(this.msg)
             is Notify -> Notify(this.msg)

@@ -87,6 +87,7 @@ class OptionsFragment : Fragment(R.layout.fragment_options) {
                         is StatefulData.Success -> {
                             fancySuccessShort { "Доступна новая версия ${it.result.version}" }
                         }
+                        StatefulData.Empty -> {}
                     }
                 }
             }

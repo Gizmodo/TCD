@@ -102,6 +102,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                             setStateUI(usersList.size > 0)
                             setupLogins(binding.edtLogin, it.result)
                         }
+                        StatefulData.Empty -> {}
                     }
                 }
             }

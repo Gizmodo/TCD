@@ -81,6 +81,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                             shopsList = it.result
                             setupShops(binding.edtShop, it.result)
                         }
+                        StatefulData.Empty -> {}
                     }
                 }
             }

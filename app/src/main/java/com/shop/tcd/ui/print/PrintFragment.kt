@@ -188,6 +188,7 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
                             printersList = it.result
                             setupAutoComplete(binding.edtPrinter, it.result)
                         }
+                        StatefulData.Empty -> {}
                     }
                 }
                 viewModel.statePrinterPayload.collectLatest {
@@ -207,6 +208,7 @@ class PrintFragment : Fragment(R.layout.fragment_print) {
                         is StatefulData.Success -> {
                             runService(it.result)
                         }
+                        StatefulData.Empty -> {}
                     }
                 }
             }
