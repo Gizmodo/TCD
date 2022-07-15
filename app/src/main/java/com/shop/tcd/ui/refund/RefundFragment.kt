@@ -7,6 +7,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.shop.tcd.R
 import com.shop.tcd.core.extension.fancyError
@@ -15,8 +18,12 @@ import com.shop.tcd.core.extension.getViewModel
 import com.shop.tcd.core.extension.hideSoftKeyboardExt
 import com.shop.tcd.core.extension.setTint
 import com.shop.tcd.core.extension.viewBindingWithBinder
+import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.datamatrix.Goods
 import com.shop.tcd.databinding.FragmentRefundBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class RefundFragment : Fragment(R.layout.fragment_refund) {
     private lateinit var dialog: AlertDialog
@@ -95,22 +102,29 @@ class RefundFragment : Fragment(R.layout.fragment_refund) {
         viewModel.pdf417.observe(viewLifecycleOwner) {
             onReceivePDF417(it)
         }
-        viewModel.refundResponse.observe(viewLifecycleOwner) {
-            binding.txtScanResult.text = it
-        }
-
-        viewModel.exceptionMessage.observe(viewLifecycleOwner) {
-            fancyException { it }
-        }
-
-        viewModel.errorMessage.observe(viewLifecycleOwner) {
-            fancyError { it }
-        }
-
-        viewModel.loading.observe(viewLifecycleOwner) {
-            when {
-                it -> showShimmer()
-                else -> hideShimmer()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collectLatest {
+                    when (it) {
+                        is StatefulData.Error -> {
+                            hideShimmer()
+                            fancyError { it.msg }
+                        }
+                        StatefulData.Loading -> {
+                            Timber.d("Запрос на получение списания/возврат")
+                            showShimmer()
+                        }
+                        is StatefulData.Notify -> {
+                            hideShimmer()
+                            fancyException { it.msg }
+                        }
+                        is StatefulData.Success -> {
+                            hideShimmer()
+                            binding.txtScanResult.text = it.result
+                        }
+                        StatefulData.Empty -> {}
+                    }
+                }
             }
         }
     }

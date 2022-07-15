@@ -2,7 +2,6 @@ package com.shop.tcd.ui.refund
 
 import android.app.Application
 import android.content.IntentFilter
-import androidx.core.view.MotionEventCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,6 +15,7 @@ import com.shop.tcd.core.di.ViewModelInjector
 import com.shop.tcd.core.extension.NetworkResult
 import com.shop.tcd.core.utils.Constants
 import com.shop.tcd.core.utils.ReceiverLiveData
+import com.shop.tcd.core.utils.StatefulData
 import com.shop.tcd.data.dto.datamatrix.Goods
 import com.shop.tcd.data.dto.refund.request.RefundRequestBody
 import com.shop.tcd.data.remote.ShopRepository
@@ -23,11 +23,16 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
 class RefundViewModel : ViewModel() {
+    private var _state =
+        MutableStateFlow<StatefulData<String>>(StatefulData.Empty)
+    val state: StateFlow<StatefulData<String>> get() = _state
 
     private var _idataScanner = MutableLiveData<String>()
     val idataScanner: LiveData<String> get() = _idataScanner
@@ -41,20 +46,9 @@ class RefundViewModel : ViewModel() {
     private var _pdf417 = MutableLiveData<String>()
     val pdf417: LiveData<String> get() = _pdf417
 
-    private var _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
-
-    private var _exceptionMessage = MutableLiveData<String>()
-    val exceptionMessage: LiveData<String> get() = _exceptionMessage
-
-    private var _loading = MutableLiveData<Boolean>()
-    val loading: LiveData<Boolean> get() = _loading
-
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         onException(throwable)
     }
-    private var _refundResponse = MutableLiveData<String>()
-    val refundResponse: LiveData<String> get() = _refundResponse
 
     private var job: Job = Job()
     private val context = App.applicationContext() as Application
@@ -78,41 +72,39 @@ class RefundViewModel : ViewModel() {
         job.cancel()
     }
 
-    fun GetSymbType(_type: Int): String? {
-        return when (_type) {
-            MotionEventCompat.AXIS_GENERIC_15 -> "DotCode"
-            60 -> "Code 32"
-            67 -> "CanadaPost"
-            68 -> "EAN-8"
-            69 -> "UPC-E"
-            70 -> "IATA2of5"
-            72 -> "Han Xin"
-            73 -> "EAN-128"
-            80 -> "PostNet"
-            82 -> "MicroPDF417"
-            88 -> "Grid Matrix"
-            89 -> "COMPOSITE"
-            97 -> "Codabar"
-            98 -> "Code 39"
-            99 -> "UPC-A"
-            100 -> "EAN-13"
-            101 -> "Interleaved 2 of 5"
-            102 -> "standerd2of5"
-            103 -> "MSI"
-            104 -> "Code 11"
-            105 -> "Code 93"
-            106 -> "Code 128"
-            108 -> "Code 49"
-            109 -> "Matrix2of5"
-            113 -> "CodablockF"
-            114 -> "PDF417"
-            115 -> "QR Code"
-            119 -> "Data Matrix"
-            120 -> "MaxiCode"
-            121 -> "Rss"
-            122 -> "Aztec"
-            else -> "Undefined"
-        }
+    private fun getSymbolType(type: Int): String = when (type) {
+        46 -> "DotCode"
+        60 -> "Code 32"
+        67 -> "CanadaPost"
+        68 -> "EAN-8"
+        69 -> "UPC-E"
+        70 -> "IATA2of5"
+        72 -> "Han Xin"
+        73 -> "EAN-128"
+        80 -> "PostNet"
+        82 -> "MicroPDF417"
+        88 -> "Grid Matrix"
+        89 -> "COMPOSITE"
+        97 -> "Codabar"
+        98 -> "Code 39"
+        99 -> "UPC-A"
+        100 -> "EAN-13"
+        101 -> "Interleaved 2 of 5"
+        102 -> "standerd2of5"
+        103 -> "MSI"
+        104 -> "Code 11"
+        105 -> "Code 93"
+        106 -> "Code 128"
+        108 -> "Code 49"
+        109 -> "Matrix2of5"
+        113 -> "CodablockF"
+        114 -> "PDF417"
+        115 -> "QR Code"
+        119 -> "Data Matrix"
+        120 -> "MaxiCode"
+        121 -> "Rss"
+        122 -> "Aztec"
+        else -> "Undefined"
     }
 
     private fun initDeviceObservables() {
@@ -121,7 +113,7 @@ class RefundViewModel : ViewModel() {
             IntentFilter("android.intent.action.SCANRESULT")
         ) { _, intent ->
             var data = ""
-            var type: Int = 0
+            var type = 0
             val extras = intent.extras?.keySet()?.map { "$it: ${intent.extras?.get(it)}" }
                 ?.joinToString { it }
             Timber.d(extras.toString())
@@ -135,7 +127,7 @@ class RefundViewModel : ViewModel() {
     }
 
     private fun parseCode(data: String, type: Int) {
-        Timber.d("${GetSymbType(type)} -> $data")
+        Timber.d("${getSymbolType(type)} -> $data")
         when (type) {
             68 -> {
                 _barcode.postValue(data.padStart(13, '0'))
@@ -238,7 +230,7 @@ class RefundViewModel : ViewModel() {
     fun send() {
         job.cancel()
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            _loading.postValue(true)
+            _state.value = StatefulData.Loading
             val payload = RefundRequestBody(
                 doctype = "refund",
                 prefix = Constants.SelectedObjects.ShopModel.prefix,
@@ -249,16 +241,17 @@ class RefundViewModel : ViewModel() {
             )
             when (val response = shopRepository.getRefund(payload = payload)) {
                 is NetworkResult.Error -> {
-                    onError("${response.code} ${response.message}")
+                    _state.value =
+                        StatefulData.Notify("${response.code} ${response.message}")
                 }
                 is NetworkResult.Exception -> {
                     onException(response.e)
                 }
                 is NetworkResult.Success -> {
-                    _refundResponse.postValue(response.data)
+                    _state.value = StatefulData.Success(response.data)
                 }
             }
-            _loading.postValue(false)
+            _state.value = StatefulData.Empty
         }
     }
 
@@ -267,14 +260,7 @@ class RefundViewModel : ViewModel() {
         job.cancel()
     }
 
-    private fun onError(message: String) {
-        Timber.e(message)
-        _errorMessage.postValue(message)
-        _loading.postValue(false)
-    }
-
     private fun onException(throwable: Throwable) {
         Timber.e(throwable)
-        _exceptionMessage.postValue(throwable.message)
     }
 }
